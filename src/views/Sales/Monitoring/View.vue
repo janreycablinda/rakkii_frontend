@@ -150,7 +150,7 @@ export default {
                         color: '#F9B115',
                         tag: '2018-01-12',
                         content: 'Tinsmith <a href="#"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" class="c-icon"><polygon fill="#26994D" points="200.359 382.269 61.057 251.673 82.943 228.327 199.641 337.731 428.686 108.687 451.314 131.313 200.359 382.269" class="ci-primary"></polygon></svg></a>',
-                        footer: 'Commitment Date :2018-01-20'
+                        footer: 'Commitment Date :2018-01-20 <br> Assign To: James Lajar <br> Panels: 1'
                         },
                         {
                         // tag: '2018-01-13',
