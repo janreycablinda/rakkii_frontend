@@ -113,7 +113,7 @@
                 <CRow class="mb-3">
                     <CCol lg="4">
                         <div class="container mt-3">
-                            INVOICE OVERVIEW
+                            BILLING OVERVIEW
                         <hr>
                         0 DRAFT
                         <CProgress
@@ -281,17 +281,17 @@
                         <hr>
                     </CCol>
                     <CCol lg="4">
-                        <CWidgetSimple header="Outstanding Invoices" text="₱1,123">
+                        <CWidgetSimple header="Outstanding Billing" text="₱1,123">
                         
                         </CWidgetSimple>
                     </CCol>
                     <CCol lg="4">
-                        <CWidgetSimple header="Past Due Invoices" text="₱1,123">
+                        <CWidgetSimple header="Past Due Billing" text="₱1,123">
                         
                         </CWidgetSimple>
                     </CCol>
                     <CCol lg="4">
-                        <CWidgetSimple header="Paid Invoices" text="₱1,123">
+                        <CWidgetSimple header="Paid Billing" text="₱1,123">
                         
                         </CWidgetSimple>
                     </CCol>
@@ -303,6 +303,10 @@
             <CCard>
                 <CCardHeader>Statistics by Project Status</CCardHeader>
                 <StatisticsChart/>
+            </CCard>
+            <CCard>
+                <CCardHeader>Production Status</CCardHeader>
+                <ProductionStatus/>
             </CCard>
         </CCol>
     </CRow>
@@ -360,6 +364,7 @@
 <script>
 import BarChart from './BarChart'
 import StatisticsChart from './StatisticsChart'
+import ProductionStatus from './ProductionStatus'
 import ProjectTable from './ProjectTable'
 import RemindersTable from './RemindersTable'
 import WeeklyPaymentChart from './WeeklyPaymentChart'
@@ -385,7 +390,8 @@ import Calendar from './Calendar'
             RemindersTable,
             WeeklyPaymentChart,
             ContractTable,
-            Calendar
+            Calendar,
+            ProductionStatus
 		},
 		methods: {
 			setShowDate(d) {

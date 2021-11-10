@@ -31,6 +31,10 @@ export default {
             icon: 'cil-money',
             items: [
               {
+                name: 'Monitoring',
+                to: '/sales/monitoring',
+              },
+              {
                 name: 'Billing Statement',
                 to: '/sales/invoices',
               },

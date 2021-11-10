@@ -13,8 +13,11 @@ const NewCustomers = () => import('@/views/Customers/NewCustomers')
 const ImportCustomers = () => import('@/views/Customers/ImportCustomers')
 const CustomerProfile = () => import('@/views/Customers/CustomerProfile')
 const CustomerProjects = () => import('@/views/Customers/CustomerProjects')
+const EditCustomerProjects = () => import('@/views/Customers/EditCustomerProjects')
+
 
 const Invoices = () => import('@/views/Sales/Invoices/View')
+const Monitoring = () => import('@/views/Sales/Monitoring/View')
 const CreateInvoice = () => import('@/views/Sales/Invoices/CreateInvoice')
 const Estimates = () => import('@/views/Sales/Estimates/View')
 const CreateEstimates = () => import('@/views/Sales/Estimates/CreateNewEstimate')
@@ -32,6 +35,7 @@ const Profile = () => import('@/views/Profile/View')
 // const Inventory = () => import('@/views/Inventory/Inventory/View')
 const SalesReport = () => import('@/views/Reports/Sales/View')
 const Contracts = () => import('@/views/Contracts/View')
+const AddContract = () => import('@/views/Contracts/AddContract')
 const Tasks = () => import('@/views/Tasks/View')
 const ExpensesReport = () => import('@/views/Reports/Expenses/View')
 const ExpensesVsIncome = () => import('@/views/Reports/Expenses vs Income/View')
@@ -157,6 +161,25 @@ export default new Router({
           path: '/customers/customer-profile/:id/profile',
           name: 'Customer Profile',
           component: CustomerProfile,
+          beforeEnter: (to, from, next) => {
+            if (!store.getters["auth/authenticated"]) {
+              next({
+                name: "Login"
+              });
+            }
+            next();
+          },
+          meta: {
+            breadcrumb: [
+              { text: 'Customers', to: '/customers' },
+              { text: 'Customer Profile' }
+            ]
+          }
+        },
+        {
+          path: '/customers/customer-profile/:id/profile/:project_id',
+          name: 'Customer Projects',
+          component: EditCustomerProjects,
           beforeEnter: (to, from, next) => {
             if (!store.getters["auth/authenticated"]) {
               next({
@@ -306,6 +329,24 @@ export default new Router({
               { text: 'Credit Note' }
             ]
           }
+        },
+        {
+          path: '/sales/monitoring',
+          name: 'Monitoring',
+          component: Monitoring,
+          beforeEnter: (to, from, next) => {
+            if (!store.getters["auth/authenticated"]) {
+              next({
+                name: "Login"
+              });
+            }
+            next();
+          },
+          meta: {
+            breadcrumb: [
+              { text: 'Monitoring' }
+            ]
+          }
         }
       ]
     },
@@ -450,6 +491,25 @@ export default new Router({
             meta: {
               breadcrumb: [
                 { text: 'Contracts' }
+              ]
+            }
+        },
+        {
+            path: '/contracts/add_contracts',
+            name: 'AddContract',
+            component: AddContract,
+            beforeEnter: (to, from, next) => {
+              if (!store.getters["auth/authenticated"]) {
+                next({
+                  name: "Login"
+                });
+              }
+              next();
+            },
+            meta: {
+              breadcrumb: [
+                { text: 'Contracts', to: '/contracts' },
+                { text: 'ADD CONTRACTS' }
               ]
             }
         },

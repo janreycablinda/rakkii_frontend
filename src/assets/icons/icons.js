@@ -36,7 +36,11 @@ import {
   cilListRich,
   cilAddressBook,
   cilPlaylistAdd,
-  cilX
+  cilX,
+  cilCarAlt,
+  cilPen,
+  cilArrowThickToRight,
+  cilAvTimer
 } from '@coreui/icons'
 import { logo } from './logo'
 
@@ -79,5 +83,9 @@ export const iconsSet = Object.assign({}, {
   cilListRich,
   cilAddressBook,
   cilPlaylistAdd,
-  cilX
+  cilX,
+  cilCarAlt,
+  cilPen,
+  cilArrowThickToRight,
+  cilAvTimer
 })

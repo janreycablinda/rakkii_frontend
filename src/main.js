@@ -9,9 +9,11 @@ import store from './store/index'
 import axios from 'axios'
 import Vuelidate from 'vuelidate'
 import VCalendar from 'v-calendar'
+import SimpleTimeline from 'vue-simple-timeline';
 
 Vue.use(VCalendar)
 Vue.use(Vuelidate)
+Vue.use(SimpleTimeline);
 
 import excel from 'vue-excel-export'
  

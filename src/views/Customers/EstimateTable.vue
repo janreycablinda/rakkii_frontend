@@ -14,19 +14,17 @@
         :table-filter="true"
         pagination
         items-per-page-select
-        
+
       >
-        <template ##="{item, index}">
-            <td>
-                {{index+1}}
-            </td>
+        <template #status="{item}">
+          <td>
+            <CBadge color="secondary">Draft</CBadge>
+          </td>
         </template>
-        
         <template #action="{item}">
             <td>
                 <div>
-                <CButton to="/customers/customer-profile/1/profile/1" color="info"><CIcon name="cil-pencil"/></CButton> &nbsp;
-                
+                <CButton @click="getValue(item)" color="info"><CIcon name="cil-pencil"/></CButton> &nbsp;
                 <CButton @click="getValueDel(item)" color="danger"><CIcon name="cil-trash"/></CButton>
                 </div>
             </td>
@@ -43,7 +41,7 @@ export default {
     fields: {
       type: Array,
       default () {
-        return ['project_no', 'date', 'personnel_assigned', 'status', 'action']
+        return ['estimate_no', 'total_labor_parts', 'total_vat', 'date', 'customer', 'status', 'action']
       }
     },
     caption: {

@@ -2,12 +2,12 @@
     <div>
         <CCard>
             <CCardHeader>
-                <strong>Request Job Estimate</strong>
+                <strong>Job Estimate</strong>
             </CCardHeader>
             <CCardBody>
                 <CRow>
                     <CCol lg="6">
-                      <div class="inline">
+                      <!-- <div class="inline">
                           <v-select
                             :options="$options.customermultiselectOptions"
                             placeholder="Select Customer"
@@ -17,21 +17,21 @@
                             class="select-custom"
                           />
                           <CButton @click="showModalAddData = new Date()" class="select-custom-btn" color="primary"><CIcon size="sm" name="cil-plus"/></CButton>
-                      </div>
-
+                      </div> -->
+                      Name: Janrey Cablinda
                     </CCol>
                     <CCol lg="6">
-                        <CInput type="date" placeholder="Date"/>
-                    </CCol>
-                </CRow>
-                <CRow>
-                    <CCol lg="6">
-                        <CInput placeholder="Address"/>
+                        <CInput value="11/06/2021" type="date" placeholder="Date"/>
                     </CCol>
                 </CRow>
                 <CRow>
                     <CCol lg="6">
-                        <CInput placeholder="Insurance"/>
+                        <CInput value="San juan 2 lapasan" placeholder="Address"/>
+                    </CCol>
+                </CRow>
+                <CRow>
+                    <CCol lg="6">
+                        <CInput value="PHIL. BRITISH" placeholder="Insurance"/>
                     </CCol>
                 </CRow>
                 <CRow>
@@ -183,8 +183,8 @@
               </CRow>
               <CRow>
                 <CCol lg="12">
-                  <CButton color="success">Save as Draft</CButton>
-                  <CButton class="ml-2" color="success">Save for Approval</CButton>
+                  <CButton color="success">Save</CButton>
+                  <!-- <CButton class="ml-2" color="success">Save for Approval</CButton> -->
                 </CCol>
               </CRow>
             </CCardBody>
@@ -319,11 +319,11 @@ export default {
         }
     },
     multiselectOptions: [
-        { value: 'AL', label: 'PARTS TO BE REPLACE' },
-        { value: 'AK', label: 'PULLDOWN ALL NEC. PARTS TO GIVEWAY FOR REPAIR' },
-        { value: 'AK', label: 'TINSMITH JOB' },
-        { value: 'AK', label: 'PAINTING JOB' },
-        { value: 'AK', label: 'PAINT MATERIALS' },
+        { value: '1', label: 'PARTS TO BE REPLACE' },
+        { value: '2', label: 'PULLDOWN ALL NEC. PARTS TO GIVEWAY FOR REPAIR' },
+        { value: '3', label: 'TINSMITH JOB' },
+        { value: '4', label: 'PAINTING JOB' },
+        { value: '5', label: 'PAINT MATERIALS' },
     ],
     customermultiselectOptions: [
         { value: 'AL', label: 'Janrey A. Cablinda' },

@@ -4,7 +4,7 @@
             <CCol lg="12">
                 <CCard>
                     <CCardHeader>
-                        <CButton to="/customers/new-customer" size="sm" color="primary">
+                        <CButton to="/contracts/add_contracts" size="sm" color="primary">
                             ADD CONTRACTS
                         </CButton>&nbsp;
                     </CCardHeader>
