@@ -43,7 +43,7 @@ import {
   cilAvTimer,
   cilCaretLeft,
   cilInstitution,
-  cibAdobeAcrobatReader
+  cibAdobeAcrobatReader,
 } from '@coreui/icons'
 import { logo } from './logo'
 

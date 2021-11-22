@@ -26,6 +26,12 @@ export default {
           },
           {
             _name: 'CSidebarNavItem',
+            name: 'Supplier',
+            to: '/insurance',
+            icon: 'cil-industry',
+          },
+          {
+            _name: 'CSidebarNavItem',
             name: 'Users, Roles & Permissions',
             to: '/role_permission',
             icon: 'cil-shield-alt',
