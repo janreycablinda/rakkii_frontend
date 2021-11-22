@@ -16,19 +16,57 @@
         items-per-page-select
 
       >
+        <template #estimate_no="{item, index}">
+          <td>
+            <CLink
+              @click="getValue(item)"
+            >
+              EST-000{{item.id}}
+            </CLink>
+          </td>
+        </template>
+        <template #customer="{item}">
+          <td>
+            <CLink
+              :to="'/customers/customer-profile/' + item.customer_id + '/profile'"
+            >
+            {{item.customer.company_name}}
+            </CLink>
+          </td>
+        </template>
+        <template #vehicle="{item}">
+          <td>
+            {{item.property.vehicle.vehicle_name}}
+          </td>
+        </template>
+        <template #plate_no="{item}">
+          <td>
+            {{item.property.plate_no}}
+          </td>
+        </template>
+        <template #insurance="{item}">
+          <td>
+            <CLink
+              href="#"
+            >
+            {{item.insurance.insurance_name}}
+            </CLink>
+          </td>
+        </template>
         <template #status="{item}">
           <td>
             <CBadge color="secondary">Draft</CBadge>
           </td>
         </template>
-        <template #action="{item}">
+        <!-- <template #action="{item}">
             <td>
                 <div>
                 <CButton @click="getValue(item)" color="info"><CIcon name="cil-pencil"/></CButton> &nbsp;
+                <CButton @click="getValue(item)" color="warning"><CIcon name="cil-check-alt"/></CButton> &nbsp;
                 <CButton @click="getValueDel(item)" color="danger"><CIcon name="cil-trash"/></CButton>
                 </div>
             </td>
-        </template>
+        </template> -->
       </CDataTable>
     </div>
 </template>
@@ -41,7 +79,7 @@ export default {
     fields: {
       type: Array,
       default () {
-        return ['estimate_no', 'total_labor_parts', 'total_vat', 'date', 'customer', 'status', 'action']
+        return ['estimate_no', 'customer', 'vehicle', 'plate_no', 'insurance', 'date', 'status']
       }
     },
     caption: {
@@ -63,10 +101,12 @@ export default {
             : status === 'Banned' ? 'danger' : 'primary'
     },
     getValue(data){
-      this.$emit('event_child', data, 'edit');
+      this.$emit('event_child', data);
     },
     getValueDel(data){
-      this.$emit('event_child', data, 'delete');
+      if (confirm('Are you sure you want to delete ' + data.customer.company_name +'?')) {
+        // Save it!
+      }
     },
   }
 }

@@ -6,7 +6,7 @@
                     <strong>Pending</strong>
                 </CCardHeader>
                 <CCardBody>
-                    <div class="pending-item px-3 py-1">
+                    <div v-for="(est, index) in $store.state.estimate.estimate" :key="est.id" class="pending-item px-3 py-1 mt-4">
                         <div class="pending-item-action">
                             <CButton size="sm" @click="ModalCarInData = new Date()" color="info">
                                 <CIcon name="cil-car-alt"/>
@@ -19,19 +19,19 @@
                             </CButton>
                         </div>
                         <CRow class="mt-2">
-                            <CCol lg="6">
-                                <small><b>CLIENT: </b>Janrey Cablinda</small>
+                            <CCol lg="7">
+                                <small><b>CUSTOMER: </b>{{est.customer.company_name}}</small>
                             </CCol>
-                            <CCol lg="6" align="right">
-                                <small><b>EST-00003</b></small>
+                            <CCol lg="5" align="right">
+                                <small><b>JO-000{{est.id}}</b></small>
                             </CCol>
                         </CRow>
                         <CRow>
                             <CCol lg="6">
-                                <small><b>UNIT: </b>FORTUNER-GRAY</small>
+                                <small><b>VEHICLE: </b>{{est.property.vehicle.vehicle_name}}</small>
                             </CCol>
                             <CCol lg="6" align="right">
-                                <small><b>PLATE NO.: NCJ-8197</b></small>
+                                <small><b>PLATE NO.: {{est.property.plate_no}}</b></small>
                             </CCol>
                         </CRow>
                     </div>
@@ -110,15 +110,31 @@
         <CarInModal 
         :ModalCarInData="ModalCarInData"
         />
+        <CompletedModal
+        :CompletedModalData="CompletedModalData"
+        />
+        <EditCompletedModal
+        :EditCompletedModalData="EditCompletedModalData"
+        />
+        <StartModal
+        :StartData="StartData"
+        />
     </CRow>
 </template>
 <script>
 import CarInModal from './CarInModal'
 import Inprogress from './Inprogress';
+import CompletedModal from './CompletedModal';
+import EditCompletedModal from './EditCompletedModal';
+import StartModal from './StartModal';
+
 export default {
     data(){
         return {
             ModalCarInData: '',
+            CompletedModalData: '',
+            EditCompletedModalData: '',
+            StartData: '',
             Inprogress: [
                 {
                     name: 'Chrismer Lao',
@@ -126,20 +142,20 @@ export default {
                         {
                         color: '#2EB85C',
                         tag: '2018-01-12',
-                        content: '<b>TINSMITH</b> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" class="c-icon"><path fill="#3399FF" d="M345.994,42.019,179.531,208.481A646.3,646.3,0,0,0,25.325,456.521a24.845,24.845,0,0,0,6,25.708l.087.087a24.84,24.84,0,0,0,17.611,7.342,25.172,25.172,0,0,0,8.1-1.344,646.283,646.283,0,0,0,248.04-154.207L471.62,167.646A88.831,88.831,0,0,0,345.994,42.019ZM282.531,311.48A614.445,614.445,0,0,1,60.419,453.221,614.435,614.435,0,0,1,202.158,231.108l99.162-99.161,80.372,80.372ZM448.993,145.019l-44.674,44.673L323.947,109.32l44.674-44.674a56.832,56.832,0,1,1,80.372,80.373Z" class="ci-primary"></path></svg>',
+                        content: '<b>TINSMITH</b> <a href="#edit"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" class="c-icon"><path fill="#3399FF" d="M345.994,42.019,179.531,208.481A646.3,646.3,0,0,0,25.325,456.521a24.845,24.845,0,0,0,6,25.708l.087.087a24.84,24.84,0,0,0,17.611,7.342,25.172,25.172,0,0,0,8.1-1.344,646.283,646.283,0,0,0,248.04-154.207L471.62,167.646A88.831,88.831,0,0,0,345.994,42.019ZM282.531,311.48A614.445,614.445,0,0,1,60.419,453.221,614.435,614.435,0,0,1,202.158,231.108l99.162-99.161,80.372,80.372ZM448.993,145.019l-44.674,44.673L323.947,109.32l44.674-44.674a56.832,56.832,0,1,1,80.372,80.373Z" class="ci-primary"></path></svg></a>',
                         footer: '<b>Commitment Date:</b> 2018-01-20 <br> <b>Assign To:</b> James Cargo <br> <b>Panels:</b> 2 <br> <b>Date Done:</b> 2018-01-20 <br> <b>Remarks:</b> test '
                         },
                         {
                         tag: '2018-01-13',
                         color: '#F9B115',
                         type: 'circle',
-                        content: '<b>PAINTING</b> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" class="c-icon"><polygon fill="#26994D" points="200.359 382.269 61.057 251.673 82.943 228.327 199.641 337.731 428.686 108.687 451.314 131.313 200.359 382.269" class="ci-primary"></polygon></svg>',
+                        content: '<b>PAINTING</b> <a href="#completed"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" class="c-icon"><polygon fill="#26994D" points="200.359 382.269 61.057 251.673 82.943 228.327 199.641 337.731 428.686 108.687 451.314 131.313 200.359 382.269" class="ci-primary"></polygon></svg></a>',
                         footer: '<b>Commitment Date:</b> 2018-01-20 <br> <b>Assign To:</b> Jose Bajar <br> <b>Panels:</b> 2 <br>'
                         },
                         {
                         type: 'circle',
                         // tag: '2018-01-14',
-                        content: '<b>Mechanical</b> <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 512 512" role="img" class="c-icon"><rect width="25" height="25" x="240" y="384" fill="var(--ci-primary-color, currentColor)" class="ci-primary"></rect><rect width="25" height="25" x="96" y="240" fill="var(--ci-primary-color, currentColor)" class="ci-primary"></rect><rect width="32" height="32" x="384" y="240" fill="var(--ci-primary-color, currentColor)" class="ci-primary"></rect><path fill="var(--ci-primary-color, currentColor)" d="M414.392,97.608A222.332,222.332,0,0,0,272,32.567V32H240v96h32V64.672C370.41,72.83,448,155.519,448,256c0,105.869-86.131,192-192,192S64,361.869,64,256a191.61,191.61,0,0,1,56.408-135.942l115.624,145.88,25.078-19.876L124.6,73.828l-12.606,10.59a224,224,0,1,0,302.4,13.19Z" class="ci-primary"></path></svg>'
+                        content: '<b>Mechanical</b> <a href="#start"> <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 512 512" role="img" class="c-icon"><rect width="25" height="25" x="240" y="384" fill="#26994D" class="ci-primary"></rect><rect width="25" height="25" x="96" y="240" fill="#26994D" class="ci-primary"></rect><rect width="32" height="32" x="384" y="240" fill="#26994D" class="ci-primary"></rect><path fill="#fff" d="M414.392,97.608A222.332,222.332,0,0,0,272,32.567V32H240v96h32V64.672C370.41,72.83,448,155.519,448,256c0,105.869-86.131,192-192,192S64,361.869,64,256a191.61,191.61,0,0,1,56.408-135.942l115.624,145.88,25.078-19.876L124.6,73.828l-12.606,10.59a224,224,0,1,0,302.4,13.19Z" class="ci-primary"></path></svg> </a>'
                         }
                     ]
                 },
@@ -149,21 +165,21 @@ export default {
                         {
                         color: '#F9B115',
                         tag: '2018-01-12',
-                        content: 'Tinsmith <a href="#"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" class="c-icon"><polygon fill="#26994D" points="200.359 382.269 61.057 251.673 82.943 228.327 199.641 337.731 428.686 108.687 451.314 131.313 200.359 382.269" class="ci-primary"></polygon></svg></a>',
+                        content: 'Tinsmith <a href="#completed"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" class="c-icon"><polygon fill="#26994D" points="200.359 382.269 61.057 251.673 82.943 228.327 199.641 337.731 428.686 108.687 451.314 131.313 200.359 382.269" class="ci-primary"></polygon></svg></a>',
                         footer: 'Commitment Date :2018-01-20 <br> Assign To: James Lajar <br> Panels: 1'
                         },
                         {
                         // tag: '2018-01-13',
                         color: '#B9BEC7',
                         type: 'circle',
-                        content: 'Painting <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 512 512" role="img" class="c-icon"><rect width="25" height="25" x="240" y="384" fill="var(--ci-primary-color, currentColor)" class="ci-primary"></rect><rect width="25" height="25" x="96" y="240" fill="var(--ci-primary-color, currentColor)" class="ci-primary"></rect><rect width="32" height="32" x="384" y="240" fill="var(--ci-primary-color, currentColor)" class="ci-primary"></rect><path fill="var(--ci-primary-color, currentColor)" d="M414.392,97.608A222.332,222.332,0,0,0,272,32.567V32H240v96h32V64.672C370.41,72.83,448,155.519,448,256c0,105.869-86.131,192-192,192S64,361.869,64,256a191.61,191.61,0,0,1,56.408-135.942l115.624,145.88,25.078-19.876L124.6,73.828l-12.606,10.59a224,224,0,1,0,302.4,13.19Z" class="ci-primary"></path></svg>',
+                        content: 'Painting <a href="#start"> <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 512 512" role="img" class="c-icon"><rect width="25" height="25" x="240" y="384" fill="#26994D" class="ci-primary"></rect><rect width="25" height="25" x="96" y="240" fill="#26994D" class="ci-primary"></rect><rect width="32" height="32" x="384" y="240" fill="#26994D" class="ci-primary"></rect><path fill="#fff" d="M414.392,97.608A222.332,222.332,0,0,0,272,32.567V32H240v96h32V64.672C370.41,72.83,448,155.519,448,256c0,105.869-86.131,192-192,192S64,361.869,64,256a191.61,191.61,0,0,1,56.408-135.942l115.624,145.88,25.078-19.876L124.6,73.828l-12.606,10.59a224,224,0,1,0,302.4,13.19Z" class="ci-primary"></path></svg> </a>',
                         footer: 'CD:2018-01-20'
                         },
                         {
                         type: 'circle',
                         color: '#B9BEC7',
                         // tag: '2018-01-14',
-                        content: 'Mechanical <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 512 512" role="img" class="c-icon"><rect width="25" height="25" x="240" y="384" fill="var(--ci-primary-color, currentColor)" class="ci-primary"></rect><rect width="25" height="25" x="96" y="240" fill="var(--ci-primary-color, currentColor)" class="ci-primary"></rect><rect width="32" height="32" x="384" y="240" fill="var(--ci-primary-color, currentColor)" class="ci-primary"></rect><path fill="var(--ci-primary-color, currentColor)" d="M414.392,97.608A222.332,222.332,0,0,0,272,32.567V32H240v96h32V64.672C370.41,72.83,448,155.519,448,256c0,105.869-86.131,192-192,192S64,361.869,64,256a191.61,191.61,0,0,1,56.408-135.942l115.624,145.88,25.078-19.876L124.6,73.828l-12.606,10.59a224,224,0,1,0,302.4,13.19Z" class="ci-primary"></path></svg>'
+                        content: 'Mechanical <a href="#start"> <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 512 512" role="img" class="c-icon"><rect width="25" height="25" x="240" y="384" fill="#26994D" class="ci-primary"></rect><rect width="25" height="25" x="96" y="240" fill="#26994D" class="ci-primary"></rect><rect width="32" height="32" x="384" y="240" fill="#26994D" class="ci-primary"></rect><path fill="#fff" d="M414.392,97.608A222.332,222.332,0,0,0,272,32.567V32H240v96h32V64.672C370.41,72.83,448,155.519,448,256c0,105.869-86.131,192-192,192S64,361.869,64,256a191.61,191.61,0,0,1,56.408-135.942l115.624,145.88,25.078-19.876L124.6,73.828l-12.606,10.59a224,224,0,1,0,302.4,13.19Z" class="ci-primary"></path></svg> </a>'
                         }
                     ]
                 },
@@ -172,7 +188,36 @@ export default {
     },
     components: {
         CarInModal,
-        Inprogress
+        Inprogress,
+        CompletedModal,
+        EditCompletedModal,
+        StartModal
+    },
+    watch:{
+        '$route' () {
+        // this.items = this.$route.meta.breadcrumb;
+            console.log(this.$route.hash);
+            if(this.$route.hash == '#completed'){
+                this.CompletedModalData = {
+                    trigger: new Date(),
+                    data: this.$route.hash
+                }
+            }else if(this.$route.hash == '#edit'){
+                this.EditCompletedModalData = {
+                    trigger: new Date(),
+                    data: this.$route.hash
+                }
+            }else if(this.$route.hash == '#start'){
+                this.StartData = {
+                    trigger: new Date(),
+                    data: this.$route.hash
+                }
+            }
+        }
+    },
+    created(){
+        this.$store.dispatch('estimate/fetchEstimate');
+        console.log(this.$refs);
     }
 }
 </script>

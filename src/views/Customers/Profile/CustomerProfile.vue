@@ -5,14 +5,7 @@
                 <!-- <CCard>
                     <CCardHeader borderColor="red">Sample Company</CCardHeader>
                 </CCard> -->
-                <CListGroup>
-                    <CListGroupItem to="/customers/customer-profile/1/profile" active><CIcon height="15" name="cil-user"/> <span>Profile</span></CListGroupItem>
-                    <CListGroupItem href="#"><CIcon height="15" name="cil-group"/> Contacts</CListGroupItem>
-                    <CListGroupItem href="#"><CIcon height="15" name="cil-spreadsheet"/> Billing Statement</CListGroupItem>
-                    <CListGroupItem href="#"><CIcon height="15" name="cil-spreadsheet"/> Estimates</CListGroupItem>
-                    <CListGroupItem to="/customers/customer-profile/1/projects"><CIcon height="15" name="cil-spreadsheet"/> Projects</CListGroupItem>
-                    <CListGroupItem href="#"><CIcon height="15" name="cil-cash"/> Payment</CListGroupItem>
-                </CListGroup>
+                <Sidebar/>
             </CCol>
             <CCol lg="9">
                 <CCard>
@@ -28,12 +21,14 @@
                                             <CInput
                                                 label="Company Name"
                                                 autocomplete="name"
+                                                :value="$store.state.customer.profile.company_name"
                                             />
                                         </CCol>
                                         <CCol lg="6">
                                             <CTextarea
                                                 label="Address"
                                                 autocomplete="name"
+                                                :value="$store.state.customer.profile.address"
                                             />
                                         </CCol>
                                     </CRow>
@@ -42,26 +37,30 @@
                                             <CInput
                                                 label="Phone Number"
                                                 autocomplete="name"
+                                                :value="$store.state.customer.profile.phone"
                                             />
                                         </CCol>
                                         <CCol lg="6">
                                             <CInput
-                                                label="City"
+                                                label="Website"
                                                 autocomplete="name"
+                                                :value="$store.state.customer.profile.city"
                                             />
                                         </CCol>
                                     </CRow>
                                     <CRow>
                                         <CCol lg="6">
                                             <CInput
-                                                label="Website"
+                                                label="State"
                                                 autocomplete="name"
+                                                :value="$store.state.customer.profile.state"
                                             />
                                         </CCol>
                                         <CCol lg="6">
                                             <CInput
-                                                label="State"
+                                                label="Zip Code"
                                                 autocomplete="name"
+                                                :value="$store.state.customer.profile.zip_code"
                                             />
                                         </CCol>
                                     </CRow>
@@ -75,12 +74,7 @@
                                                 :calculate-position="withPopper"
                                             />
                                         </CCol>
-                                        <CCol lg="6">
-                                            <CInput
-                                                label="Zip Code"
-                                                autocomplete="name"
-                                            />
-                                        </CCol>
+                                        
                                     </CRow>
                                 </CForm>
                             </CTab>
@@ -153,10 +147,12 @@
 <script>
 import vSelect from 'vue-select'
 import { createPopper } from '@popperjs/core'
+import Sidebar from './Sidebar';
 
 export default {
     components: {
-        vSelect
+        vSelect,
+        Sidebar
     },
     data(){
         return {

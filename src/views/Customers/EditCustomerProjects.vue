@@ -2,7 +2,7 @@
     <div>
         <CCard>
             <CCardHeader>
-                <strong>Job Estimate</strong>
+                <strong>Job Order</strong>
             </CCardHeader>
             <CCardBody>
                 <CRow>
@@ -28,10 +28,16 @@
                     <CCol lg="6">
                         <CInput value="San juan 2 lapasan" placeholder="Address"/>
                     </CCol>
+                    <CCol lg="6">
+                        <CInput placeholder="Total Repair Cost"/>
+                    </CCol>
                 </CRow>
                 <CRow>
                     <CCol lg="6">
                         <CInput value="PHIL. BRITISH" placeholder="Insurance"/>
+                    </CCol>
+                    <CCol lg="6">
+                        <CInput placeholder="Less: Policy Deductible"/>
                     </CCol>
                 </CRow>
                 <CRow>
@@ -42,13 +48,26 @@
                       :options="['Private Insurance', 'Third Party Claim', 'GSIS', 'Bidding']"
                     />
                   </CCol>
+                  <CCol lg="6">
+                        <CInput placeholder="Betterment"/>
+                    </CCol>
                 </CRow>
                 <CRow>
                     <CCol lg="6">
                         <CInput placeholder="Vehicle"/>
                     </CCol>
                     <CCol lg="6">
-                        <CInput placeholder="Plate No."/>
+                        <CInput placeholder="NET"/>
+                    </CCol>
+                </CRow>
+                <CRow>
+                    <CCol lg="6">
+                        <CInputFile
+                          label="LOA EVALUATION FILES"
+                        />
+                    </CCol>
+                    <CCol lg="6">
+                        <CInput placeholder="Discount"/>
                     </CCol>
                 </CRow>
                 <CRow>

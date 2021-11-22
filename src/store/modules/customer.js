@@ -3,7 +3,8 @@ import axios from "axios";
 export default {
   namespaced: true,
   state: {
-    customer: null,
+    customer: [],
+    profile: ''
   },
   getters: {
     customer(state) {
@@ -13,6 +14,10 @@ export default {
   mutations: {
     SET_CUSTOMER(state, data) {
         state.customer = data;
+    },
+
+    SET_PROFILE(state, data) {
+        state.profile = data;
     },
 
     NEW_CUSTOMER(state, data) {
@@ -39,11 +44,20 @@ export default {
         commit('SET_CUSTOMER', response.data);
     },
 
+    async fetchProfile({commit}, id) {
+        const response = await axios.get(`resources/get_customer_profile/${id}`);
+        
+        commit('SET_PROFILE', response.data);
+    },
+
     async addCustomer({commit, dispatch, rootState}, data) {
         await axios.post("resources/create_customer", {
-            company_name: data.company_name,
+            form: data.form,
+            form_billing: data.form_billing,
+            form_shipping: data.form_shipping,
             user_id: rootState.auth.user.id
         }).then(response => {
+            console.log(response.data);
             dispatch('notification/addNotification', {
                 type: 'success',
                 message: 'Successfully Added!'

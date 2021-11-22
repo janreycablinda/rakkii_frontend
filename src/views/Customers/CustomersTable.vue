@@ -28,14 +28,19 @@
         </template>
         <template #contact_number="{item}">
             <td>
-                {{item.contact_no}}
+                {{item.phone}}
+            </td>
+        </template>
+        <template #status="{item}">
+            <td>
+                <CBadge :color="getBadge('Active')"> Active</CBadge>
             </td>
         </template>
         <template #action="{item}">
             <td>
                 <div>
                 <CButton @click="getValue(item)" color="info"><CIcon name="cil-pencil"/></CButton> &nbsp;
-                <CButton to="/customers/customer-profile/1/profile" color="warning"><CIcon name="cil-address-book"/></CButton> &nbsp;
+                <CButton :to="'/customers/customer-profile/' + item.id + '/profile'" color="warning"><CIcon name="cil-address-book"/></CButton> &nbsp;
                 <CButton @click="getValueDel(item)" color="danger"><CIcon name="cil-trash"/></CButton>
                 </div>
             </td>

@@ -1,0 +1,123 @@
+<template>
+    <CModal
+      title="ADD INSURANCE"
+      color="primary"
+      :show.sync="showModalAddInsurance"
+      centered
+      :closeOnBackdrop="false"
+      size="lg"
+    >
+            <CForm >
+                <CRow class="mt-3">
+                    <CCol lg="6">
+                        <CInput
+                            onblur="this.placeholder = 'Insurance'" 
+                            onfocus="this.placeholder = ''"
+                            description="Insurance"
+                            placeholder="Insurance"
+                            v-model="form.insurance_name"
+                        />
+                    </CCol>
+                    <CCol lg="6">
+                        <CTextarea
+                            onblur="this.placeholder = 'Address'" 
+                            onfocus="this.placeholder = ''"
+                            description="Address"
+                            placeholder="Address"
+                            v-model="form.address"
+                        />
+                    </CCol>
+                    <CCol lg="6">
+                        <CSelect
+                            :value.sync="form.insurance_type"
+                            placeholder="Nothing Selected"
+                            :options="['Private Insurance', 'Third Party Claim', 'GSIS', 'Bidding']"
+                            onblur="this.placeholder = 'Insurance Type'" onfocus="this.placeholder = ''" description="Insurance Type"
+                        />
+                    </CCol>
+                    <CCol lg="6">
+                        <CInput
+                            onblur="this.placeholder = 'Contact Person'" 
+                            onfocus="this.placeholder = ''"
+                            description="Contact Person"
+                            placeholder="Contact Person"
+                            v-model="form.contact_person"
+                        />
+                    </CCol>
+                    <CCol lg="6">
+                        <CInput
+                            onblur="this.placeholder = 'Contact No.'" 
+                            onfocus="this.placeholder = ''"
+                            description="Contact No."
+                            placeholder="Contact No."
+                            v-model="form.phone"
+                        />
+                    </CCol>
+                    <CCol lg="6">
+                        <CInput
+                            onblur="this.placeholder = 'Email'" 
+                            onfocus="this.placeholder = ''"
+                            description="Email"
+                            placeholder="Email"
+                            v-model="form.email"
+                        />
+                    </CCol>
+                </CRow>
+            </CForm>
+        <template #footer>
+            <CButton @click="submit" id="add-services-sub-btn-modal" color="primary" class="branding-btn">ADD</CButton>
+            <CButton @click="showModalAddInsurance = false" color="danger">Cancel</CButton>
+        </template>
+    </CModal>
+</template>
+<script>
+export default {
+    data(){
+        return {
+            placement: 'bottom',
+            showModalAddInsurance: false,
+            form: this.getFormData(),
+        }
+    },
+    filters: {
+        countryFilter(data){
+            if(data){
+                const options = data.reduce((option, item) => {
+                    option.push({label: item.nicename, value: item.nicename})
+                    return option
+                }, [])
+                return options;
+            }
+        },
+    },
+    props: ['AddInsuranceData'],
+    watch: {
+        AddInsuranceData(data){
+            this.showModalAddInsurance = true;
+        }
+    },
+    methods: {
+        submit(){
+            this.$root.btn_load(true, 'add-services-sub-btn-modal', 'ADD');
+            this.$store.dispatch('insurance/addInsurance', this.form).then(() => {
+                this.$root.btn_load(false, 'add-services-sub-btn-modal', 'ADD');
+                this.showModalAddInsurance = false;
+                this.form = this.getFormData();
+            });
+        },
+        openAddVehicle(){
+
+        },
+        getFormData(){
+            return {
+                insurance_name: '',
+                insurance_type: '',
+                contact_person: '',
+                phone: '',
+                email: '',
+                address: '',
+            }
+        },
+    },
+}
+</script>

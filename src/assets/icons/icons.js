@@ -40,7 +40,10 @@ import {
   cilCarAlt,
   cilPen,
   cilArrowThickToRight,
-  cilAvTimer
+  cilAvTimer,
+  cilCaretLeft,
+  cilInstitution,
+  cibAdobeAcrobatReader
 } from '@coreui/icons'
 import { logo } from './logo'
 
@@ -87,5 +90,8 @@ export const iconsSet = Object.assign({}, {
   cilCarAlt,
   cilPen,
   cilArrowThickToRight,
-  cilAvTimer
+  cilAvTimer,
+  cilCaretLeft,
+  cilInstitution,
+  cibAdobeAcrobatReader
 })

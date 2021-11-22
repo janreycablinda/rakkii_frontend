@@ -4,12 +4,12 @@
             <CCol lg="12">
                 <CCard>
                     <CCardHeader>
-                        <CButton to="/customers/new-customer" size="sm" color="primary">
-                            NEW CUSTOMER
+                        <CButton @click="showModalAddData = new Date()" size="sm" color="primary">
+                            ADD CUSTOMER
                         </CButton>&nbsp;
-                        <CButton to="/customers/import-customers" size="sm" color="primary">
+                        <!-- <CButton to="/customers/import-customers" size="sm" color="primary">
                             IMPORT CUSTOMERS
-                        </CButton>&nbsp;
+                        </CButton>&nbsp; -->
                         <!-- <CButton size="sm" color="primary">
                             CONTACTS
                         </CButton> -->
@@ -18,15 +18,15 @@
                         Customers Summary
                         <CRow class="mt-2">
                             <CCol lg="2" class="border-right">
-                                <h3>1</h3>
+                                <h3>{{$store.state.customer.customer.length}}</h3>
                                 <span>Total Customers</span>
                             </CCol>
                             <CCol lg="2" class="border-right">
-                                <h3>1</h3>
+                                <h3>{{$store.state.customer.customer.length}}</h3>
                                 <span class="text-success">Active Customers</span>
                             </CCol>
                             <CCol lg="2" class="border-right">
-                                <h3>1</h3>
+                                <h3>0</h3>
                                 <span class="text-danger">Inactive Customers</span>
                             </CCol>
                             <!-- <CCol lg="2" class="border-right">
@@ -45,21 +45,26 @@
                     </CCardBody>
                     <CCardFooter>
                         <CustomersTable
-                        :items="sampleData"
+                        :items="$store.state.customer.customer"
                         />
                     </CCardFooter>
                 </CCard>
             </CCol>
         </CRow>
+        <AddCustomerModal
+        :showModalAddData="showModalAddData"
+        />
     </div>
 </template>
 <script>
 import CustomersTable from './CustomersTable';
-import { mapGetters } from 'vuex'
+import { mapGetters } from 'vuex';
+import AddCustomerModal from '../Sales/Estimates/AddCustomerModal';
 
 export default {
     data() {
         return {
+            showModalAddData: '',
             sampleData: [{
                 company_name: 'Janrey Cablinda',
                 contact_no: '09351329247',
@@ -69,7 +74,8 @@ export default {
         }
     },
     components: {
-        CustomersTable
+        CustomersTable,
+        AddCustomerModal
     },
     computed: {
         ...mapGetters({ 

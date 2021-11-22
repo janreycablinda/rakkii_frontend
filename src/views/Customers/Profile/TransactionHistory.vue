@@ -16,9 +16,9 @@
         items-per-page-select
         
       >
-        <template ##="{item, index}">
+        <template #job_order_no="{item, index}">
             <td>
-                {{index+1}}
+                000{{index+1}}
             </td>
         </template>
         
@@ -43,7 +43,7 @@ export default {
     fields: {
       type: Array,
       default () {
-        return ['project_no', 'date', 'personnel_assigned', 'status', 'action']
+        return ['job_order_no', 'date', 'personnel_assigned', 'status', 'action']
       }
     },
     caption: {

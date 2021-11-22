@@ -11,8 +11,8 @@ const RolePermission = () => import('@/views/RolePermissions/View')
 const Customers = () => import('@/views/Customers/View')
 const NewCustomers = () => import('@/views/Customers/NewCustomers')
 const ImportCustomers = () => import('@/views/Customers/ImportCustomers')
-const CustomerProfile = () => import('@/views/Customers/CustomerProfile')
-const CustomerProjects = () => import('@/views/Customers/CustomerProjects')
+const CustomerProfile = () => import('@/views/Customers/Profile/CustomerProfile')
+const CustomerProjects = () => import('@/views/Customers/Profile/CustomerProjects')
 const EditCustomerProjects = () => import('@/views/Customers/EditCustomerProjects')
 
 

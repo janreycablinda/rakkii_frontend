@@ -12,7 +12,7 @@
                     <CRow>
                         <CCol lg="6">
                             <CInput
-                                label="Company Name *"
+                                label="Company Name / Name*"
                                 autocomplete="name"
                                
                             />

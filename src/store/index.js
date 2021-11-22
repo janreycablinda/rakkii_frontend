@@ -11,6 +11,14 @@ import stockout from "./modules/stockout";
 import customer from "./modules/customer";
 import inventory from "./modules/inventory";
 import loading from "./modules/loading";
+import country from './modules/country';
+import services_type from './modules/services_type';
+import services from './modules/services';
+import sub_services from './modules/sub_services';
+import estimate from './modules/estimate';
+import property from './modules/property';
+import vehicle from './modules/vehicle';
+import insurance from './modules/insurance';
 
 Vue.use(Vuex)
 
@@ -53,6 +61,14 @@ export default new Vuex.Store({
     customer,
     stockout,
     inventory,
-    loading
+    loading,
+    country,
+    services_type,
+    services,
+    sub_services,
+    estimate,
+    property,
+    vehicle,
+    insurance
   }
 });

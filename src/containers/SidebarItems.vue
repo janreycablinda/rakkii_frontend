@@ -20,6 +20,12 @@ export default {
           },
           {
             _name: 'CSidebarNavItem',
+            name: 'Insurance',
+            to: '/insurance',
+            icon: 'cil-institution',
+          },
+          {
+            _name: 'CSidebarNavItem',
             name: 'Users, Roles & Permissions',
             to: '/role_permission',
             icon: 'cil-shield-alt',

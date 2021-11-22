@@ -2,12 +2,15 @@
   <tr>
     <td width="98.5%" style="margin-right:100px" class="inline">
       <v-select
-        :options="$options.submultiselectOptions"
+        :options="sub.sub_services | subServicesFilter"
         placeholder="Select Sub Services"
-        append-to-body
-        :calculate-position="withPopper"
         style="width:90%;"
-      />
+        v-model="sub.id"
+      >
+        <template #list-header>
+          <li style="text-align: center; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" @click="openAddSubServices(sub)" href="#">ADD SERVICES COMPONENT</a></li>
+        </template>
+      </v-select>
 <!--      <CButton size="sm" class="ml-1" color="primary"><CIcon name="cil-plus"/></CButton>-->
       <CButton @click="deleteSubServices" size="sm" class="ml-1" color="danger"><CIcon name="cil-x"/></CButton>
     </td>
@@ -25,59 +28,30 @@
 </template>
 <script>
 import vSelect from 'vue-select'
-import { createPopper } from '@popperjs/core'
 
 export default{
   components: {
-    vSelect
+    vSelect,
   },
   props: ['sub'],
+  filters: {
+    subServicesFilter(data){
+      if(data){
+          const options = data.reduce((option, item) => {
+              option.push({label: item.services_name, value: item.id})
+              return option
+          }, [])
+          return options;
+      }
+    }
+  },
   methods: {
+    openAddSubServices(data){
+      this.$emit('child_data_add_sub', data);
+    },
     deleteSubServices(data){
       
       this.$emit('child_data_sub', data);
-    },
-    withPopper(dropdownList, component, { width }) {
-      /**
-       * We need to explicitly define the dropdown width since
-       * it is usually inherited from the parent with CSS.
-       */
-      dropdownList.style.width = width
-
-      /**
-       * Here we position the dropdownList relative to the $refs.toggle Element.
-       *
-       * The 'offset' modifier aligns the dropdown so that the $refs.toggle and
-       * the dropdownList overlap by 1 pixel.
-       *
-       * The 'toggleClass' modifier adds a 'drop-up' class to the Vue Select
-       * wrapper so that we can set some styles for when the dropdown is placed
-       * above.
-       */
-      const popper = createPopper(component.$refs.toggle, dropdownList, {
-        placement: this.placement,
-        modifiers: [
-          {
-            name: 'offset',
-            options: {
-              offset: [0, -1],
-            },
-          },
-          {
-            name: 'toggleClass',
-            enabled: true,
-            phase: 'write',
-            fn({ state }) {
-              component.$el.classList.toggle(
-                'drop-up',
-                state.placement === 'top'
-              )
-            },
-          },
-        ],
-      })
-
-      return () => popper.destroy()
     }
   },
   multiselectOptions: [

@@ -10,7 +10,7 @@
         </div>
         <CRow class="mt-2 pt-1">
             <CCol lg="5">
-                <small><b>EST-00001</b></small>
+                <small><b>EST-00001</b></small><br>
                 <small><b>CLIENT: </b>{{inprogress_item.name}}</small>
                 <p class="m-0"><small><b>UNIT: </b>VIOS</small></p>
                 <p class="m-0"><small><b>DATE IN: </b>11/6/2021</small></p>

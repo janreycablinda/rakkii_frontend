@@ -74,12 +74,16 @@
                     <CCol lg="12">
                         <table class="custom-table">
                             <tr>
-                                <th width="10%">Stock / Property No.</th>
+                                <th width="5%">Stock / Property No.</th>
                                 <th width="10%">Unit</th>
-                                <th width="50%">Description</th>
+                                <th width="33%">Description</th>
+                                <th width="10%">Vehicle</th>
+                                <th width="10%">Plate #</th>
                                 <th width="10%">QTY</th>
                                 <th width="10%">Unit Cost</th>
                                 <th width="10%">Amount</th>
+                                <th width="2%">&nbsp;</th>
+                                
                             </tr>
                             <tr>
                                 <td>
@@ -99,6 +103,44 @@
                                 </td>
                                 <td>
                                     <CInput/>
+                                </td>
+                                <td>
+                                    <CInput/>
+                                </td>
+                                <td>
+                                    <CInput/>
+                                </td>
+                                <td align="center">
+                                    <CButton style="margin-top:-18px;" size="sm" color="primary"><CIcon name="cil-plus"/></CButton>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <CInput/>
+                                </td>
+                                <td>
+                                    <CInput/>
+                                </td>
+                                <td>
+                                    <CTextarea></CTextarea>
+                                </td>
+                                <td>
+                                    <CInput/>
+                                </td>
+                                <td>
+                                    <CInput/>
+                                </td>
+                                <td>
+                                    <CInput/>
+                                </td>
+                                <td>
+                                    <CInput/>
+                                </td>
+                                <td>
+                                    <CInput/>
+                                </td>
+                                <td align="center">
+                                    <CButton style="margin-top:-18px;" size="sm" color="danger"><CIcon name="cil-x"/></CButton>
                                 </td>
                             </tr>
                             <tr class="border-top" style="border-color:#4C4C5B !important;">

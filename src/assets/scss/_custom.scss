@@ -76,6 +76,7 @@ $vs-component-line-height: 1.7 !default;
     border-top-style: solid;
     border-bottom-style: none;
     box-shadow: 0 -3px 6px rgba(0, 0, 0, 0.15);
+    z-index:9999999;
   }
 // $vs-component-placeholder-color: #fff !default;
   ul.no-bullets {
@@ -140,4 +141,55 @@ list-style-type: upper-roman;
     -webkit-transform: rotate(45deg);
     transform: rotate(45deg);
     width: 90px;
+}
+
+.form-group {
+    position:relative;
+}
+.form-text {
+  font-weight:bold !important;
+  position: absolute;
+  opacity: 0;
+  transition: .2s bottom, .2s opacity;
+  bottom: 0;
+  left: 8px;
+  z-index: 1; 
+}
+.form-group textarea:focus + .form-text, .form-group textarea:not(:placeholder-shown) + .form-text {
+    bottom: 80%;
+    font-family: arial;
+    font-size: 14px;
+    line-height: 1;
+    opacity: 1;
+    padding: 4px; 
+}
+.form-group input:focus + .form-text, .form-group input:not(:placeholder-shown) + .form-text {
+  bottom: 70%;
+  font-family: arial;
+  font-size: 14px;
+  line-height: 1;
+  opacity: 1;
+  padding: 4px;
+}
+.form-group select:focus + .form-text, .form-group select:not(:placeholder-shown) + .form-text {
+    bottom: 70%;
+    font-family: arial;
+    font-size: 14px;
+    line-height: 1;
+    opacity: 1;
+    padding: 4px;
+}
+
+
+.form-control:focus {
+    border-color: none !important;
+    -webkit-box-shadow: none !important; 
+    box-shadow: none !important;
+}
+
+.style-chooser .vs__search::placeholder,
+.style-chooser .vs__dropdown-toggle,
+.style-chooser .vs__dropdown-menu {
+  z-index:9999999 !important;
+
 }
