@@ -39,7 +39,8 @@ const AddContract = () => import('@/views/Contracts/AddContract')
 const Tasks = () => import('@/views/Tasks/View')
 const ExpensesReport = () => import('@/views/Reports/Expenses/View')
 const ExpensesVsIncome = () => import('@/views/Reports/Expenses vs Income/View')
-
+const Insurance = () => import('@/views/Insurance/View')
+const Supplier = () => import('@/views/Supplier/View')
 
 Vue.use(Router)
 
@@ -92,6 +93,54 @@ export default new Router({
             meta: {
               breadcrumb: [
                 { text: 'Users, Roles & Permissions' }
+              ]
+            }
+        }
+      ]
+    },
+    {
+      path: '/insurance',
+      component: TheContainer,
+      children: [
+        {
+            path: '',
+            name: 'Insurance',
+            component: Insurance,
+            beforeEnter: (to, from, next) => {
+              if (!store.getters["auth/authenticated"]) {
+                next({
+                  name: "Login"
+                });
+              }
+              next();
+            },
+            meta: {
+              breadcrumb: [
+                { text: 'Insurance' }
+              ]
+            }
+        }
+      ]
+    },
+    {
+      path: '/supplier',
+      component: TheContainer,
+      children: [
+        {
+            path: '',
+            name: 'Supplier',
+            component: Supplier,
+            beforeEnter: (to, from, next) => {
+              if (!store.getters["auth/authenticated"]) {
+                next({
+                  name: "Login"
+                });
+              }
+              next();
+            },
+            meta: {
+              breadcrumb: [
+                { text: 'Supplier' }
               ]
             }
         }

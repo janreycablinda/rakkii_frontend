@@ -1,8 +1,8 @@
 <template>
     <CModal
-      title="ADD INSURANCE"
+      title="ADD SUPPLIER"
       color="primary"
-      :show.sync="showModalAddInsurance"
+      :show.sync="showModalAddSupplier"
       centered
       :closeOnBackdrop="false"
       size="lg"
@@ -11,10 +11,10 @@
                 <CRow class="mt-3">
                     <CCol lg="6">
                         <CInput
-                            onblur="this.placeholder = 'Insurance'" 
+                            onblur="this.placeholder = 'Supplier'" 
                             onfocus="this.placeholder = ''"
-                            description="Insurance"
-                            placeholder="Insurance"
+                            description="Supplier"
+                            placeholder="Supplier"
                             v-model="form.insurance_name"
                         />
                     </CCol>
@@ -75,7 +75,7 @@
             </CForm>
         <template #footer>
             <CButton @click="submit" id="add-services-sub-btn-modal" color="primary" class="branding-btn">ADD</CButton>
-            <CButton @click="showModalAddInsurance = false" color="danger">Cancel</CButton>
+            <CButton @click="showModalAddSupplier = false" color="danger">Cancel</CButton>
         </template>
     </CModal>
 </template>
@@ -84,7 +84,7 @@ export default {
     data(){
         return {
             placement: 'bottom',
-            showModalAddInsurance: false,
+            showModalAddSupplier: false,
             form: this.getFormData(),
         }
     },
@@ -99,10 +99,10 @@ export default {
             }
         },
     },
-    props: ['AddInsuranceData'],
+    props: ['AddSupplierData'],
     watch: {
-        AddInsuranceData(data){
-            this.showModalAddInsurance = true;
+        AddSupplierData(data){
+            this.showModalAddSupplier = true;
         }
     },
     methods: {
@@ -110,7 +110,7 @@ export default {
             this.$root.btn_load(true, 'add-services-sub-btn-modal', 'ADD');
             this.$store.dispatch('insurance/addInsurance', this.form).then(() => {
                 this.$root.btn_load(false, 'add-services-sub-btn-modal', 'ADD');
-                this.showModalAddInsurance = false;
+                this.showModalAddSupplier = false;
                 this.form = this.getFormData();
             });
         },

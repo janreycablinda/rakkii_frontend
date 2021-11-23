@@ -27,7 +27,7 @@ export default {
           {
             _name: 'CSidebarNavItem',
             name: 'Supplier',
-            to: '/insurance',
+            to: '/supplier',
             icon: 'cil-industry',
           },
           {
