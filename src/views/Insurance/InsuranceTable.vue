@@ -34,7 +34,7 @@
         <template #action="{item}">
             <td>
                 <div>
-                <CButton @click="getValue(item)" color="info"><CIcon name="cil-pencil"/></CButton> &nbsp;
+                <!-- <CButton @click="getValue(item)" color="info"><CIcon name="cil-pencil"/></CButton> &nbsp; -->
                 <CButton :to="'/customers/customer-profile/' + item.id + '/profile'" color="warning"><CIcon name="cil-address-book"/></CButton> &nbsp;
                 <CButton @click="getValueDel(item)" color="danger"><CIcon name="cil-trash"/></CButton>
                 </div>
@@ -77,7 +77,10 @@ export default {
       this.$emit('event_child', data, 'edit');
     },
     getValueDel(data){
-      this.$emit('event_child', data, 'delete');
+      if (confirm('Are you sure you want to delete ' + data.insurance_name +'?')) {
+          this.$store.dispatch('insurance/deleteInsurance', data.id);
+      }
+      // this.$emit('event_child', data, 'delete');
     },
   }
 }

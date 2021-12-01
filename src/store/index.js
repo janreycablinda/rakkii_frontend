@@ -19,6 +19,8 @@ import estimate from './modules/estimate';
 import property from './modules/property';
 import vehicle from './modules/vehicle';
 import insurance from './modules/insurance';
+import document from './modules/documents';
+import supplier from './modules/supplier';
 
 Vue.use(Vuex)
 
@@ -69,6 +71,8 @@ export default new Vuex.Store({
     estimate,
     property,
     vehicle,
-    insurance
+    insurance,
+    document,
+    supplier
   }
 });

@@ -68,7 +68,7 @@
                             onfocus="this.placeholder = ''"
                             description="Tin No.:"
                             placeholder="Tin No.:"
-                            v-model="form.email"
+                            v-model="form.tin"
                         />
                     </CCol>
                 </CRow>
@@ -125,6 +125,7 @@ export default {
                 phone: '',
                 email: '',
                 address: '',
+                tin: '',
             }
         },
     },

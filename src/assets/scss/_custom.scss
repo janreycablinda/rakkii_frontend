@@ -193,3 +193,12 @@ list-style-type: upper-roman;
   z-index:9999999 !important;
 
 }
+.capetalize {
+    text-transform: capitalize;
+}
+.uppercase{
+    text-transform: uppercase;
+}
+.lowercase{
+    text-transform: lowercase;
+}

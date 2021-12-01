@@ -1,8 +1,8 @@
 <template>
     <CModal
-      title="ADD CUSTOMER"
+      title="EDIT CUSTOMER"
       color="primary"
-      :show.sync="showModalAddCustomer"
+      :show.sync="showModalEditCustomer"
       centered
       size="lg"
       :closeOnBackdrop="false"
@@ -52,7 +52,7 @@
         </CForm>
         <template #footer>
             <CButton @click="submit" id="add-customer-btn-modal" color="primary" class="branding-btn">ADD</CButton>
-            <CButton @click="showModalAddCustomer = false" color="danger">Cancel</CButton>
+            <CButton @click="showModalEditCustomer = false" color="danger">Cancel</CButton>
         </template>
     </CModal>
 </template>
@@ -64,7 +64,7 @@ export default {
     data(){
         return {
             placement: 'bottom',
-            showModalAddCustomer: false,
+            showModalEditCustomer: false,
             form: this.getFormData(),
             form_billing: this.getFormDataBilling(),
             form_shipping: this.getFormDataShipping(),
@@ -84,12 +84,12 @@ export default {
             }
         },
     },
-    props: ['showModalAddData'],
+    props: ['showModalEditData'],
     watch: {
-        showModalAddData(){
+        showModalEditData(){
             this.$store.dispatch('country/fetchCountry');
             
-            this.showModalAddCustomer = true;
+            this.showModalEditCustomer = true;
         }
     },
     methods: {
@@ -100,7 +100,7 @@ export default {
             this.$root.btn_load(true, 'add-customer-btn-modal', 'ADD');
             this.$store.dispatch('customer/addCustomer', params).then(() => {
                 this.$root.btn_load(false, 'add-customer-btn-modal', 'ADD');
-                this.showModalAddCustomer = false;
+                this.showModalEditCustomer = false;
                 this.form = this.getFormData();
                 this.form_billing = this.getFormDataBilling();
                 this.form_shipping = this.getFormDataShipping();

@@ -16,7 +16,7 @@
                     </CCardHeader>
                     <CCardBody>
                         <SupplierTable
-                        
+                        :items="$store.state.supplier.supplier"
                         />
                     </CCardBody>
                 </CCard>
@@ -48,7 +48,7 @@ export default {
         AddSupplierModal
     },
     created(){
-        this.$store.dispatch('customer/fetchCustomer');
+        this.$store.dispatch('supplier/fetchSupplier');
     }
 }
 </script>

@@ -46,6 +46,7 @@
                     <CCardFooter>
                         <CustomersTable
                         :items="$store.state.customer.customer"
+                        v-on:event_child="childEvent"
                         />
                     </CCardFooter>
                 </CCard>
@@ -54,17 +55,23 @@
         <AddCustomerModal
         :showModalAddData="showModalAddData"
         />
+        <EditCustomerModal
+        :showModalEditData="showModalEditData"
+        />
     </div>
 </template>
 <script>
 import CustomersTable from './CustomersTable';
 import { mapGetters } from 'vuex';
 import AddCustomerModal from '../Sales/Estimates/AddCustomerModal';
+import EditCustomerModal from './EditCustomerModal';
+
 
 export default {
     data() {
         return {
             showModalAddData: '',
+            showModalEditData: '',
             sampleData: [{
                 company_name: 'Janrey Cablinda',
                 contact_no: '09351329247',
@@ -75,12 +82,27 @@ export default {
     },
     components: {
         CustomersTable,
-        AddCustomerModal
+        AddCustomerModal,
+        EditCustomerModal
     },
     computed: {
         ...mapGetters({ 
             customers: "customer/customer",
         }),
+    },
+    methods: {
+        childEvent(data, action){
+            if(action == 'edit'){
+                this.showModalEditData = {
+                    trigger: new Date(),
+                    data: data
+                }
+            }else{
+                if (confirm('Are you sure you want to delete ' + data.company_name +'?')) {
+                    this.$store.dispatch('customer/deleteCustomer', data.id);
+                }
+            }
+        }
     },
     created(){
         this.$store.dispatch('customer/fetchCustomer');

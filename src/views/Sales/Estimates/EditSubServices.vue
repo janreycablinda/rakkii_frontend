@@ -2,7 +2,7 @@
   <tr>
     <td width="98.5%" style="margin-right:100px" class="inline">
       <v-select
-        :options="sub.sub_services | subServicesFilter"
+        :options="sub_services | subServicesFilter"
         placeholder="Select Sub Services"
         style="width:90%;"
         v-model="sub.sub_services_id"
@@ -31,10 +31,20 @@
 import vSelect from 'vue-select'
 
 export default{
+  data(){
+      return {
+          sub_services: []
+      }
+  },
   components: {
     vSelect,
   },
   props: ['sub'],
+  watch: {
+      sub(){
+        //   console.log('test');
+      }
+  },
   filters: {
     subServicesFilter(data){
       if(data){
@@ -55,18 +65,12 @@ export default{
       this.$emit('child_data_sub', data);
     }
   },
-  multiselectOptions: [
-    { value: 'AL', label: 'PARTS TO BE REPLACE' },
-    { value: 'AK', label: 'PULLDOWN ALL NEC. PARTS TO GIVEWAY FOR REPAIR' },
-    { value: 'AK', label: 'TINSMITH JOB' },
-    { value: 'AK', label: 'PAINTING JOB' },
-    { value: 'AK', label: 'PAINT MATERIALS' },
-  ],
-  submultiselectOptions: [
-    { value: 'AL', label: 'FRT BUMPER COVER' },
-    { value: 'AK', label: 'BUMBER CLIPS' },
-    { value: 'AK', label: 'FRT BUMPER REINFORCEMENT' },
-    { value: 'AK', label: 'REPAINT RUBDOWN AND SIMONIZE THE REPAIRED AREAS' },
-  ]
+  created(){
+      if(this.sub){
+          this.$store.dispatch('sub_services/findSubServices', this.sub.sub_services.services_id).then(response => {
+              this.sub_services = response;
+          });
+      }
+  }
 }
 </script>

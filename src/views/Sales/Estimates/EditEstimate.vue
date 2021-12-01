@@ -5,6 +5,7 @@
                 <strong>Request Job Estimate</strong>
             </CCardHeader>
             <CCardBody>
+                <CMedia>
                 <CRow>
                     <CCol lg="6">
                       <div class="inline">
@@ -12,6 +13,8 @@
                             :options="$store.state.customer.customer | customerFilter"
                             placeholder="Select Customer"
                             class="style-chooser"
+                            :reduce="label => label.value"
+                            label="label"
                             append-to-body
                             :calculate-position="withPopper"
                             style="width:100%;"
@@ -51,6 +54,8 @@
                           :calculate-position="withPopper"
                           style="width:100%;"
                           v-model="form.vehicle_id"
+                          :reduce="label => label.value"
+                          label="label"
                         >
                         <template #list-header>
                             <li v-if="form.customer_id" style="text-align: center; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="addCarProperty(form.customer_id)">ADD CAR PROPERTY</a></li>
@@ -66,6 +71,8 @@
                           :calculate-position="withPopper"
                           style="width:100%;"
                           v-model="form.insurance"
+                          :reduce="label => label.value"
+                          label="label"
                         >
                         <template #list-header>
                             <li style="text-align: center; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="AddInsuranceData = new Date()">ADD INSURANCE</a></li>
@@ -144,104 +151,17 @@
                   <h4>Document's Verification</h4>
                 </CCol>
                 <CCol lg="6" v-for="(docs, index) in form.documents" :key="index">
-                  <!-- <CInputFile
-                      label="Vehicle OR/CR"
-                      @change="uploadVehicleORCR"
-                  /> -->
                   <Documents
                   :documents="docs"
                   v-on:pass_files="passFiles"
                   />
                 </CCol>
-                <!-- <CCol lg="6" v-show="form.insurance_type == 'Private Insurance' || form.insurance_type == 'Third Party Claim' || form.insurance_type == 'GSIS'">
-                  <CInputFile
-                    label="Vehicle OR/CR"
-                    @change="uploadVehicleORCR"
-                  />
-                </CCol>
-                <CCol lg="6" v-if="form.insurance_type == 'Private Insurance' || form.insurance_type == 'Third Party Claim' || form.insurance_type == 'GSIS'">
-                  <CInputFile
-                    label="Driver’s License w/OR"
-                    @change="uploadDriversLicense"
-                  />
-                </CCol>
-                <CCol lg="6" v-if="form.insurance_type == 'Private Insurance' || form.insurance_type == 'Third Party Claim' || form.insurance_type == 'GSIS'">
-                  <CInputFile
-                    label="Police Report/Affidavit of Accident"
-                    @change="uploadPoliceReport"
-                  />
-                </CCol>
-                <CCol lg="6" v-if="form.insurance_type == 'Private Insurance' || form.insurance_type == 'Third Party Claim' || form.insurance_type == 'GSIS'">
-                  <CInputFile
-                    label="Comprehensive Insurance Policy"
-                    @change="uploadComprehensiveInsurancePolicy"
-                  />
-                </CCol>
-                <CCol lg="6" v-if="form.insurance_type == 'Private Insurance' || form.insurance_type == 'Third Party Claim' || form.insurance_type == 'GSIS'">
-                  <CInputFile
-                    label="Pictures"
-                    @change="uploadPictures"
-                    multiple
-                  />
-                </CCol>
-                <CCol lg="6" v-if="form.insurance_type == 'Third Party Claim'">
-                  <CInputFile
-                    label="Certificate of No Claim"
-                    @change="uploadCertificateOfClaim"
-                  />
-                </CCol>
-                <CCol lg="6" v-if="form.insurance_type == 'GSIS'">
-                  <CInputFile
-                    label="Trip Ticket"
-                    @change="uploadTripTicket"
-                  />
-                </CCol>
-                <CCol lg="6" v-if="form.insurance_type == 'GSIS'">
-                  <CInputFile
-                    label="Authorization Letter with Letterhead for government agencies"
-                    @change="uploadAuthorizationLetterForGovernment"
-                  />
-                </CCol>
-                <CCol lg="6" v-if="form.insurance_type == 'GSIS'">
-                  <CInputFile
-                    label="Authorization Letter for individual"
-                    @change="uploadAuthorizationLetterForIndividual"
-                  />
-                </CCol>
-                <CCol lg="6" v-if="form.insurance_type == 'Bidding'">
-                  <CInputFile
-                    label="Request for Quotation"
-                    @change="uploadRequestForQuotation"
-                  />
-                </CCol>
-                <CCol lg="6" v-if="form.insurance_type == 'Bidding'">
-                  <CInputFile
-                    label="Mayor’s Permit"
-                    @change="uploadMayorsPermit"
-                  />
-                </CCol>
-                <CCol lg="6" v-if="form.insurance_type == 'Bidding'">
-                  <CInputFile
-                    label="PHILGEPS"
-                    @change="uploadPhilgeps"
-                  />
-                </CCol>
-                <CCol lg="6" v-if="form.insurance_type == 'Bidding'">
-                  <CInputFile
-                    label="Omnibus Sworn Statement"
-                    @change="uploadOmnibus"
-                  />
-                </CCol>
-                <CCol lg="6" v-if="form.insurance_type == 'Bidding'">
-                  <CInputFile
-                    label="Tax Clearance/ITR"
-                    @change="uploadTaxClearance"
-                  />
-                </CCol> -->
               </CRow>
+              </CMedia>
+              <CElementCover v-if="media" :opacity="0.9"/>
               <CRow>
                 <CCol lg="12">
-                  <CButton @click="submit_draft" color="success">SAVE AS DRAFT</CButton>
+                  <CButton @click="submit" color="success">SAVE AS DRAFT</CButton>
                   <CButton @click="submit_approval" class="ml-2" color="success">SAVE & SEND</CButton>
                 </CCol>
               </CRow>
@@ -270,14 +190,14 @@
 <script>
 import vSelect from 'vue-select'
 import { createPopper } from '@popperjs/core'
-import Services from './Services';
+import Services from './EditServices';
 import AddCustomerModal from './AddCustomerModal';
 import AddServicesModal from './AddServicesModal';
 import AddSubServicesModal from './AddSubServicesModal';
 import AddCarPropertyModal from './AddCarPropertyModal';
 import SubmitApprovalModal from './SubmitApprovalModal';
 import AddInsuranceModal from './AddInsuranceModal';
-import Documents from './Documents';
+import Documents from './EditDocuments';
 
 export default {
     data(){
@@ -289,13 +209,13 @@ export default {
         AddCarPropertyData: '',
         AddInsuranceData: '',
         placement: 'bottom',
+        media: true,
         form: {
+          id: '',
           customer_id: '',
-          address: '',
           date: '',
           insurance: '',
           insurance_type: '',
-          estimate_date: '',
           vehicle_id: '',
           services: [
             {
@@ -305,22 +225,6 @@ export default {
             sub_services: []
             }
           ],
-          // documents: {
-          //   vehicle_or_cr: '',
-          //   drivers_license_or: '',
-          //   police_report_affidavit_accident: '',
-          //   comprehensive_insurance: '',
-          //   pictures: '',
-          //   certificate_of_claim: '',
-          //   trip_ticket: '',
-          //   authorization_letter_for_government: '',
-          //   authorization_letter_for_individual: '',
-          //   request_for_qoutation: '',
-          //   mayors_permit: '',
-          //   philgeps: '',
-          //   omnibus: '',
-          //   tax_clearance: ''
-          // }
           documents: []
         }
       }
@@ -367,9 +271,9 @@ export default {
     },
     watch: {
       customer_id(newVal){
-        this.form.vehicle_id = '';
+        // this.form.vehicle_id = '';
         this.$store.dispatch('property/emptyProperty');
-        this.$store.dispatch('property/findProperty', newVal.value);
+        this.$store.dispatch('property/findProperty', newVal);
       },
       insurance(newVal){
         if(newVal.insurance_type == 'Private Insurance'){
@@ -552,29 +456,14 @@ export default {
           data: data
         }
       },
-      submit_draft(){
+      submit(){
         let formData = new FormData();
-        // documents
-        // formData.append('vehicle_or_cr', this.form.documents.vehicle_or_cr);
-        // formData.append('drivers_license_or', this.form.documents.drivers_license_or);
-        // formData.append('police_report_affidavit_accident', this.form.documents.police_report_affidavit_accident);
-        // formData.append('comprehensive_insurance', this.form.documents.comprehensive_insurance);
-        // formData.append('pictures', this.form.documents.pictures);
-        // formData.append('certificate_of_claim', this.form.documents.certificate_of_claim);
-        // formData.append('trip_ticket', this.form.documents.trip_ticket);
-        // formData.append('authorization_letter_for_government', this.form.documents.authorization_letter_for_government);
-        // formData.append('authorization_letter_for_individual', this.form.documents.authorization_letter_for_individual);
-        // formData.append('request_for_qoutation', this.form.documents.request_for_qoutation);
-        // formData.append('mayors_permit', this.form.documents.mayors_permit);
-        // formData.append('philgeps', this.form.documents.philgeps);
-        // formData.append('omnibus', this.form.documents.omnibus);
-        // formData.append('tax_clearance', this.form.documents.tax_clearance);
         formData.append('status', 'draft');
-
-        formData.append('customer_id', this.form.customer_id.value);
+        formData.append('id', this.form.id);
+        formData.append('customer_id', this.form.customer_id);
         formData.append('date', this.form.date);
-        formData.append('insurance', this.form.insurance.value);
-        formData.append('vehicle_id', this.form.vehicle_id.value);
+        formData.append('insurance', this.form.insurance);
+        formData.append('vehicle_id', this.form.vehicle_id);
 
         var services = JSON.stringify(this.form.services);
         formData.append('services', services);
@@ -582,22 +471,21 @@ export default {
         var documents = JSON.stringify(this.form.documents);
      
         formData.append('documents', documents);
-
+        
         this.form.documents.forEach(item => {
-          
+            console.log(item.files);
+            
             formData.append('files[]', item.files);
             
             if(item.prefix == 'P'){
               item.files.forEach(pic => {
-                console.log(pic);
                 formData.append('pic[]', pic);
               });
             }
-          
         });
+        
 
         formData.append('user_id', this.$store.getters['auth/user'].id);
-        console.log(formData);
         const config = {
                 headers: { 'content-type': 'multipart/form-data' }
         }
@@ -605,7 +493,7 @@ export default {
             formData: formData,
             config: config,
         }
-        this.$store.dispatch('estimate/addEstimate', params).then(() => {
+        this.$store.dispatch('estimate/updateEstimate', params).then(() => {
             
             this.$router.replace({
               name: "Estimates"
@@ -661,10 +549,8 @@ export default {
         if(event == 'add'){
             this.form.services.push({
               id: '',
-              estimated_id: '', 
               labor_fee: 0,
               parts_fee: 0,
-              services_id: '',
               sub_services: []
             })
         }else{
@@ -673,18 +559,25 @@ export default {
           }
         }
       },
-      passFiles(docName, prefix, files){
-        const index = this.form.documents.findIndex(item => item.document_name === docName);
+      passFiles(docName, prefix, files, id, data){
+          
+        //   this.form.documents.forEach(item => {
+        //       console.log(item);
+        //   })
+        const index = this.form.documents.findIndex(item => item.document_type === docName);
         if(index !== -1){
           this.form.documents.splice(index, 1, {
+            data: data,
+            id: id,
             document_name: docName,
+            document_type: docName,
             files: files,
-            prefix: prefix
+            prefix: prefix,
+            label: docName
           });
         }
       },
       childSubChanges(data){
-        console.log(data);
         if(data){
           this.form.services.forEach(serv => {
             if(serv.id.value == data.services_id){
@@ -704,6 +597,48 @@ export default {
       },
       openAddServices(){
         this.AddServicesData = new Date();
+      },
+      convertByProperty(originalObject, groupByProperty, secondProperty) {  
+        var finalArray = [];  
+        var uniqueVals = [];  
+        originalObject.map((i) => {  
+            var existingVals = uniqueVals.filter((j) => {  
+                return (i[groupByProperty] == j)  
+            });  
+            if (existingVals.length == 0) {  
+                uniqueVals.push(i[groupByProperty]);  
+            }  
+        });  
+        uniqueVals.map((k) => {  
+            var dataObj = [];  
+            var expectedObj = {};  
+            var items = originalObject.filter((l) => {  
+                return (l[groupByProperty] == k)  
+            });  
+            items.map((m) => {  
+                var obj = {};  
+                obj[secondProperty] = m[secondProperty];  
+                obj['file_name'] = m.file_name;
+                obj['document_type'] = m.document_type;
+                obj['id'] = m.id;
+                dataObj.push(obj);
+            });
+            const split = dataObj[0].file_name.split('-');
+            expectedObj[groupByProperty] = k;  
+            expectedObj['data'] = dataObj;
+            expectedObj['prefix'] = split[0];
+            expectedObj['id'] = dataObj[0].id;
+            console.log(k);
+            if(k == 'Pictures'){
+                expectedObj['files'] = [];
+            }else{
+                expectedObj['files'] = '';
+            }
+            expectedObj['document_name'] = dataObj[0].document_type;
+            expectedObj['label'] = dataObj[0].document_type;
+            finalArray.push(expectedObj);  
+        });  
+        return finalArray;
       },
         withPopper(dropdownList, component, { width }) {
         /**
@@ -753,18 +688,54 @@ export default {
       this.$store.dispatch('services/fetchServices');
       this.$store.dispatch('insurance/fetchInsurance');
       
+      this.$store.dispatch('estimate/findEstimate', this.$route.params.id).then(response => {
+          
+        //   let services = [];
+        //   response.scope.forEach(item => {
+        //       this.$store.dispatch('estimate/findSubServices', item.id).then(sub => {
+        //           services.push({
+        //                 id: item.id,
+        //                 services_id: item.services_id,
+        //                 labor_fee: item.labor_fee,
+        //                 parts_fee: item.parts_fee,
+        //                 sub_services: sub
+        //           });
+        //       })
+        //   })
+            var groupByType = this.convertByProperty(response.documents, 'document_type', 'customer_id'); 
+            console.log(groupByType);
+            console.log(response.documents);
+            var property = 'document_type'; // by this item property array will be grouped
+
+            // var groups = response.documents.reduce(function(groups, item) {
+            // var name = item[property]
+            // var group = groups[name] || (groups[name] = []);
+            // group.push(item);
+            // return groups;
+            // }, { });
+
+            this.form = {
+                id: response.id,
+                customer_id: response.customer_id,
+                date: response.date,
+                insurance: response.insurance_id,
+                vehicle_id: response.vehicle_id,
+                vehicle: response.vehicle_id,
+                services: response.scope,
+                documents: groupByType
+            }
+            
+          setTimeout(() => this.media = false, 1000);
+          
+      });
     },
-    multiselectOptions: [
-        { value: 'AL', label: 'PARTS TO BE REPLACE' },
-        { value: 'AK', label: 'PULLDOWN ALL NEC. PARTS TO GIVEWAY FOR REPAIR' },
-        { value: 'AK', label: 'TINSMITH JOB' },
-        { value: 'AK', label: 'PAINTING JOB' },
-        { value: 'AK', label: 'PAINT MATERIALS' },
-    ],
 }
 </script>
 <style>
 .inline {
     display:flex;
+}
+.align-self-start{
+    display:none;
 }
 </style>

@@ -15,7 +15,7 @@
                             onfocus="this.placeholder = ''"
                             description="Supplier"
                             placeholder="Supplier"
-                            v-model="form.insurance_name"
+                            v-model="form.supplier_name"
                         />
                     </CCol>
                     <CCol lg="6">
@@ -25,14 +25,6 @@
                             description="Address"
                             placeholder="Address"
                             v-model="form.address"
-                        />
-                    </CCol>
-                    <CCol lg="6">
-                        <CSelect
-                            :value.sync="form.insurance_type"
-                            placeholder="Nothing Selected"
-                            :options="['Private Insurance', 'Third Party Claim', 'GSIS', 'Bidding']"
-                            onblur="this.placeholder = 'Insurance Type'" onfocus="this.placeholder = ''" description="Insurance Type"
                         />
                     </CCol>
                     <CCol lg="6">
@@ -68,7 +60,57 @@
                             onfocus="this.placeholder = ''"
                             description="Tin No.:"
                             placeholder="Tin No.:"
-                            v-model="form.email"
+                            v-model="form.tin"
+                        />
+                    </CCol>
+                    <CCol lg="6">
+                        <CInput
+                            onblur="this.placeholder = 'Terms'" 
+                            onfocus="this.placeholder = ''"
+                            description="Terms"
+                            placeholder="Terms"
+                            v-model="form.terms"
+                        />
+                    </CCol>
+                    <CCol lg="6">
+                        <CSelect
+                            :value.sync="form.payment_mode"
+                            placeholder="Nothing Selected"
+                            :options="['Cash', 'Check']"
+                            onblur="this.placeholder = 'Mode of Payment'" onfocus="this.placeholder = ''" description="Mode of Payment"
+                        />
+                    </CCol>
+                    <CCol v-if="form.payment_mode == 'Check'" lg="6">
+                        <CSelect
+                            :value.sync="form.check_dated"
+                            placeholder="Nothing Selected"
+                            :options="['PDC30', 'PDC60', 'PDC90', 'PDC120']"
+                            onblur="this.placeholder = 'Dated'" onfocus="this.placeholder = ''" description="Dated"
+                        />
+                    </CCol>
+                    <CCol lg="6">
+                        <CSelect
+                            :value.sync="form.shipping_mode"
+                            placeholder="Nothing Selected"
+                            :options="['Deliver', 'Pickup']"
+                            onblur="this.placeholder = 'Shipping Mode'" onfocus="this.placeholder = ''" description="Shipping Mode"
+                        />
+                    </CCol>
+                    <CCol v-if="form.shipping_mode == 'Deliver'" lg="6">
+                        <CSelect
+                            :value.sync="form.deliver_type"
+                            placeholder="Nothing Selected"
+                            :options="['Free', 'Delivery Fee']"
+                            onblur="this.placeholder = 'Deliver'" onfocus="this.placeholder = ''" description="Deliver"
+                        />
+                    </CCol>
+                    <CCol v-if="form.deliver_type == 'Delivery Fee'" lg="6">
+                        <CInput
+                            onblur="this.placeholder = 'Specify Cost:'" 
+                            onfocus="this.placeholder = ''"
+                            description="Specify Cost:"
+                            placeholder="Specify Cost:"
+                            v-model="form.deliver_cost"
                         />
                     </CCol>
                 </CRow>
@@ -108,7 +150,7 @@ export default {
     methods: {
         submit(){
             this.$root.btn_load(true, 'add-services-sub-btn-modal', 'ADD');
-            this.$store.dispatch('insurance/addInsurance', this.form).then(() => {
+            this.$store.dispatch('supplier/addSupplier', this.form).then(() => {
                 this.$root.btn_load(false, 'add-services-sub-btn-modal', 'ADD');
                 this.showModalAddSupplier = false;
                 this.form = this.getFormData();
@@ -119,12 +161,18 @@ export default {
         },
         getFormData(){
             return {
-                insurance_name: '',
-                insurance_type: '',
+                supplier_name: '',
+                tin: '',
                 contact_person: '',
                 phone: '',
                 email: '',
                 address: '',
+                terms: '',
+                payment_mode: '',
+                check_dated: '',
+                shipping_mode: '',
+                deliver_type: '',
+                deliver_cost: ''
             }
         },
     },

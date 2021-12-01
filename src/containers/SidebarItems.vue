@@ -66,18 +66,18 @@ export default {
             to: '/contracts',
             icon: 'cil-pen-nib',
           },
-          {
-            _name: 'CSidebarNavItem',
-            name: 'Tasks',
-            to: '/tasks',
-            icon: 'cil-list-rich',
-          },
-          {
-            _name: 'CSidebarNavItem',
-            name: 'Expenses',
-            to: '/expenses',
-            icon: 'cil-wallet',
-          },
+          // {
+          //   _name: 'CSidebarNavItem',
+          //   name: 'Tasks',
+          //   to: '/tasks',
+          //   icon: 'cil-list-rich',
+          // },
+          // {
+          //   _name: 'CSidebarNavItem',
+          //   name: 'Expenses',
+          //   to: '/expenses',
+          //   icon: 'cil-wallet',
+          // },
           {
             _name: 'CSidebarNavDropdown',
             name: 'Reports',

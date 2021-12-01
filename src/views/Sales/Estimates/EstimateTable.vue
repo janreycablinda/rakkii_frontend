@@ -21,7 +21,7 @@
             <CLink
               @click="getValue(item)"
             >
-              EST-000{{item.id}}
+              EST-000{{item.estimate_no}}
             </CLink>
           </td>
         </template>
@@ -55,7 +55,7 @@
         </template>
         <template #status="{item}">
           <td>
-            <CBadge color="secondary">Draft</CBadge>
+            <CBadge :color="getBadge(item.status)" class="capetalize">{{item.status}}</CBadge>
           </td>
         </template>
         <!-- <template #action="{item}">
@@ -95,12 +95,13 @@ export default {
   },
   methods: {
     getBadge (status) {
-      return status === 'Active' ? 'success'
-        : status === 'Inactive' ? 'secondary'
-          : status === 'Pending' ? 'warning'
-            : status === 'Banned' ? 'danger' : 'primary'
+    return status === 'approved' ? 'success'
+        : status === 'draft' ? 'secondary'
+        : status === 'sent' ? 'warning'
+        : status === 'disapproved' ? 'danger' : 'primary'
     },
     getValue(data){
+      console.log(data);
       this.$emit('event_child', data);
     },
     getValueDel(data){

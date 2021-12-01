@@ -44,6 +44,9 @@ import {
   cilCaretLeft,
   cilInstitution,
   cibAdobeAcrobatReader,
+  cilLocationPin,
+  cibGmail,
+  cilPhone
 } from '@coreui/icons'
 import { logo } from './logo'
 
@@ -93,5 +96,8 @@ export const iconsSet = Object.assign({}, {
   cilAvTimer,
   cilCaretLeft,
   cilInstitution,
-  cibAdobeAcrobatReader
+  cibAdobeAcrobatReader,
+  cilLocationPin,
+  cibGmail,
+  cilPhone
 })

@@ -26,14 +26,6 @@
                 />
               </li>
             </ul>
-
-<!--        <ul>-->
-<!--          <li>FRT BUMBER COVER</li>-->
-<!--          <li>BUMPER CLIPS</li>-->
-<!--        </ul>-->
-
-<!--      <li>PULLDOWN ALL NEC. PARTS TO GIVEAWAY FOR REPAIR:</li>-->
-
   </td>
   <td width="10%">
     <CInput v-model="services.labor_fee" style="margin-top:-57px; !important">
@@ -51,7 +43,7 @@
 <script>
 import vSelect from 'vue-select'
 import { createPopper } from '@popperjs/core'
-import SubServices from './SubServices'
+import SubServices from './EditSubServices'
 
 export default{
   data(){
@@ -63,9 +55,10 @@ export default{
     vSelect,
     SubServices,
   },
+  props: ['services'],
   watch:{
-    id(){
-      this.services.sub_services = [];
+    services(newVal){
+        // console.log(newVal)
     },
     services_changes(newVal, oldVal){
       if(oldVal.length != 0){
@@ -78,24 +71,21 @@ export default{
           }
         })
       }
+      
     },
     services_id(newVal){
       this.$store.dispatch('services/findServices', newVal).then(response => {
-        // console.log(response);
         this.sub_form = response;
       })
     },
   },
   computed: {
-    id(){
-      return this.services.services_id;
-    },
     services_changes(){
       return this.$store.state.services.services;
     },
     services_id(){
       return this.services.services_id;
-    }
+    },
   },
   filters: {
     servicesFilter(data){
@@ -108,17 +98,14 @@ export default{
       }
     }
   },
-  props: ['services'],
   methods: {
     addServices(data){
-      // console.log(data);
       this.$emit('child_data', data, 'add');
     },
     openAddServices(){
       this.$emit('child_services', 'add');
     },
     removeServices(data){
-      console.log(data);
       this.$emit('child_data', data, 'delete');
     },
     childAddSub(data){
@@ -126,13 +113,17 @@ export default{
     },
     addSubServices(){
       if(this.services.services_id){
+        //   this.$store.dispatch('services/findServices', this.services.services_id).then(response => {
+
+        //   });
         this.services.sub_services.push({
           services_id:this.services.services_id,
           services_name:this.sub_form.services_name,
           id: '',
-          sub_services: this.sub_form.sub_services,
+          sub_services: this.sub_form.sub_services[0],
           labor_fee: 0,
-          parts_fee: 0
+          parts_fee: 0,
+          sub_services_id: ''
         })
       }
     },
@@ -182,5 +173,47 @@ export default{
       return () => popper.destroy()
     }
   },
+  created(){
+      if(this.services){
+          
+          if(this.services.services_id){
+            this.$store.dispatch('services/findServices', this.services.services_id).then(response => {
+                this.sub_form = response;
+                // this.sub_form = response;
+                // console.log(response.sub_services);
+                // this.services.sub_services.forEach(item => {
+                //     console.log(item);
+                //     this.services.sub_services.push({
+                //         services_id:item.services_id,
+                //         // services_name:this.sub_form.services_name,
+                //         sub_services_id: item.sub_services_id,
+                //         sub_services: response.sub_services,
+                //         labor_fee: item.labor_fee,
+                //         parts_fee: item.parts_fee
+                //     })
+                // })
+                // response.sub_services.forEach(item => {
+                //     this.services.sub_services.push({
+                //         services_id:this.services.services_id,
+                //         services_name:this.sub_form.services_name,
+                //         id: '',
+                //         sub_services: this.sub_form.sub_services,
+                //         labor_fee: 0,
+                //         parts_fee: 0
+                //     })
+                // })
+                // this.services.sub_services.push({
+                //     services_id:this.services.services_id,
+                //     services_name:this.sub_form.services_name,
+                //     id: '',
+                //     sub_services: this.sub_form.sub_services,
+                //     labor_fee: 0,
+                //     parts_fee: 0
+                // })
+            })
+          }
+        
+      }
+  }
 }
 </script>

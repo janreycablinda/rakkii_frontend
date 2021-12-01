@@ -21,6 +21,16 @@ export default {
         commit('SET_SERVICES', response.data);
     },
 
+    async findServices({commit}, id) {
+      return new Promise((resolve, reject) => {
+        axios.get(`resources/find_services/${id}`).then(response => {
+            resolve(response.data);
+        }, error => {
+            reject(error);
+        });
+      })
+    },
+
     async addServices({commit, dispatch}, data) {
         
         await axios.post("resources/add_services", {

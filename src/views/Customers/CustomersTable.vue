@@ -39,7 +39,7 @@
         <template #action="{item}">
             <td>
                 <div>
-                <CButton @click="getValue(item)" color="info"><CIcon name="cil-pencil"/></CButton> &nbsp;
+                <!-- <CButton @click="getValue(item)" color="info"><CIcon name="cil-pencil"/></CButton> &nbsp; -->
                 <CButton :to="'/customers/customer-profile/' + item.id + '/profile'" color="warning"><CIcon name="cil-address-book"/></CButton> &nbsp;
                 <CButton @click="getValueDel(item)" color="danger"><CIcon name="cil-trash"/></CButton>
                 </div>

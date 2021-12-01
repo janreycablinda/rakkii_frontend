@@ -53,8 +53,6 @@ export default {
     async addCustomer({commit, dispatch, rootState}, data) {
         await axios.post("resources/create_customer", {
             form: data.form,
-            form_billing: data.form_billing,
-            form_shipping: data.form_shipping,
             user_id: rootState.auth.user.id
         }).then(response => {
             console.log(response.data);
@@ -91,7 +89,7 @@ export default {
     },
 
     async deleteCustomer({commit, dispatch}, id) {
-        const response = await axios.delete(`resources/delete_item/${id}`);
+        const response = await axios.delete(`resources/delete_customer/${id}`);
         if(response.data == 200){
             dispatch('notification/addNotification', {
                 type: 'success',

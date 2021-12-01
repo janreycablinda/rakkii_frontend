@@ -21,6 +21,7 @@ const Monitoring = () => import('@/views/Sales/Monitoring/View')
 const CreateInvoice = () => import('@/views/Sales/Invoices/CreateInvoice')
 const Estimates = () => import('@/views/Sales/Estimates/View')
 const CreateEstimates = () => import('@/views/Sales/Estimates/CreateNewEstimate')
+const EditEstimates = () => import('@/views/Sales/Estimates/EditEstimate')
 const Payments = () => import('@/views/Sales/Payments/View')
 const Credit_Note = () => import('@/views/Sales/Credit Notes/View')
 const Expenses = () => import('@/views/Expenses/View')
@@ -340,6 +341,25 @@ export default new Router({
               breadcrumb: [
                 { text: 'Estimates', to: '/sales/estimates' },
                 { text: 'Create New Estimates' }
+              ]
+            }
+        },
+        {
+            path: '/sales/estimates/edit-estimate/:id',
+            name: 'EditEstimates',
+            component: EditEstimates,
+            beforeEnter: (to, from, next) => {
+              if (!store.getters["auth/authenticated"]) {
+                next({
+                  name: "Login"
+                });
+              }
+              next();
+            },
+            meta: {
+              breadcrumb: [
+                { text: 'Estimates', to: '/sales/estimates' },
+                { text: 'Edit Estimates' }
               ]
             }
         },

@@ -13,6 +13,10 @@ export default {
         let items = state.insurance.concat(data);
         state.insurance = items;
     },
+    DELETE_INSURANCE(state, id) {
+        let items = state.insurance.filter(item => item.id != id);
+        state.insurance = items;
+    },
   },
   actions: {
     async fetchInsurance({commit}, data) {
@@ -30,6 +34,7 @@ export default {
             phone: data.phone,
             email: data.email,
             address: data.address,
+            tin: data.tin
         }).then(response => {
             dispatch('notification/addNotification', {
                 type: 'success',
@@ -44,6 +49,22 @@ export default {
           }, {root: true});
           
         });
+    },
+
+    async deleteInsurance({commit, dispatch}, id) {
+        const response = await axios.delete(`resources/delete_insurance/${id}`);
+        if(response.data == 200){
+            dispatch('notification/addNotification', {
+                type: 'success',
+                message: 'Successfully Deleted!'
+            }, {root: true});
+            commit('DELETE_INSURANCE', id);
+        }else{
+            dispatch('notification/addNotification', {
+                type: 'danger',
+                message: 'Ops! Something went wrong!'
+            }, {root: true});
+        }
     },
   }
 };
