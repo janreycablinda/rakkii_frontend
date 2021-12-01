@@ -687,9 +687,11 @@ export default {
 }
 .timeline-time{
     font-weight:bold;
+    color:#3C4B64 !important;
 }
 .timeline-name{
     font-weight:600;
+    color:#3C4B64 !important;
 }
 
 </style>
