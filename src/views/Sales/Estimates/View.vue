@@ -181,7 +181,7 @@
         </CRow>
         <CRow>
             <CCol lg="12">
-                <div id="printMe" style="margin-bottom:250px;">
+                <div id="printMe" style="margin-bottom:250px; display:none;">
                     <img style="padding-left:40px;" width="100%" src="/img/upload/HEADER.png">
                     <div style="text-align:right; margin-top:-70px; margin-right:150px;">
                         <p style="margin:0; ">(02) 796 5092 <CIcon style="width:17px;" color="#F7931E" name="cil-phone"/></p>
