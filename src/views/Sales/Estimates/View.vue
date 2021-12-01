@@ -41,7 +41,7 @@
                                 <template #toggler-content>
                                     <CIcon name="cib-adobe-acrobat-reader" />
                                 </template>
-                                <CDropdownItem>Download</CDropdownItem>
+                                <CDropdownItem @click="downloadPdf">Download</CDropdownItem>
                                 <CDropdownItem @click="print">Print</CDropdownItem>
                             </CDropdown>
                             <CButton size="sm" color="secondary" style="position:absolute; top:10px; right:232px;">
@@ -181,7 +181,7 @@
         </CRow>
         <CRow>
             <CCol lg="12">
-                <div id="printMe" style="margin-bottom:250px; display:none;">
+                <div id="printMe" style="margin-bottom:250px;">
                     <img style="padding-left:40px;" width="100%" src="/img/upload/HEADER.png">
                     <div style="text-align:right; margin-top:-70px; margin-right:150px;">
                         <p style="margin:0; ">(02) 796 5092 <CIcon style="width:17px;" color="#F7931E" name="cil-phone"/></p>
@@ -189,7 +189,7 @@
                         <p style="margin:0;">71 Santol St.Niño, Quezon City, 1113 <CIcon style="width:17px;" color="#F7931E" name="cil-location-pin"/></p>
                     </div>
                     <div style="padding-left:50px; padding-right:50px; margin-top:80px;">
-                        <table width="100%" v-if="info">
+                        <table style="border:1px #000 solid;" width="100%" v-if="info">
                             <tr style="border:1px #000 solid;">
                                 <th colspan="4" style="text-align:center;">
                                     <h5>REPAIR JOB ESTIMATE</h5>
@@ -267,21 +267,271 @@
                                     LABOR
                                 </th>
                             </tr>
-                            <!-- <tr v-for="services in scope">
-                                <th>
-
+                            <tr v-for="(services, index) in info.scope" :key="services.id">
+                                <th colspan="2">
+                                    <h5>{{toRoman(index+1)}} - {{services.services.services_name}}</h5>
+                                    <ul style="list-style-type: none; margin:0;" v-for="sub_services in services.sub_services" :key="sub_services.id">
+                                        <li><h5>{{sub_services.sub_services.services_name}}</h5></li>
+                                    </ul>
                                 </th>
-                            </tr> -->
+                                <th style="border-left:1px #000 solid;">
+                                    <h5 style="text-align:center;">₱{{services.labor_fee}}</h5>
+                                    <ul style="list-style-type: none; margin:0;" v-for="sub_services in services.sub_services" :key="sub_services.id">
+                                        <li><h5>₱{{sub_services.labor_fee}}</h5></li>
+                                    </ul>
+                                </th>
+                                <th style="border-left:1px #000 solid;">
+                                    <h5 style="text-align:center;">₱{{services.parts_fee}}</h5>
+                                    <ul style="list-style-type: none; margin:0;" v-for="sub_services in services.sub_services" :key="sub_services.id">
+                                        <li><h5>₱{{sub_services.parts_fee}}</h5></li>
+                                    </ul>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th style="text-align:right;">
+                                    &nbsp;
+                                </th>
+                                <th style="text-align:right;">
+                                    <h5>SUB-TOTAL:</h5>
+                                </th>
+                                <th style="border-top:1px #000 solid; border-left:1px #000 solid;">
+                                    <h5>₱{{sub_total_labor}}</h5>
+                                </th>
+                                <th style="border-top:1px #000 solid; border-left:1px #000 solid;">
+                                    <h5>₱{{sub_total_parts}}</h5>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th style="text-align:right;" colspan="2">
+                                    <h5>12% VAT:</h5>
+                                </th>
+                                <th style="border-top:1px #000 solid; border-left:1px #000 solid;">
+                                    <h5>₱{{total_vat}}</h5>
+                                </th>
+                                <th style="border-top:1px #000 solid; border-left:1px #000 solid;">
+                                    
+                                </th>
+                            </tr>
+                            <tr>
+                                <th style="border-top:1px #000 solid; text-align:center;" colspan="2">
+                                    <div style="display:flex; justify-content:space-between;">
+                                    <h5 style="margin-left:160px;">TOTAL LABOR AND PARTS</h5>
+                                    <h5 style="margin-right:30px;">₱{{total_labor_parts}}</h5>
+                                    </div>
+                                </th>
+                                <th colspan="2" style="border-top:1px #000 solid; border-left:1px #000 solid; text-align:center;">
+                                    <div style="height:30px;"></div>
+                                    <h5>FRED MORAN</h5>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th rowspan="2" style="border-top:1px #000 solid;" colspan="2">
+                                   <h5>The above ESTIMATE is based on our inspection and does not cover/include broken or additional labor which are not evident on the first inspection. Qoutation and parts/labor are current and subject to change notice. This estimate is only good for fifteen days, and is NOT VALID FOR COURT PURPOSES. RAKKII AUTO SERVICE shall not be liable for loss/es or any damage/s to vehicle or any</h5>
+                                </th>
+                                <th colspan="2" style="border-top:1px #000 solid; border-left:1px #000 solid; text-align:center;">
+                                    <div style="height:30px;"></div>
+                                    <h5>APPROVED BY</h5>
+                                    <h5>REZZA LYNN BITENG</h5>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th colspan="2" style="border-top:1px #000 solid; border-left:1px #000 solid; text-align:center;">
+                                    <h5>GENERAL MANAGER</h5>
+                                </th>
+                            </tr>
                         </table>
                     </div>
                 </div>
             </CCol>
         </CRow>
+        <vue-html2pdf
+        :show-layout="false"
+        :float-layout="true"
+        :enable-download="true"
+        :preview-modal="false"
+        :paginate-elements-by-height="1344"
+        :filename="'EST-000' +info.estimate_no"
+        :pdf-quality="1"
+        :manual-pagination="false"
+        pdf-format="legal"
+        pdf-orientation="portrait"
+        pdf-content-width="816px"
+        
+        @progress="onProgress($event)"
+        @startPagination="startPagination($event)"
+        @hasDownloaded="hasDownloaded($event)"
+        ref="html2Pdf"
+    >
+        <section slot="pdf-content">
+          <div>
+                <img style="padding-left:20px;" width="100%" src="/img/upload/HEADER.png">
+                <div style="text-align:right; margin-top:-60px; margin-right:110px;">
+                    <p style="margin:0; ">(02) 796 5092 <CIcon style="width:17px;" color="#F7931E" name="cil-phone"/></p>
+                    <p style="margin:0;">rakkiiautoservices@yahoo.com <CIcon style="width:17px;" color="#F7931E" name="cib-gmail"/></p>
+                    <p style="margin:0;">71 Santol St.Niño, Quezon City, 1113 <CIcon style="width:17px;" color="#F7931E" name="cil-location-pin"/></p>
+                </div>
+                <div style="padding-left:20px; padding-right:20px; margin-top:80px;">
+                    <table style="border:1px #000 solid;" width="100%" v-if="info">
+                        <tr style="border:1px #000 solid;">
+                            <th colspan="4" style="text-align:center;">
+                                <h5>REPAIR JOB ESTIMATE</h5>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th width="15%" style="border:1px #000 solid;">
+                                <h6>Customer:</h6>
+                            </th>
+                            <th width="55%" style="border:1px #000 solid; text-align:center;">
+                                <h6>{{info.customer.company_name}}</h6>
+                            </th>
+                            <th width="10%" style="border:1px #000 solid;">
+                                <h6>Date:</h6>
+                            </th>
+                            <th width="10%" style="border:1px #000 solid; text-align:center;">
+                                <h6>{{info.date}}</h6>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th width="15%" style="border:1px #000 solid;">
+                                <h6>Address:</h6>
+                            </th>
+                            <th width="55%" style="border:1px #000 solid; text-align:center;">
+                                <h6>{{info.customer.address}}</h6>
+                            </th>
+                            <th width="10%" style="border:1px #000 solid;">
+                                
+                            </th>
+                            <th width="10%" style="border:1px #000 solid;">
+                                
+                            </th>
+                        </tr>
+                        <tr>
+                            <th width="15%" style="border:1px #000 solid;">
+                                <h6>Insurance:</h6>
+                            </th>
+                            <th width="55%" style="border:1px #000 solid; text-align:center;">
+                                <h6>{{info.insurance.insurance_name}}</h6>
+                            </th>
+                            <th width="10%" style="border:1px #000 solid;">
+                                
+                            </th>
+                            <th width="10%" style="border:1px #000 solid;">
+                                
+                            </th>
+                        </tr>
+                        <tr>
+                            <th width="20%" style="border:1px #000 solid;">
+                                <h6>Vehicle:</h6>
+                            </th>
+                            <th width="50%" style="border:1px #000 solid; text-align:center;">
+                                <h6>{{info.property.vehicle.vehicle_name}}</h6>
+                            </th>
+                            <th width="10%" style="border:1px #000 solid;">
+                                <h6>PLATE NO.:</h6>
+                            </th>
+                            <th width="10%" style="border:1px #000 solid; text-align:center;">
+                                <h6>{{info.property.plate_no}}</h6>
+                            </th>
+                        </tr>
+                        <tr style="border:1px #000 solid;">
+                            <th colspan="4">
+                                &nbsp;
+                            </th>
+                        </tr>
+                        <tr style="border:1px #000 solid;">
+                            <th colspan="2" style="text-align:center;">
+                                <h6>SCOPE OF WORK</h6>
+                            </th>
+                            <th style="border:1px #000 solid; text-align:center;">
+                                <h6>LABOR</h6>
+                            </th>
+                            <th style=" border:1px #000 solid;text-align:center;">
+                                LABOR
+                            </th>
+                        </tr>
+                        <tr v-for="(services, index) in info.scope" :key="services.id">
+                            <th colspan="2">
+                                <h6>{{toRoman(index+1)}} - {{services.services.services_name}}</h6>
+                                <ul style="list-style-type: none; margin:0;" v-for="sub_services in services.sub_services" :key="sub_services.id">
+                                    <li><h6>{{sub_services.sub_services.services_name}}</h6></li>
+                                </ul>
+                            </th>
+                            <th style="border-left:1px #000 solid;">
+                                <h6 style="text-align:center;">₱{{services.labor_fee}}</h6>
+                                <ul style="list-style-type: none; margin:0;" v-for="sub_services in services.sub_services" :key="sub_services.id">
+                                    <li><h6>₱{{sub_services.labor_fee}}</h6></li>
+                                </ul>
+                            </th>
+                            <th style="border-left:1px #000 solid;">
+                                <h6 style="text-align:center;">₱{{services.parts_fee}}</h6>
+                                <ul style="list-style-type: none; margin:0;" v-for="sub_services in services.sub_services" :key="sub_services.id">
+                                    <li><h6>₱{{sub_services.parts_fee}}</h6></li>
+                                </ul>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th style="text-align:right;">
+                                &nbsp;
+                            </th>
+                            <th style="text-align:right;">
+                                <h6>SUB-TOTAL:</h6>
+                            </th>
+                            <th style="border-top:1px #000 solid; border-left:1px #000 solid;">
+                                <h6>₱{{sub_total_labor}}</h6>
+                            </th>
+                            <th style="border-top:1px #000 solid; border-left:1px #000 solid;">
+                                <h6>₱{{sub_total_parts}}</h6>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th style="text-align:right;" colspan="2">
+                                <h6>12% VAT:</h6>
+                            </th>
+                            <th style="border-top:1px #000 solid; border-left:1px #000 solid;">
+                                <h6>₱{{total_vat}}</h6>
+                            </th>
+                            <th style="border-top:1px #000 solid; border-left:1px #000 solid;">
+                                
+                            </th>
+                        </tr>
+                        <tr>
+                            <th style="border-top:1px #000 solid; text-align:center;" colspan="2">
+                                <div style="display:flex; justify-content:space-between;">
+                                <h6 style="margin-left:160px;">TOTAL LABOR AND PARTS</h6>
+                                <h6 style="margin-right:30px;">₱{{total_labor_parts}}</h6>
+                                </div>
+                            </th>
+                            <th colspan="2" style="border-top:1px #000 solid; border-left:1px #000 solid; text-align:center;">
+                                <div style="height:30px;"></div>
+                                <h6>FRED MORAN</h6>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th rowspan="2" style="border-top:1px #000 solid;" colspan="2">
+                                <h6>The above ESTIMATE is based on our inspection and does not cover/include broken or additional labor which are not evident on the first inspection. Qoutation and parts/labor are current and subject to change notice. This estimate is only good for fifteen days, and is NOT VALID FOR COURT PURPOSES. RAKKII AUTO SERVICE shall not be liable for loss/es or any damage/s to vehicle or any</h6>
+                            </th>
+                            <th colspan="2" style="border-top:1px #000 solid; border-left:1px #000 solid; text-align:center;">
+                                <div style="height:30px;"></div>
+                                <h6>APPROVED BY</h6>
+                                <h6>REZZA LYNN BITENG</h6>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th colspan="2" style="border-top:1px #000 solid; border-left:1px #000 solid; text-align:center;">
+                                <h6>GENERAL MANAGER</h6>
+                            </th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </vue-html2pdf>
     </div>
 </template>
 <script>
 import EstimateTable from './EstimateTable';
 import DocumentsTable from './DocumentsTable';
+import VueHtml2pdf from 'vue-html2pdf'
 export default {
     data(){
       return {
@@ -307,7 +557,8 @@ export default {
     },
     components: {
         EstimateTable,
-        DocumentsTable
+        DocumentsTable,
+        VueHtml2pdf
     },
     computed: {
         activity_log(){
@@ -369,11 +620,31 @@ export default {
                 windowTitle: 'RAKKII AUTO SERVICES',
             });
         },
+        downloadPdf () {
+            this.$refs.html2Pdf.generatePdf()
+        },
         getBadge (status) {
         return status === 'approved' ? 'success'
             : status === 'draft' ? 'secondary'
             : status === 'sent' ? 'warning'
             : status === 'disapproved' ? 'danger' : 'primary'
+        },
+        toRoman(num){
+        const units = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'];
+        const tens = ['X', 'XX', 'XXX', 'XL', 'L', 'LX', 'LXX', 'LXXX', 'XC'];
+        let numArr = [];
+
+        for (let i = 0; i < 99; i++) {
+            numArr.push(i);
+        }
+
+        const roman = numArr.map(i => {
+            if ((i + 1) % 10 == 0) return tens[(i + 1) / 10 - 1];
+            else if (i < 10) return units[i];
+            else return `${tens[Math.floor(i / 10) - 1]}${units[i.toString().split("")[1]]}`;
+        });
+        console.log(roman[num - 1]);
+        return roman[num - 1];
         },
         changeStatus(id, status){
             const params = {
