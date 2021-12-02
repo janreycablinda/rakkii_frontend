@@ -8,26 +8,37 @@
         :fixed="fixed"
         :items="items"
         :fields="fields"
+        :items-per-page="small ? 10 : 10"
+        :tableFilter='{ placeholder: "Search", label: " "}'
         :dark="dark"
+        :table-filter="true"
+        pagination
+        items-per-page-select
       >
-        <template #role="{item}">
-            <td>
-                {{item.role.role_name}}
-            </td>
+        <template #file="{item}">
+          <td>
+              <CLink
+              @click="downloadDocs(item)"
+              >
+                {{item.file_name}}
+            </CLink>
+          </td>
         </template>
-        <template #action="{item}">
+        <!-- <template #action="{item}">
             <td>
                 <div>
                 <CButton @click="getValue(item)" color="info"><CIcon name="cil-pencil"/></CButton> &nbsp;
+                <CButton @click="getValue(item)" color="warning"><CIcon name="cil-check-alt"/></CButton> &nbsp;
                 <CButton @click="getValueDel(item)" color="danger"><CIcon name="cil-trash"/></CButton>
                 </div>
             </td>
-        </template>
+        </template> -->
       </CDataTable>
     </div>
 </template>
-
 <script>
+
+import axios from 'axios';
 export default {
   name: 'Table',
   props: {
@@ -35,7 +46,7 @@ export default {
     fields: {
       type: Array,
       default () {
-        return ['name', 'email', 'role', 'action']
+        return ['file', 'document_type']
       }
     },
     caption: {
@@ -57,11 +68,21 @@ export default {
             : status === 'Banned' ? 'danger' : 'primary'
     },
     getValue(data){
-      this.$emit('event_child', data, 'edit');
+      console.log(data);
+      this.$emit('event_child', data);
     },
     getValueDel(data){
-      this.$emit('event_child', data, 'delete');
+      if (confirm('Are you sure you want to delete ' + data.customer.company_name +'?')) {
+        // Save it!
+      }
     },
+    downloadDocs(data){
+        console.log(data.file_name);
+        this.$store.dispatch('document/downloadDocument', data.file_name);
+    }
+  },
+  created(){
+      console.log(process.env.VUE_APP_BACKEND);
   }
 }
 </script>

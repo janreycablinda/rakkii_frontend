@@ -102,10 +102,11 @@ export default {
         });
     },
 
-    async updateStatusEstimate({commit, dispatch}, data) {
+    async updateStatusEstimate({commit, dispatch, rootState}, data) {
       await axios.post("resources/update_status_estimate", {
         id: data.id,
-        status: data.status
+        status: data.status,
+        user_id: rootState.auth.user.id
       }).then(response => {
           dispatch('notification/addNotification', {
               type: 'success',
@@ -140,15 +141,14 @@ export default {
 
     async convertEstimate({commit, dispatch}, data) {
       await axios.post("resources/convert_estimate", {
-        id: data.id,
-        status: data.status
+        id: data.id
       }).then(response => {
           dispatch('notification/addNotification', {
               type: 'success',
               message: 'Successfully Updated!'
           }, {root: true});
 
-         commit('UPDATE_ESTIMATE', response.data);
+         commit('DELETE_ESTIMATE', response.data);
       }, () => {
         dispatch('notification/addNotification', {
           type: 'danger',

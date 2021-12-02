@@ -3,14 +3,14 @@
         <CRow>
             <CCol :lg="colSize">
                 <CCard>
-                    <CCardHeader>
+                    <!-- <CCardHeader>
                         <CButton to="/sales/estimates/create-estimate" size="sm" color="primary">
                             CREATE NEW ESTIMATE
                         </CButton>&nbsp;
-                    </CCardHeader>
+                    </CCardHeader> -->
                     <CCardBody>
-                        <EstimateTable
-                        :items="$store.state.estimate.estimate"
+                        <JobOrderTable
+                        :items="$store.state.job_orders.job_orders"
                         v-on:event_child="eventChild"
                         />
                     </CCardBody>
@@ -80,7 +80,7 @@
                             <CTab title="Estimate" active>
                                 <CRow class="mt-4">
                                     <CCol lg="6">
-                                        <CLink :to="'/sales/estimates/edit-estimate/' + info.id"><h4>EST-000{{info.estimate_no}}</h4></CLink>
+                                        <CLink :to="'/sales/estimates/edit-estimate/' + info.id"><h4>EST-000{{info.job_order_no}}</h4></CLink>
                                     </CCol>
                                     <CCol lg="6" align="right">
                                          <span>Estimate Date: {{info.date}}</span><br>
@@ -525,7 +525,7 @@
     </div>
 </template>
 <script>
-import EstimateTable from './EstimateTable';
+import JobOrderTable from './JobOrderTable';
 import DocumentsTable from './DocumentsTable';
 import VueHtml2pdf from 'vue-html2pdf'
 export default {
@@ -544,7 +544,7 @@ export default {
       }
     },
     components: {
-        EstimateTable,
+        JobOrderTable,
         DocumentsTable,
         VueHtml2pdf
     },
@@ -659,7 +659,7 @@ export default {
         }
     },
     created(){
-        this.$store.dispatch('estimate/fetchEstimate');
+        this.$store.dispatch('job_orders/fetchJobOrder');
     }
 }
 </script>

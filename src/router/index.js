@@ -14,6 +14,7 @@ const ImportCustomers = () => import('@/views/Customers/ImportCustomers')
 const CustomerProfile = () => import('@/views/Customers/Profile/CustomerProfile')
 const CustomerProjects = () => import('@/views/Customers/Profile/CustomerProjects')
 const EditCustomerProjects = () => import('@/views/Customers/EditCustomerProjects')
+const JobOrder = () => import('@/views/Sales/Job Order/View')
 
 
 const Invoices = () => import('@/views/Sales/Invoices/View')
@@ -341,6 +342,24 @@ export default new Router({
               breadcrumb: [
                 { text: 'Estimates', to: '/sales/estimates' },
                 { text: 'Create New Estimates' }
+              ]
+            }
+        },
+        {
+            path: '/sales/job-order',
+            name: 'JobOrder',
+            component: JobOrder,
+            beforeEnter: (to, from, next) => {
+              if (!store.getters["auth/authenticated"]) {
+                next({
+                  name: "Login"
+                });
+              }
+              next();
+            },
+            meta: {
+              breadcrumb: [
+                { text: 'Job Order' }
               ]
             }
         },

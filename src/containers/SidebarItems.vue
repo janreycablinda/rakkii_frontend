@@ -51,6 +51,10 @@ export default {
                 to: '/sales/invoices',
               },
               {
+                name: 'Job Order',
+                to: '/sales/job-order',
+              },
+              {
                 name: 'Estimates',
                 to: '/sales/estimates',
               },

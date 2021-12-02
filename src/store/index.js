@@ -21,6 +21,8 @@ import vehicle from './modules/vehicle';
 import insurance from './modules/insurance';
 import document from './modules/documents';
 import supplier from './modules/supplier';
+import users from './modules/users';
+import job_orders from './modules/job_orders';
 
 Vue.use(Vuex)
 
@@ -73,6 +75,8 @@ export default new Vuex.Store({
     vehicle,
     insurance,
     document,
-    supplier
+    supplier,
+    users,
+    job_orders
   }
 });

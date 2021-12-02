@@ -8,7 +8,9 @@
                 <CCardBody>
                     <CRow class="mt-2">
                         <CCol lg="12">
-                            <UsersTable/>
+                            <UsersTable
+                            :items="$store.state.users.users"
+                            />
                         </CCol>
                     </CRow>
                 </CCardBody>
@@ -53,6 +55,9 @@ export default {
     { value: 'AL', label: 'Admin' },
     { value: 'AK', label: 'Alaska' },
     { value: 'AS', label: 'American Samoa'},
-  ]
+    ],
+    created(){
+        this.$store.dispatch('users/fetchUsers');
+    }
 }
 </script>

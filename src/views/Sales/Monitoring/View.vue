@@ -6,7 +6,7 @@
                     <strong>Pending</strong>
                 </CCardHeader>
                 <CCardBody>
-                    <div v-for="(est, index) in $store.state.estimate.estimate" :key="est.id" class="pending-item px-3 py-1 mt-4">
+                    <div v-for="(est, index) in $store.state.job_orders.job_orders" :key="est.id" class="pending-item px-3 py-1 mt-4">
                         <div class="pending-item-action">
                             <CButton size="sm" @click="ModalCarInData = new Date()" color="info">
                                 <CIcon name="cil-car-alt"/>
@@ -23,7 +23,7 @@
                                 <small><b>CUSTOMER: </b>{{est.customer.company_name}}</small>
                             </CCol>
                             <CCol lg="5" align="right">
-                                <small><b>JO-000{{est.id}}</b></small>
+                                <small><b>JO-000{{est.job_order_no}}</b></small>
                             </CCol>
                         </CRow>
                         <CRow>
