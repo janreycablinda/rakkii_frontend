@@ -659,7 +659,7 @@ export default {
         }
     },
     created(){
-        this.$store.dispatch('estimate/fetchEstimate');
+        this.$store.dispatch('job_orders/fetchJobOrder');
     }
 }
 </script>

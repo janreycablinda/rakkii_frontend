@@ -3,38 +3,44 @@
         <CCol lg="4">
             <CCard>
                 <CCardHeader>
-                    <strong>Pending</strong>
+                    <strong>Garage</strong>
+                    <div class="card-header-actions">
+                        <CButton size="sm" @click="ListModalData = new Date()" color="primary"><CIcon name="cil-playlist-add"/> <CBadge color="danger">{{$store.state.job_orders.job_orders.length}}</CBadge></CButton>
+                    </div>
                 </CCardHeader>
                 <CCardBody>
-                    <div v-for="(est, index) in $store.state.job_orders.job_orders" :key="est.id" class="pending-item px-3 py-1 mt-4">
-                        <div class="pending-item-action">
-                            <CButton size="sm" @click="ModalCarInData = new Date()" color="info">
-                                <CIcon name="cil-car-alt"/>
-                            </CButton>
-                            <CButton size="sm" class="ml-1" color="warning">
-                                <CIcon name="cil-pen"/>
-                            </CButton>
-                            <CButton size="sm" class="ml-1" color="secondary">
-                                <CIcon name="cil-info"/>
-                            </CButton>
+                    <div v-for="(est, index) in pending" :key="est.id" class="pending-item px-3 py-1 mt-4">
+                         <div v-if="est.status == 'pending'">
+                            <div class="pending-item-action">
+                                <CButton size="sm" @click="ModalCarInData = {trigger:new Date(), data: est}" color="info">
+                                    <CIcon name="cil-car-alt"/>
+                                </CButton>
+                                <CButton size="sm" class="ml-1" color="warning">
+                                    <CIcon name="cil-pen"/>
+                                </CButton>
+                                <CButton size="sm" class="ml-1" color="secondary">
+                                    <CIcon name="cil-info"/>
+                                </CButton>
+                            </div>
+                            <CRow class="mt-2">
+                                <CCol lg="7">
+                                    <small><b>CUSTOMER: </b>{{est.customer.company_name}}</small>
+                                </CCol>
+                                <CCol lg="5" align="right">
+                                    <small><b>JO-000{{est.job_order_no}}</b></small>
+                                </CCol>
+                            </CRow>
+                            <CRow>
+                                <CCol lg="6">
+                                    <small><b>VEHICLE: </b>{{est.property.vehicle.vehicle_name}}</small>
+                                </CCol>
+                                <CCol lg="6" align="right">
+                                    <small><b>PLATE NO.: {{est.property.plate_no}}</b></small>
+                                </CCol>
+                            </CRow>
                         </div>
-                        <CRow class="mt-2">
-                            <CCol lg="7">
-                                <small><b>CUSTOMER: </b>{{est.customer.company_name}}</small>
-                            </CCol>
-                            <CCol lg="5" align="right">
-                                <small><b>JO-000{{est.job_order_no}}</b></small>
-                            </CCol>
-                        </CRow>
-                        <CRow>
-                            <CCol lg="6">
-                                <small><b>VEHICLE: </b>{{est.property.vehicle.vehicle_name}}</small>
-                            </CCol>
-                            <CCol lg="6" align="right">
-                                <small><b>PLATE NO.: {{est.property.plate_no}}</b></small>
-                            </CCol>
-                        </CRow>
                     </div>
+                   
                 </CCardBody>
             </CCard>
         </CCol>
@@ -44,66 +50,12 @@
                     <strong>Inprogress</strong>
                 </CCardHeader>
                 <CCardBody>
-                    <div v-for="(data, index) in Inprogress" :key="index">
+                    <div v-for="(data, index) in inprogress" :key="index">
                     <Inprogress
                     :inprogress_item="data"
                     :index="index"
                     />
-                    
                     </div>
-                    <!-- <div class="inprogress-item px-3 py-1 mt-2">
-                        <div class="ribbon-wrapper">
-                            <div class="ribbon bg-success">
-                                DONE
-                            </div>
-                        </div>
-                        <CRow class="mt-2 pt-1">
-                            <CCol lg="6">
-                                <small><b>CLIENT: </b>Angel Tan</small>
-                            </CCol>
-                            <CCol lg="6" align="right">
-                                
-                            </CCol>
-                        </CRow>
-                        <CRow>
-                            <CCol lg="6">
-                                <small><b>PESONNEL ASSIGNED: </b>Carlo Lim, Joseph G.</small>
-                            </CCol>
-                            <CCol lg="6" align="right">
-                                <small><b>EST-00002</b></small>
-                            </CCol>
-                        </CRow>
-                        <CRow>
-                            <CCol lg="6">
-                                <small><b>UNIT: </b>FORD RANGER</small>
-                            </CCol>
-                            <CCol lg="6" align="right">
-                                <small><b>PLATE NO.: NCJ-2222</b></small>
-                            </CCol>
-                        </CRow>
-                        <CRow>
-                            <CCol lg="6">
-                                <small><b>DATE IN: </b>11/6/2021</small>
-                            </CCol>
-                            <CCol lg="6" align="right">
-                                <small><b>DATE OUT: </b>12/6/2021</small>
-                            </CCol>
-                        </CRow>
-                        <div class="inprogress-item-action" align="right">
-                            <CButton size="sm" color="danger">
-                                <CIcon name="cil-x"/>
-                            </CButton>
-                            <CButton size="sm" class="ml-1" color="info">
-                                <CIcon name="cil-arrow-thick-to-right"/>
-                            </CButton>
-                            <CButton size="sm" class="ml-1" color="warning">
-                                <CIcon name="cil-pen"/>
-                            </CButton>
-                            <CButton size="sm" class="ml-1" color="secondary">
-                                <CIcon name="cil-info"/>
-                            </CButton>
-                        </div>
-                    </div> -->
                 </CCardBody>
             </CCard>
         </CCol>
@@ -119,6 +71,9 @@
         <StartModal
         :StartData="StartData"
         />
+        <ListModal
+        :ListModalData="ListModalData"
+        />
     </CRow>
 </template>
 <script>
@@ -127,6 +82,8 @@ import Inprogress from './Inprogress';
 import CompletedModal from './CompletedModal';
 import EditCompletedModal from './EditCompletedModal';
 import StartModal from './StartModal';
+import ListModal from './ListModal';
+
 
 export default {
     data(){
@@ -135,6 +92,7 @@ export default {
             CompletedModalData: '',
             EditCompletedModalData: '',
             StartData: '',
+            ListModalData: '',
             Inprogress: [
                 {
                     name: 'Chrismer Lao',
@@ -191,7 +149,8 @@ export default {
         Inprogress,
         CompletedModal,
         EditCompletedModal,
-        StartModal
+        StartModal,
+        ListModal
     },
     watch:{
         '$route' () {
@@ -215,9 +174,33 @@ export default {
             }
         }
     },
+    computed: {
+        pending(){
+            let items =[];
+            if(this.$store.state.job_orders.job_orders){
+                this.$store.state.job_orders.job_orders.forEach(item => {
+                    if(item.status == 'pending'){
+                        items.push(item);
+                    }
+                });
+            }
+            return items;
+        },
+        inprogress(){
+            let items =[];
+            if(this.$store.state.job_orders.job_orders){
+                this.$store.state.job_orders.job_orders.forEach(item => {
+                    if(item.status == 'inprogress'){
+                        items.push(item);
+                    }
+                });
+            }
+            return items;
+        }
+    },
     created(){
-        this.$store.dispatch('estimate/fetchEstimate');
-        console.log(this.$refs);
+        this.$store.dispatch('job_orders/fetchJobOrder');
+        
     }
 }
 </script>
@@ -237,7 +220,7 @@ export default {
 .pending-item-action {
     position:absolute;
     right:10px;
-    margin-top:-20px;
+    margin-top:-28px;
 }
 .line-container .line-item{
     padding:0px !important;

@@ -57,15 +57,13 @@
             <CBadge :color="getBadge(item.status)" class="capetalize">{{item.status}}</CBadge>
           </td>
         </template>
-        <!-- <template #action="{item}">
+        <template #action="{item}">
             <td>
                 <div>
-                <CButton @click="getValue(item)" color="info"><CIcon name="cil-pencil"/></CButton> &nbsp;
-                <CButton @click="getValue(item)" color="warning"><CIcon name="cil-check-alt"/></CButton> &nbsp;
-                <CButton @click="getValueDel(item)" color="danger"><CIcon name="cil-trash"/></CButton>
+                <CButton size="sm" @click="getValue(item)" color="info"><CIcon name="cil-garage"/></CButton>
                 </div>
             </td>
-        </template> -->
+        </template>
       </CDataTable>
     </div>
 </template>
@@ -78,7 +76,7 @@ export default {
     fields: {
       type: Array,
       default () {
-        return ['job_order_no', 'customer', 'vehicle', 'plate_no', 'insurance', 'date', 'status']
+        return ['job_order_no', 'customer', 'vehicle', 'plate_no', 'insurance', 'date', 'status', 'action']
       }
     },
     caption: {
@@ -96,12 +94,12 @@ export default {
     getBadge (status) {
     return status === 'approved' ? 'success'
         : status === 'draft' ? 'secondary'
-        : status === 'sent' ? 'warning'
+        : status === 'pending' ? 'warning'
         : status === 'disapproved' ? 'danger' : 'primary'
     },
     getValue(data){
       console.log(data);
-      this.$emit('event_child', data);
+      
     },
     getValueDel(data){
       if (confirm('Are you sure you want to delete ' + data.customer.company_name +'?')) {
