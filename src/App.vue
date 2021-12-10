@@ -3,6 +3,7 @@
     <router-view></router-view>
     <notifications-list />
     <loading-panel />
+    <Updating/>
   </div>
 </template>
 
@@ -10,12 +11,14 @@
 import NotificationsList from './containers/NotificationsList';
 import jQuery from 'jquery'
 import LoadingPanel from './containers/LoadingPanel';
+import Updating from './containers/Updating';
 
 export default {
   name: 'App',
   components: {
     NotificationsList,
-    LoadingPanel
+    LoadingPanel,
+    Updating
   },
   watch: {
     $route(){

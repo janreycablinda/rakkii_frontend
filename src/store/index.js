@@ -23,6 +23,9 @@ import document from './modules/documents';
 import supplier from './modules/supplier';
 import users from './modules/users';
 import job_orders from './modules/job_orders';
+import personnel from './modules/personnel';
+import personnel_type from './modules/personnel_type';
+import uploader from './modules/uploader';
 
 Vue.use(Vuex)
 
@@ -77,6 +80,9 @@ export default new Vuex.Store({
     document,
     supplier,
     users,
-    job_orders
+    job_orders,
+    personnel,
+    personnel_type,
+    uploader
   }
 });

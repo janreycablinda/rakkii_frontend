@@ -99,7 +99,13 @@ export default {
     },
     getValue(data){
       console.log(data);
-      
+      if (confirm('Please click yes to ' + data.customer.company_name + ' to the garage.')) {
+        const params = {
+            id: data.id,
+            status: 'waiting'
+        }
+        this.$store.dispatch('job_orders/updateStatusJobOrder', params);
+      }
     },
     getValueDel(data){
       if (confirm('Are you sure you want to delete ' + data.customer.company_name +'?')) {

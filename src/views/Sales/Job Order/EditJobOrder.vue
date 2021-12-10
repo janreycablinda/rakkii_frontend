@@ -3,114 +3,81 @@
         <CCard>
             <CCardHeader>
                 <strong>Request Job Estimate</strong>
-                <div class="card-header-actions">
-                    <strong>EST-000{{$store.state.estimate.estimate_new_no}}</strong>
-                </div>
             </CCardHeader>
             <CCardBody>
+                <CMedia>
                 <CRow>
                     <CCol lg="6">
                       <div class="inline">
-                        <div class="form-group">
-                          <label>CUSTOMER *</label>
                           <v-select
                             :options="$store.state.customer.customer | customerFilter"
-                            placeholder="Nothing Selected"
+                            placeholder="Select Customer"
                             class="style-chooser"
+                            :reduce="label => label.value"
+                            label="label"
                             append-to-body
                             :calculate-position="withPopper"
                             style="width:100%;"
                             v-model="form.customer_id"
-                            :isValid="checkIfValid('customer_id')"
-                            :value.sync="$v.form.customer_id.$model"
-                            :class="{ 'border-red': $v.form.customer_id.$anyError, 'border-green': $v.form.customer_id.required}"
                           >
-                            <template #open-indicator="{ attributes }">
-                              &nbsp;
-                            </template>
-                            <template #spinner="{ loading }">
-                              <div
-                                v-if="true"
-                              >
-                                🔍
-                              </div>
-                            </template>
-                            <template #footer>
-                              <small class="form-text text-muted w-100">Customer</small>
-                            </template>
-                            <template #list-header>
-                              <li style="text-align: center; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="showModalAddData = new Date()">ADD CUSTOMER</a></li>
-                            </template>
-                            </v-select>
-                              <div v-if="$v.form.customer_id.$anyError == true" class="invalid-feedback" style="display:block;">
-                                  Customer is required!
-                              </div>
-                            </div>
-                        </div>
+                          <template #open-indicator="{ attributes }">
+                            &nbsp;
+                          </template>
+                          <template #spinner="{ loading }">
+                          <div
+                            v-if="true"
+                          >
+                            🔍
+                          </div>
+                          </template>
+                          <template #footer>
+                            <small class="form-text text-muted w-100">Customer</small>
+                          </template>
+                          <template #list-header>
+                            <li style="text-align: center; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="showModalAddData = new Date()">ADD CUSTOMER</a></li>
+                          </template>
+                          </v-select>
+                      </div>
+
                     </CCol>
                     <CCol lg="6">
-                        <CInput 
-                        v-model="form.date" 
-                        onblur="this.placeholder = 'Date'" 
-                        onfocus="this.placeholder = ''" 
-                        description="Date" 
-                        placeholder="Date" 
-                        label="Date *"
-                        type="date"
-                        invalidFeedback="Date is required!"
-                        :isValid="checkIfValid('date')"
-                        :value.sync="$v.form.date.$model"
-                        />
+                        <CInput v-model="form.date" onblur="this.placeholder = 'Date'" onfocus="this.placeholder = ''" description="Date" placeholder="Date" type="date"/>
                     </CCol>
                 </CRow>
                 <CRow>
                     <CCol lg="6">
-                      <div class="form-group">
-                        <label>VEHICLE *</label>
                         <v-select
                           :options="$store.state.property.property | propertyFilter"
-                          placeholder="Nothing Selected"
+                          placeholder="Select Vehicle"
                           class="style-chooser"
                           append-to-body
                           :calculate-position="withPopper"
                           style="width:100%;"
                           v-model="form.vehicle_id"
-                          :isValid="checkIfValid('vehicle_id')"
-                          :value.sync="$v.form.vehicle_id.$model"
-                          :class="{ 'border-red': $v.form.vehicle_id.$anyError, 'border-green': $v.form.vehicle_id.required}"
+                          :reduce="label => label.value"
+                          label="label"
                         >
-                          <template #list-header>
-                              <li v-if="form.customer_id" style="text-align: center; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="addCarProperty(form.customer_id)">ADD CAR PROPERTY</a></li>
-                          </template>
+                        <template #list-header>
+                            <li v-if="form.customer_id" style="text-align: center; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="addCarProperty(form.customer_id)">ADD CAR PROPERTY</a></li>
+                        </template>
                         </v-select>
-                        <div v-if="$v.form.vehicle_id.$anyError == true" class="invalid-feedback" style="display:block;">
-                            Vehicle is required!
-                        </div>
-                      </div>
                     </CCol>
                     <CCol lg="6">
-                      <div class="form-group">
-                        <label>Insurance *</label>
                         <v-select
                           :options="$store.state.insurance.insurance | insuranceFilter"
-                          placeholder="Nothing Selected"
+                          placeholder="Select Insurance"
                           class="style-chooser"
                           append-to-body
                           :calculate-position="withPopper"
                           style="width:100%;"
                           v-model="form.insurance"
-                          :isValid="checkIfValid('insurance')"
-                          :value.sync="$v.form.insurance.$model"
-                          :class="{ 'border-red': $v.form.insurance.$anyError, 'border-green': $v.form.insurance.required}"
+                          :reduce="label => label.value"
+                          label="label"
                         >
                         <template #list-header>
                             <li style="text-align: center; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="AddInsuranceData = new Date()">ADD INSURANCE</a></li>
                         </template>
                         </v-select>
-                        <div v-if="$v.form.insurance.$anyError == true" class="invalid-feedback" style="display:block;">
-                            Vehicle is required!
-                        </div>
-                      </div>
                     </CCol>
                 </CRow>
                 <CRow class="mt-3">
@@ -131,7 +98,7 @@
                             </tr>
                           <div style="width:125%;"  class="mt-2">
                             <ol class="c" >
-                              <li v-for="(serv, index) in form.services" :key="index">
+                              <!-- <li v-for="(serv, index) in form.services" :key="index">
                                 <Services
                                 v-on:child_data="child_action"
                                 :services="serv"
@@ -139,7 +106,7 @@
                                 v-on:child_add_sub_services="childAddSubServices"
                                 v-on:child_sub_services_changes="childSubChanges"
                                 />
-                              </li>
+                              </li> -->
                             </ol>
                           </div>
                           <tr>
@@ -184,21 +151,23 @@
                   <h4>Document's Verification</h4>
                 </CCol>
                 <CCol lg="6" v-for="(docs, index) in form.documents" :key="index">
-                  <Documents
+                  <!-- <Documents
                   :documents="docs"
                   v-on:pass_files="passFiles"
-                  />
+                  /> -->
                 </CCol>
               </CRow>
+              </CMedia>
+              <CElementCover v-if="media" :opacity="0.9"/>
               <CRow>
                 <CCol lg="12">
-                  <CButton @click="submit_draft" color="success">SAVE AS DRAFT</CButton>
-                  <CButton @click="submit_approval" class="ml-2" color="success">SAVE & SEND</CButton>
+                  <CButton @click="submit" color="success">UPDATE</CButton>
+                  <!-- <CButton @click="submit_approval" class="ml-2" color="success">SAVE & SEND</CButton> -->
                 </CCol>
               </CRow>
             </CCardBody>
         </CCard>
-        <AddCustomerModal
+        <!-- <AddCustomerModal
         :showModalAddData="showModalAddData"
         />
         <AddServicesModal
@@ -215,22 +184,20 @@
         />
         <AddInsuranceModal
         :AddInsuranceData="AddInsuranceData"
-        />
+        /> -->
     </div>
 </template>
 <script>
 import vSelect from 'vue-select'
 import { createPopper } from '@popperjs/core'
-import Services from './Services';
-import AddCustomerModal from './AddCustomerModal';
-import AddServicesModal from './AddServicesModal';
-import AddSubServicesModal from './AddSubServicesModal';
-import AddCarPropertyModal from './AddCarPropertyModal';
-import SubmitApprovalModal from './SubmitApprovalModal';
-import AddInsuranceModal from './AddInsuranceModal';
-import Documents from './Documents';
-import { validationMixin } from "vuelidate"
-import { required } from "vuelidate/lib/validators"
+// import Services from './EditServices';
+// import AddCustomerModal from './AddCustomerModal';
+// import AddServicesModal from './AddServicesModal';
+// import AddSubServicesModal from './AddSubServicesModal';
+// import AddCarPropertyModal from './AddCarPropertyModal';
+// import SubmitApprovalModal from './SubmitApprovalModal';
+// import AddInsuranceModal from './AddInsuranceModal';
+// import Documents from './EditDocuments';
 
 export default {
     data(){
@@ -242,9 +209,10 @@ export default {
         AddCarPropertyData: '',
         AddInsuranceData: '',
         placement: 'bottom',
+        media: true,
         form: {
+          id: '',
           customer_id: '',
-          address: '',
           date: '',
           insurance: '',
           insurance_type: '',
@@ -263,33 +231,14 @@ export default {
     },
     components: {
         vSelect,
-        Services,
-        AddCustomerModal,
-        AddServicesModal,
-        AddSubServicesModal,
-        AddCarPropertyModal,
-        SubmitApprovalModal,
-        AddInsuranceModal,
-        Documents
-    },
-    mixins: [validationMixin],
-    validations() {
-        return {
-          form: {
-             customer_id: {
-              required
-            },
-            date: {
-              required
-            },
-            insurance: {
-              required
-            },
-            vehicle_id: {
-              required
-            },
-          }
-        };
+        // Services,
+        // AddCustomerModal,
+        // AddServicesModal,
+        // AddSubServicesModal,
+        // AddCarPropertyModal,
+        // SubmitApprovalModal,
+        // AddInsuranceModal,
+        // Documents
     },
     filters: {
       customerFilter(data){
@@ -304,7 +253,7 @@ export default {
       insuranceFilter(data){
         if(data){
             const options = data.reduce((option, item) => {
-                option.push({label: item.insurance_name, insurance_type:item.insurance_type, value: item.id, email: item.email, phone: item.phone})
+                option.push({label: item.insurance_name, insurance_type:item.insurance_type, value: item.id})
                 return option
             }, [])
             return options;
@@ -312,19 +261,19 @@ export default {
       },
       propertyFilter(data){
         if(data){
-          const options = data.reduce((option, item) => {
-              option.push({label: item.vehicle.vehicle_name + ' - ' + item.plate_no, value: item.id})
-              return option
-          }, [])
-          return options;
+            const options = data.reduce((option, item) => {
+                option.push({label: item.vehicle.vehicle_name + ' - ' + item.plate_no, value: item.id})
+                return option
+            }, [])
+            return options;
         }
       },
     },
     watch: {
       customer_id(newVal){
-        this.form.vehicle_id = '';
+        // this.form.vehicle_id = '';
         this.$store.dispatch('property/emptyProperty');
-        this.$store.dispatch('property/findProperty', newVal.value);
+        this.$store.dispatch('property/findProperty', newVal);
       },
       insurance(newVal){
         if(newVal.insurance_type == 'Private Insurance'){
@@ -464,9 +413,6 @@ export default {
       }
     },
     computed:{
-      formString () { return JSON.stringify(this.form, null, 4) },
-      isValid () { return !this.$v.form.$invalid },
-      isDirty () { return this.$v.form.$anyDirty },
       sub_total_labor(){
         let service_labor = 0;
         let sub_service_parts = 0
@@ -504,104 +450,98 @@ export default {
       }
     },
     methods: {
-      checkIfValid (fieldName) {
-          const field = this.$v.form[fieldName]
-          if (!field.$dirty) {
-              return null
-          } 
-          return !(field.$invalid || field.$model === '')
-      },
-      validate () {
-          this.$v.form.$touch()
-      },
       addCarProperty(data){
         this.AddCarPropertyData = {
           trigger: new Date(),
           data: data
         }
       },
-      submit_draft(){
-        this.validate();
-        if (this.isValid) {
-          let formData = new FormData();
-          formData.append('status', 'draft');
-          formData.append('customer_id', this.form.customer_id.value);
-          formData.append('date', this.form.date);
-          formData.append('insurance', this.form.insurance.value);
-          formData.append('vehicle_id', this.form.vehicle_id.value);
-          var services = JSON.stringify(this.form.services);
-          formData.append('services', services);
-          var documents = JSON.stringify(this.form.documents);
-          formData.append('documents', documents);
-          this.form.documents.forEach(item => {
-          formData.append('files[]', item.files);
+      submit(){
+        let formData = new FormData();
+        formData.append('status', 'draft');
+        formData.append('id', this.form.id);
+        formData.append('customer_id', this.form.customer_id);
+        formData.append('date', this.form.date);
+        formData.append('insurance', this.form.insurance);
+        formData.append('vehicle_id', this.form.vehicle_id);
+
+        var services = JSON.stringify(this.form.services);
+        formData.append('services', services);
+
+        var documents = JSON.stringify(this.form.documents);
+     
+        formData.append('documents', documents);
+        
+        this.form.documents.forEach(item => {
+            console.log(item.files);
+            
+            formData.append('files[]', item.files);
+            
             if(item.prefix == 'P'){
               item.files.forEach(pic => {
-                console.log(pic);
                 formData.append('pic[]', pic);
               });
             }
-          });
-
-          formData.append('user_id', this.$store.getters['auth/user'].id);
-          console.log(formData);
-          const config = {
-                  headers: { 'content-type': 'multipart/form-data' }
-          }
-          const params = {
-              formData: formData,
-              config: config,
-          }
-          this.$store.dispatch('estimate/addEstimate', params).then(() => {
-              this.$router.replace({
-                name: "Estimates"
-              });
-          });
-        }
+        });
         
+
+        formData.append('user_id', this.$store.getters['auth/user'].id);
+        const config = {
+                headers: { 'content-type': 'multipart/form-data' }
+        }
+        const params = {
+            formData: formData,
+            config: config,
+        }
+        this.$store.dispatch('estimate/updateEstimate', params).then(() => {
+            
+            this.$router.replace({
+              name: "Estimates"
+            });
+        });
       },
       submit_approval(){
-        this.validate();
-        if (this.isValid) {
-          // let formData = new FormData();
-          // formData.append('status', 'draft');
-          // formData.append('customer_id', this.form.customer_id.value);
-          // formData.append('date', this.form.date);
-          // formData.append('insurance', this.form.insurance.value);
-          // formData.append('vehicle_id', this.form.vehicle_id.value);
-          // var services = JSON.stringify(this.form.services);
-          // formData.append('services', services);
-          // var documents = JSON.stringify(this.form.documents);
-          // formData.append('documents', documents);
-          // this.form.documents.forEach(item => {
-          // formData.append('files[]', item.files);
-          //   if(item.prefix == 'P'){
-          //     item.files.forEach(pic => {
-          //       console.log(pic);
-          //       formData.append('pic[]', pic);
-          //     });
-          //   }
-          // });
+        let formData = new FormData();
+        // documents
+        formData.append('vehicle_or_cr', this.form.documents.vehicle_or_cr);
+        formData.append('drivers_license_or', this.form.documents.drivers_license_or);
+        formData.append('police_report_affidavit_accident', this.form.documents.police_report_affidavit_accident);
+        formData.append('comprehensive_insurance', this.form.documents.comprehensive_insurance);
+        formData.append('pictures', this.form.documents.pictures);
+        formData.append('certificate_of_claim', this.form.documents.certificate_of_claim);
+        formData.append('trip_ticket', this.form.documents.trip_ticket);
+        formData.append('authorization_letter_for_government', this.form.documents.authorization_letter_for_government);
+        formData.append('authorization_letter_for_individual', this.form.documents.authorization_letter_for_individual);
+        formData.append('request_for_qoutation', this.form.documents.request_for_qoutation);
+        formData.append('mayors_permit', this.form.documents.mayors_permit);
+        formData.append('philgeps', this.form.documents.philgeps);
+        formData.append('omnibus', this.form.documents.omnibus);
+        formData.append('tax_clearance', this.form.documents.tax_clearance);
+        formData.append('status', 'draft');
 
-          // formData.append('user_id', this.$store.getters['auth/user'].id);
-          
-          // const config = {
-          //         headers: { 'content-type': 'multipart/form-data' }
-          // }
-          // const params = {
-          //     formData: formData,
-          //     config: config,
-          // }
-          // this.$store.dispatch('estimate/addEstimate', params).then(() => {
-          //     this.$router.replace({
-          //       name: "Estimates"
-          //     });
-          // });
+        formData.append('customer_id', this.form.customer_id.value);
+        formData.append('date', this.form.date);
+        formData.append('insurance_type_id', this.form.insurance_type);
+        formData.append('insurance', this.form.insurance);
+        formData.append('vehicle_id', this.form.vehicle_id.value);
 
-          this.AddSaveAndSendData = {
-            trigger: new Date(),
-            data: this.form
-          }
+        var services = JSON.stringify(this.form.services);
+        formData.append('services', services);
+
+        formData.append('user_id', this.$store.getters['auth/user'].id);
+
+        const config = {
+                headers: { 'content-type': 'multipart/form-data' }
+        }
+        const params = {
+            formData: formData,
+            config: config,
+        }
+
+        this.AddSaveAndSendData = {
+          trigger: new Date(),
+          params: params,
+          data: this.form
         }
       },
      
@@ -609,10 +549,8 @@ export default {
         if(event == 'add'){
             this.form.services.push({
               id: '',
-              estimated_id: '', 
               labor_fee: 0,
               parts_fee: 0,
-              services_id: '',
               sub_services: []
             })
         }else{
@@ -621,18 +559,25 @@ export default {
           }
         }
       },
-      passFiles(docName, prefix, files){
-        const index = this.form.documents.findIndex(item => item.document_name === docName);
+      passFiles(docName, prefix, files, id, data){
+          
+        //   this.form.documents.forEach(item => {
+        //       console.log(item);
+        //   })
+        const index = this.form.documents.findIndex(item => item.document_type === docName);
         if(index !== -1){
           this.form.documents.splice(index, 1, {
+            data: data,
+            id: id,
             document_name: docName,
+            document_type: docName,
             files: files,
-            prefix: prefix
+            prefix: prefix,
+            label: docName
           });
         }
       },
       childSubChanges(data){
-        console.log(data);
         if(data){
           this.form.services.forEach(serv => {
             if(serv.id.value == data.services_id){
@@ -652,6 +597,48 @@ export default {
       },
       openAddServices(){
         this.AddServicesData = new Date();
+      },
+      convertByProperty(originalObject, groupByProperty, secondProperty) {  
+        var finalArray = [];  
+        var uniqueVals = [];  
+        originalObject.map((i) => {  
+            var existingVals = uniqueVals.filter((j) => {  
+                return (i[groupByProperty] == j)  
+            });  
+            if (existingVals.length == 0) {  
+                uniqueVals.push(i[groupByProperty]);  
+            }  
+        });  
+        uniqueVals.map((k) => {  
+            var dataObj = [];  
+            var expectedObj = {};  
+            var items = originalObject.filter((l) => {  
+                return (l[groupByProperty] == k)  
+            });  
+            items.map((m) => {  
+                var obj = {};  
+                obj[secondProperty] = m[secondProperty];  
+                obj['file_name'] = m.file_name;
+                obj['document_type'] = m.document_type;
+                obj['id'] = m.id;
+                dataObj.push(obj);
+            });
+            const split = dataObj[0].file_name.split('-');
+            expectedObj[groupByProperty] = k;  
+            expectedObj['data'] = dataObj;
+            expectedObj['prefix'] = split[0];
+            expectedObj['id'] = dataObj[0].id;
+            console.log(k);
+            if(k == 'Pictures'){
+                expectedObj['files'] = [];
+            }else{
+                expectedObj['files'] = '';
+            }
+            expectedObj['document_name'] = dataObj[0].document_type;
+            expectedObj['label'] = dataObj[0].document_type;
+            finalArray.push(expectedObj);  
+        });  
+        return finalArray;
       },
         withPopper(dropdownList, component, { width }) {
         /**
@@ -700,19 +687,55 @@ export default {
       this.$store.dispatch('customer/fetchCustomer');
       this.$store.dispatch('services/fetchServices');
       this.$store.dispatch('insurance/fetchInsurance');
-      this.$store.dispatch('estimate/fetchEstimateCount');
+      
+      this.$store.dispatch('estimate/findEstimate', this.$route.params.id).then(response => {
+          
+        //   let services = [];
+        //   response.scope.forEach(item => {
+        //       this.$store.dispatch('estimate/findSubServices', item.id).then(sub => {
+        //           services.push({
+        //                 id: item.id,
+        //                 services_id: item.services_id,
+        //                 labor_fee: item.labor_fee,
+        //                 parts_fee: item.parts_fee,
+        //                 sub_services: sub
+        //           });
+        //       })
+        //   })
+            var groupByType = this.convertByProperty(response.documents, 'document_type', 'customer_id'); 
+            console.log(groupByType);
+            console.log(response.documents);
+            var property = 'document_type'; // by this item property array will be grouped
+
+            // var groups = response.documents.reduce(function(groups, item) {
+            // var name = item[property]
+            // var group = groups[name] || (groups[name] = []);
+            // group.push(item);
+            // return groups;
+            // }, { });
+
+            this.form = {
+                id: response.id,
+                customer_id: response.customer_id,
+                date: response.date,
+                insurance: response.insurance_id,
+                vehicle_id: response.vehicle_id,
+                vehicle: response.vehicle_id,
+                services: response.scope,
+                documents: groupByType
+            }
+            
+          setTimeout(() => this.media = false, 1000);
+          
+      });
     },
-    multiselectOptions: [
-        { value: 'AL', label: 'PARTS TO BE REPLACE' },
-        { value: 'AK', label: 'PULLDOWN ALL NEC. PARTS TO GIVEWAY FOR REPAIR' },
-        { value: 'AK', label: 'TINSMITH JOB' },
-        { value: 'AK', label: 'PAINTING JOB' },
-        { value: 'AK', label: 'PAINT MATERIALS' },
-    ],
 }
 </script>
 <style>
 .inline {
     display:flex;
+}
+.align-self-start{
+    display:none;
 }
 </style>

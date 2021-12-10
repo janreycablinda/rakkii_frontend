@@ -1,12 +1,12 @@
 <template>
     <CModal
-      title="CAR IN"
+      title="PAYMENT"
       color="primary"
-      :show.sync="showModalCarIn"
+      :show.sync="showModalPayment"
       centered
       size="sm"
     >
-       <CInput
+       <!-- <CInput
             type="date"
             label="Date In *"
             autocomplete="name"
@@ -17,10 +17,10 @@
             label="Date Out"
             autocomplete="name"
             v-model="form.date_out"
-        />
+        /> -->
         <template #footer>
             <CButton @click="submit" color="primary" class="branding-btn">SUBMIT</CButton>
-            <CButton @click="showModalCarIn = false" color="danger">Cancel</CButton>
+            <CButton @click="showModalPayment = false" color="danger">Cancel</CButton>
         </template>
     </CModal>
 </template>
@@ -28,7 +28,7 @@
 export default {
     data(){
         return {
-            showModalCarIn: false,
+            showModalPayment: false,
             items: '',
             form: {
                 id: '',
@@ -37,12 +37,12 @@ export default {
             }
         }
     },
-    props: ['ModalCarInData'],
+    props: ['ModalPaymentData'],
     watch: {
-        ModalCarInData(data){
-            this.showModalCarIn = true;
-            this.items = data.data;
-            this.form.id = data.data.id;
+        ModalPaymentData(data){
+            this.showModalPayment = true;
+            // this.items = data.data;
+            // this.form.id = data.data.id;
         }
     },
     methods: {

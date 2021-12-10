@@ -8,7 +8,7 @@
       :closeOnBackdrop="false"
     >
         <JobOrderTable
-        :items="$store.state.job_orders.job_orders"
+        :items="pending"
         />
         <template #footer>
             <!-- <CButton @click="showListModal = false" color="primary" class="branding-btn">SUBMIT</CButton> -->
@@ -33,6 +33,19 @@ export default {
         ListModalData(){
             this.showListModal = true;
         }
+    },
+    computed: {
+        pending(){
+            let items =[];
+            if(this.$store.state.job_orders.job_orders){
+                this.$store.state.job_orders.job_orders.forEach(item => {
+                    if(item.status == 'pending'){
+                        items.push(item);
+                    }
+                });
+            }
+            return items;
+        },
     },
     methods: {
         hideCompletedModal(){

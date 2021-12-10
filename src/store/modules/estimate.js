@@ -4,10 +4,14 @@ export default {
   namespaced: true,
   state: {
     estimate: [],
+    estimate_new_no: 0
   },
   mutations: {
     SET_ESTIMATE(state, data) {
         state.estimate = data;
+    },
+    SET_ESTIMATE_NEW_NO(state, data) {
+      state.estimate_new_no = data;
     },
     ADD_ESTIMATE(state, data) {
         let items = state.estimate.concat(data);
@@ -29,6 +33,12 @@ export default {
         const response = await axios.get(`resources/estimates`);
 
         commit('SET_ESTIMATE', response.data);
+    },
+
+    async fetchEstimateCount({commit}) {
+        const response = await axios.get(`resources/estimate_count`);
+
+        commit('SET_ESTIMATE_NEW_NO', response.data);
     },
 
     async findEstimate({commit}, id) {
@@ -86,13 +96,13 @@ export default {
     },
 
     async addEstimateSaveSend({commit, dispatch}, data) {
-        await axios.post("resources/add_estimate_save_send").then(response => {
+        await axios.post("resources/add_estimate_save_send", data.formData, data.config).then(response => {
             dispatch('notification/addNotification', {
                 type: 'success',
                 message: 'Successfully Added!'
             }, {root: true});
-
-           commit('ADD_ESTIMATE', response.data);
+            console.log(response.data);
+          //  commit('ADD_ESTIMATE', response.data);
         }, () => {
           dispatch('notification/addNotification', {
             type: 'danger',

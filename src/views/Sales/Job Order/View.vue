@@ -24,10 +24,10 @@
                         </CButton>&nbsp;
                         <CBadge :color="getBadge(info.status)" class="my-0 p-2 capetalize">{{info.status}}</CBadge>
                         <div class="card-header-actions">
-                            <CButton @click="deleteEstimate(info)" size="sm" color="danger" style="position:absolute; top:10px; right:362px;">
+                            <CButton @click="deleteEstimate(info)" size="sm" color="danger" style="position:absolute; top:10px; right:212px;">
                                 <CIcon name="cil-trash" />
                             </CButton>
-                            <CButton :to="'/sales/estimates/edit-estimate/' + info.id" size="sm" color="secondary" style="position:absolute; top:10px; right:322px;">
+                            <CButton :to="'/sales/estimates/edit-estimate/' + info.id" size="sm" color="secondary" style="position:absolute; top:10px; right:172px;">
                                 <CIcon name="cil-pen" />
                             </CButton>
                             <!-- <CButton size="sm" color="secondary" style="position:absolute; top:10px; right:272px;">
@@ -36,7 +36,7 @@
                             <CDropdown
                                 color="secondary"
                                 size="sm"
-                                style="position:absolute; top:10px; right:272px;"
+                                style="position:absolute; top:10px; right:122px;"
                             >
                                 <template #toggler-content>
                                     <CIcon name="cib-adobe-acrobat-reader" />
@@ -44,24 +44,24 @@
                                 <CDropdownItem @click="downloadPdf">Download</CDropdownItem>
                                 <CDropdownItem @click="print">Print</CDropdownItem>
                             </CDropdown>
-                            <CButton size="sm" color="secondary" style="position:absolute; top:10px; right:232px;">
+                            <CButton size="sm" color="secondary" style="position:absolute; top:10px; right:82px;">
                                 <CIcon name="cil-envelope-closed" />
                             </CButton>
                             <CDropdown
                                 class="m-2"
                                 color="secondary"
                                 size="sm"
-                                style="position:absolute; top:5px; right:160px;"
+                                style="position:absolute; top:5px; right:10px;"
                             >
                                 <template #toggler-content>
                                     <span class="my-2 ">More</span>
                                 </template>
-                                <CDropdownItem @click="changeStatus(info.id, 'sent')">Mark as Sent</CDropdownItem>
-                                <CDropdownItem @click="changeStatus(info.id, 'draft')">Mark as Draft</CDropdownItem>
-                                <CDropdownItem @click="changeStatus(info.id, 'disapproved')">Mark as Disapproved</CDropdownItem>
-                                <CDropdownItem @click="changeStatus(info.id, 'approved')">Mark as Approved</CDropdownItem>
+                                <CDropdownItem @click="changeStatus(info.id, 'cancel')">Mark as Cancel</CDropdownItem>
+                                <CDropdownItem @click="changeStatus(info.id, 'onhold')">Mark as On Hold</CDropdownItem>
+                                <!-- <CDropdownItem @click="changeStatus(info.id, 'disapproved')">Mark as Disapproved</CDropdownItem>
+                                <CDropdownItem @click="changeStatus(info.id, 'approved')">Mark as Approved</CDropdownItem> -->
                             </CDropdown>
-                            <CDropdown 
+                            <!-- <CDropdown 
                                 toggler-text="Convert To Job Order" 
                                 class="m-2"
                                 color="primary"
@@ -72,7 +72,7 @@
                                 <CDropdownItem>Convert and Adjust Estimate</CDropdownItem>
                                 <CDropdownDivider/>
                                 <CDropdownItem @click="covert(info)">Convert</CDropdownItem>
-                            </CDropdown>
+                            </CDropdown> -->
                         </div>
                     </CCardHeader>
                     <CCardBody>
@@ -80,7 +80,7 @@
                             <CTab title="Estimate" active>
                                 <CRow class="mt-4">
                                     <CCol lg="6">
-                                        <CLink :to="'/sales/estimates/edit-estimate/' + info.id"><h4>EST-000{{info.job_order_no}}</h4></CLink>
+                                        <CLink :to="'/sales/job-order/edit-job-order/' + info.id"><h4>JO-000{{info.job_order_no}}</h4></CLink>
                                     </CCol>
                                     <CCol lg="6" align="right">
                                          <span>Estimate Date: {{info.date}}</span><br>
@@ -160,6 +160,11 @@
                                 <DocumentsTable
                                 :items="info.documents"
                                 />
+                            </CTab>
+                            <CTab >
+                                <template #title>
+                                    LOA <CBadge color="danger">0</CBadge>
+                                </template>
                             </CTab>
                             <!-- <CTab title="Reminders">
                                 2. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore

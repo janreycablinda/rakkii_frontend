@@ -1,14 +1,13 @@
 <template>
   <div>
+    <strong>{{documents.document_name}}</strong>
     <CInputFile
         v-if="documents.document_name == 'Pictures'"
-        :label="documents.document_name"
         @change="uploadDocs"
         multiple
     />
     <CInputFile
         v-else
-        :label="documents.document_name"
         @change="uploadDocs"
     />
   </div>

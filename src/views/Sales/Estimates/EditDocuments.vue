@@ -1,19 +1,20 @@
 <template>
+<div>
+  <strong>{{documents.label}}</strong>
   <div style="display:flex">
+    
     <CInputFile
         v-if="documents.label == 'Pictures'"
-        :label="documents.label"
         @change="uploadDocs"
         placeholder="documents.file_name"
         multiple
     />
     <CInputFile
         v-else
-        :label="documents.label"
         @change="uploadDocs"
         placeholder="documents.file_name"
     />
-    <div class="mt-2">
+    <div class="mt-2 mr-5">
         <strong>Uploaded Files</strong><br>
         <span v-for="doc in documents.data" :key="doc.id"><CLink @click="downloadDocs(doc)">{{doc.file_name}}</CLink><br></span>
     </div>
@@ -23,6 +24,7 @@
         <span v-else><CLink @click="downloadDocs(documents)" class="mt-2">{{documents.file_name}}</CLink><br></span> -->
     
   </div>
+</div>
 </template>
 <script>
 

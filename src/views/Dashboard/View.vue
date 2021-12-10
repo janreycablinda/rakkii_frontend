@@ -18,7 +18,7 @@
         </CCol>
         <CCol col="12" sm="6" lg="3">
             <CWidgetIcon
-            header="0/0"
+            :header="projectInprogress"
             text="Project Inprogress"
             color="gradient-primary"
             :icon-padding="false"
@@ -393,11 +393,31 @@ import Calendar from './Calendar'
             Calendar,
             ProductionStatus
 		},
+        computed: {
+            projectInprogress(){
+                const job_order = this.$store.state.job_orders.job_orders;
+                let total_job_order = 0;
+                let inprogress = 0;
+                if(job_order){
+                    job_order.forEach(item => {
+                        if(item.status == 'inprogress'){
+                            inprogress += 1;
+                        }
+                    })
+                    total_job_order = this.$store.state.job_orders.job_orders.length;
+                }
+                
+                return inprogress + '/' + total_job_order;
+            }
+        },
 		methods: {
 			setShowDate(d) {
 				this.showDate = d;
 			},
-		}
+		},
+        created(){
+            this.$store.dispatch('job_orders/fetchJobOrder');
+        }
 	}
 </script>
 <style>

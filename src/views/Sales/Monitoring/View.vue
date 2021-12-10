@@ -5,42 +5,44 @@
                 <CCardHeader>
                     <strong>Garage</strong>
                     <div class="card-header-actions">
-                        <CButton size="sm" @click="ListModalData = new Date()" color="primary"><CIcon name="cil-playlist-add"/> <CBadge color="danger">{{$store.state.job_orders.job_orders.length}}</CBadge></CButton>
+                        <CButton size="sm" @click="ListModalData = new Date()" color="primary"><CIcon name="cil-playlist-add"/> <CBadge color="danger">{{pending.length}}</CBadge></CButton>
                     </div>
                 </CCardHeader>
                 <CCardBody>
-                    <div v-for="(est, index) in pending" :key="est.id" class="pending-item px-3 py-1 mt-4">
-                         <div v-if="est.status == 'pending'">
-                            <div class="pending-item-action">
-                                <CButton size="sm" @click="ModalCarInData = {trigger:new Date(), data: est}" color="info">
-                                    <CIcon name="cil-car-alt"/>
-                                </CButton>
-                                <CButton size="sm" class="ml-1" color="warning">
-                                    <CIcon name="cil-pen"/>
-                                </CButton>
-                                <CButton size="sm" class="ml-1" color="secondary">
-                                    <CIcon name="cil-info"/>
-                                </CButton>
-                            </div>
-                            <CRow class="mt-2">
-                                <CCol lg="7">
-                                    <small><b>CUSTOMER: </b>{{est.customer.company_name}}</small>
-                                </CCol>
-                                <CCol lg="5" align="right">
-                                    <small><b>JO-000{{est.job_order_no}}</b></small>
-                                </CCol>
-                            </CRow>
-                            <CRow>
-                                <CCol lg="6">
-                                    <small><b>VEHICLE: </b>{{est.property.vehicle.vehicle_name}}</small>
-                                </CCol>
-                                <CCol lg="6" align="right">
-                                    <small><b>PLATE NO.: {{est.property.plate_no}}</b></small>
-                                </CCol>
-                            </CRow>
+                    <div v-if="waiting.length != 0">
+                        <div v-for="(est, index) in waiting" :key="est.id" class="pending-item px-3 py-1 mt-4">
+                                <div class="pending-item-action">
+                                    <CButton size="sm" @click="ModalCarInData = {trigger:new Date(), data: est}" color="info">
+                                        <CIcon name="cil-car-alt"/>
+                                    </CButton>
+                                    <CButton size="sm" class="ml-1" color="warning">
+                                        <CIcon name="cil-pen"/>
+                                    </CButton>
+                                    <CButton size="sm" class="ml-1" color="secondary">
+                                        <CIcon name="cil-info"/>
+                                    </CButton>
+                                </div>
+                                <CRow class="mt-2">
+                                    <CCol lg="7">
+                                        <small><b>CUSTOMER: </b>{{est.customer.company_name}}</small>
+                                    </CCol>
+                                    <CCol lg="5" align="right">
+                                        <small><b>JO-000{{est.job_order_no}}</b></small>
+                                    </CCol>
+                                </CRow>
+                                <CRow>
+                                    <CCol lg="6">
+                                        <small><b>VEHICLE: </b>{{est.property.vehicle.vehicle_name}}</small>
+                                    </CCol>
+                                    <CCol lg="6" align="right">
+                                        <small><b>PLATE NO.: {{est.property.plate_no}}</b></small>
+                                    </CCol>
+                                </CRow>
                         </div>
                     </div>
-                   
+                    <div v-else align="center">
+                        <strong>NO WAITING VEHICLE ON THE GARAGE</strong>
+                    </div>
                 </CCardBody>
             </CCard>
         </CCol>
@@ -50,11 +52,16 @@
                     <strong>Inprogress</strong>
                 </CCardHeader>
                 <CCardBody>
-                    <div v-for="(data, index) in inprogress" :key="index">
-                    <Inprogress
-                    :inprogress_item="data"
-                    :index="index"
-                    />
+                    <div v-if="inprogress.length != 0">
+                        <div v-for="(data, index) in inprogress" :key="index">
+                        <Inprogress
+                        :inprogress_item="data"
+                        :index="index"
+                        />
+                        </div>
+                    </div>
+                    <div v-else align="center">
+                        <strong>NO INPROGRESS VEHICLE</strong>
                     </div>
                 </CCardBody>
             </CCard>
@@ -83,7 +90,6 @@ import CompletedModal from './CompletedModal';
 import EditCompletedModal from './EditCompletedModal';
 import StartModal from './StartModal';
 import ListModal from './ListModal';
-
 
 export default {
     data(){
@@ -155,21 +161,32 @@ export default {
     watch:{
         '$route' () {
         // this.items = this.$route.meta.breadcrumb;
-            console.log(this.$route.hash);
-            if(this.$route.hash == '#completed'){
+            console.log(this.$route);
+            const route_value = this.$route.hash.split('=');
+
+            if(route_value[0] == '#completed'){
                 this.CompletedModalData = {
                     trigger: new Date(),
-                    data: this.$route.hash
+                    data: this.$route.hash,
+                    id: route_value[1],
+                    timeline_id: route_value[2],
+                    timeline_name: route_value[3],
                 }
-            }else if(this.$route.hash == '#edit'){
+            }else if(route_value[0] == '#edit'){
                 this.EditCompletedModalData = {
                     trigger: new Date(),
-                    data: this.$route.hash
+                    data: this.$route.hash,
+                    id: route_value[1],
+                    timeline_id: route_value[2],
+                    timeline_name: route_value[3],
                 }
-            }else if(this.$route.hash == '#start'){
+            }else if(route_value[0] == '#start'){
                 this.StartData = {
                     trigger: new Date(),
-                    data: this.$route.hash
+                    data: this.$route.hash,
+                    id: route_value[1],
+                    timeline_id: route_value[2],
+                    timeline_name: route_value[3],
                 }
             }
         }
@@ -180,6 +197,17 @@ export default {
             if(this.$store.state.job_orders.job_orders){
                 this.$store.state.job_orders.job_orders.forEach(item => {
                     if(item.status == 'pending'){
+                        items.push(item);
+                    }
+                });
+            }
+            return items;
+        },
+        waiting(){
+            let items =[];
+            if(this.$store.state.job_orders.job_orders){
+                this.$store.state.job_orders.job_orders.forEach(item => {
+                    if(item.status == 'waiting'){
                         items.push(item);
                     }
                 });
@@ -220,7 +248,7 @@ export default {
 .pending-item-action {
     position:absolute;
     right:10px;
-    margin-top:-28px;
+    margin-top:-20px;
 }
 .line-container .line-item{
     padding:0px !important;

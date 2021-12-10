@@ -25,9 +25,6 @@
       <CIcon name="cil-settings" /> Settings
     </CDropdownItem> -->
     <CDropdownDivider/>
-    <CDropdownItem>
-      <CIcon name="cil-shield-alt" /> Lock Account
-    </CDropdownItem>
     <CDropdownItem @click="signOut">
       <CIcon name="cil-lock-locked" /> Logout
     </CDropdownItem>

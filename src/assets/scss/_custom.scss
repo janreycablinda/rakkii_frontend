@@ -65,6 +65,10 @@ $vs-component-line-height: 1.7 !default;
     border: 1px solid #E55353;
     border-radius: 5px;
 }
+.border-green{
+    border: 1px solid #2EB85C;
+    border-radius: 5px;
+}
 .v-select.drop-up.vs--open .vs__dropdown-toggle {
     border-radius: 0 0 4px 4px;
     border-top-color: transparent;
@@ -201,4 +205,30 @@ list-style-type: upper-roman;
 }
 .lowercase{
     text-transform: lowercase;
+}
+.hover-pointer:hover{
+    cursor:pointer;
+}
+.form-group{
+    width:100%;
+}
+.form-group label{
+    position:absolute;
+    font-weight:bold;
+    top:-11px;
+    left:10px;
+    color:#768192;
+    z-index:1;
+}
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: #768192 !important;
+    opacity: 1; /* Firefox */
+  }
+  
+  :-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: #768192 !important;
+  }
+  
+  ::-ms-input-placeholder { /* Microsoft Edge */
+    color: #768192 !important;
 }

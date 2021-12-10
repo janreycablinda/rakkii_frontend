@@ -161,8 +161,8 @@
               <CElementCover v-if="media" :opacity="0.9"/>
               <CRow>
                 <CCol lg="12">
-                  <CButton @click="submit" color="success">SAVE AS DRAFT</CButton>
-                  <CButton @click="submit_approval" class="ml-2" color="success">SAVE & SEND</CButton>
+                  <CButton @click="submit" color="success">UPDATE</CButton>
+                  <!-- <CButton @click="submit_approval" class="ml-2" color="success">SAVE & SEND</CButton> -->
                 </CCol>
               </CRow>
             </CCardBody>

@@ -28,7 +28,7 @@
         <template #customer="{item}">
           <td>
             <CLink
-              :to="'/customers/customer-profile/' + item.customer_id + '/profile'"
+              :to="'/customers/customer-profile/' + item.customer_id + '/projects'"
             >
             {{item.customer.company_name}}
             </CLink>

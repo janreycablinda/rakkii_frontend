@@ -17,7 +17,6 @@ export default {
   actions: {
     async downloadDocument({commit}, file_name) {
         // const response = await axios.get(`resources/estimates`);
-
         await axios.get(`resources/document_download/${file_name}`, {responseType: 'arraybuffer'})
             .then(response => {
             let blob = new Blob([response.data], { type: 'application/pdf' })

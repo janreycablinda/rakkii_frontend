@@ -24,28 +24,46 @@
                     <CRow>
                         <CCol lg="6">
                             <CInput
-                                label="Name"
                                 autocomplete="name"
+                                v-model="form.name"
+                                onblur="this.placeholder = 'Name'" 
+                                onfocus="this.placeholder = ''"
+                                description="Name" 
+                                placeholder="Name"
                             />
                         </CCol>
                         <CCol lg="6">
                             <CInput
-                                label="Email"
                                 autocomplete="name"
+                                v-model="form.email"
+                                onblur="this.placeholder = 'Email'" 
+                                onfocus="this.placeholder = ''"
+                                description="Email" 
+                                placeholder="Email"
                             />
                         </CCol>
                     </CRow>
                     <CRow>
                         <CCol lg="6">
                             <CInput
-                                label="Contact No."
                                 autocomplete="name"
+                                readonly
+                                onblur="this.placeholder = 'Username'" 
+                                onfocus="this.placeholder = ''"
+                                description="Username" 
+                                placeholder="Username"
+                                :value="this.$store.getters['auth/user'].username"
                             />
                         </CCol>
                         <CCol lg="6">
                             <CInput
-                                label="Address"
                                 autocomplete="name"
+                                readonly
+                                onblur="this.placeholder = 'Role'" 
+                                onfocus="this.placeholder = ''"
+                                description="Role" 
+                                placeholder="Role"
+                                :value="this.$store.getters['auth/user'].role"
                             />
                         </CCol>
                     </CRow>
@@ -83,6 +101,18 @@
 </template>
 <script>
 export default {
-    
+    data(){
+        return {
+            form: {
+                email: '',
+                name: '',
+            }
+        }
+    },
+    created(){
+        this.form.email = this.$store.getters['auth/user'].email;
+        this.form.name = this.$store.getters['auth/user'].name;
+        console.log(this.$store.getters['auth/user']);
+    }
 }
 </script>

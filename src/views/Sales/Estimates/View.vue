@@ -44,7 +44,7 @@
                                 <CDropdownItem @click="downloadPdf">Download</CDropdownItem>
                                 <CDropdownItem @click="print">Print</CDropdownItem>
                             </CDropdown>
-                            <CButton size="sm" color="secondary" style="position:absolute; top:10px; right:232px;">
+                            <CButton size="sm" @click="showMail" color="secondary" style="position:absolute; top:10px; right:232px;">
                                 <CIcon name="cil-envelope-closed" />
                             </CButton>
                             <CDropdown
@@ -69,6 +69,7 @@
                                 style="position:absolute; top:5px; right:10px;"
                             >
                                 <CDropdownItem>Convert and Save as Draft</CDropdownItem>
+                                <CDropdownItem>Convert and Save as Approved</CDropdownItem>
                                 <CDropdownItem>Convert and Adjust Estimate</CDropdownItem>
                                 <CDropdownDivider/>
                                 <CDropdownItem @click="covert(info)">Convert</CDropdownItem>
@@ -160,6 +161,17 @@
                                 <DocumentsTable
                                 :items="info.documents"
                                 />
+                            </CTab>
+                            <CTab>
+                                <template #title>
+                                    LOA <CBadge color="danger">{{info.loa_documents.length}}</CBadge>
+                                </template>
+                                <LoaDocumentTable
+                                :items="info.loa_documents"
+                                />
+                                <!-- <DocumentsTable
+                                :items="info.documents"
+                                /> -->
                             </CTab>
                             <!-- <CTab title="Reminders">
                                 2. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
@@ -522,17 +534,24 @@
             </div>
         </section>
     </vue-html2pdf>
+    <SubmitApprovalModal
+    :AddSaveAndSendData="AddSaveAndSendData"
+    />
     </div>
 </template>
 <script>
 import EstimateTable from './EstimateTable';
 import DocumentsTable from './DocumentsTable';
 import VueHtml2pdf from 'vue-html2pdf'
+import LoaDocumentTable from './LoaDocumentTable'
+import SubmitApprovalModal from './SubmitApprovalModal'
+
 export default {
     data(){
       return {
         colSize: '12',
         info: '',
+        AddSaveAndSendData: '',
         items: [
             {
             tag: '2018-01-12',
@@ -546,7 +565,9 @@ export default {
     components: {
         EstimateTable,
         DocumentsTable,
-        VueHtml2pdf
+        VueHtml2pdf,
+        LoaDocumentTable,
+        SubmitApprovalModal
     },
     computed: {
         activity_log(){
@@ -656,10 +677,16 @@ export default {
                 this.info = '';
                 this.colSize = 12;
             }
+        },
+        showMail(){
+            this.AddSaveAndSendData = {
+                trigger: new Date(),
+                data: this.info
+            }
         }
     },
     created(){
-        this.$store.dispatch('job_orders/fetchJobOrder');
+        this.$store.dispatch('estimate/fetchEstimate');
     }
 }
 </script>

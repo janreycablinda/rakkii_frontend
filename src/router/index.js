@@ -15,6 +15,7 @@ const CustomerProfile = () => import('@/views/Customers/Profile/CustomerProfile'
 const CustomerProjects = () => import('@/views/Customers/Profile/CustomerProjects')
 const EditCustomerProjects = () => import('@/views/Customers/EditCustomerProjects')
 const JobOrder = () => import('@/views/Sales/Job Order/View')
+const EditJobOrder = () => import('@/views/Sales/Job Order/EditJobOrder')
 
 
 const Invoices = () => import('@/views/Sales/Invoices/View')
@@ -28,6 +29,8 @@ const Credit_Note = () => import('@/views/Sales/Credit Notes/View')
 const Expenses = () => import('@/views/Expenses/View')
 // const Accounting_Dashboard = () => import('@/views/Accounting/Dashboard/View')
 const Login = () => import('@/views/Authentication/Login')
+const Uploader = () => import('@/views/Authentication/Uploader')
+const Page404 = () => import('@/views/Authentication/Page404')
 const Forgot = () => import('@/views/Authentication/Forgot')
 const Profile = () => import('@/views/Profile/View')
 // const Items = () => import('@/views/Inventory/Items/View')
@@ -360,6 +363,24 @@ export default new Router({
             meta: {
               breadcrumb: [
                 { text: 'Job Order' }
+              ]
+            }
+        },
+        {
+            path: '/sales/job-order/edit-job-order/:id',
+            name: 'EditJobOrder',
+            component: EditJobOrder,
+            beforeEnter: (to, from, next) => {
+              if (!store.getters["auth/authenticated"]) {
+                next({
+                  name: "Login"
+                });
+              }
+              next();
+            },
+            meta: {
+              breadcrumb: [
+                { text: 'Edit Job Order' }
               ]
             }
         },
@@ -749,17 +770,43 @@ export default new Router({
       ]
     },
     {
-      path: '/',
+      path: '/404',
       component: {
         render (c) { return c('router-view') }
       },
       children: [
         {
-          path: 'forgot',
-          name: 'Forgot',
-          component: Forgot
+          path: '',
+          name: 'Page404',
+          component: Page404
         },
       ]
-    }
+    },
+    {
+      path: '/uploader/:signature',
+      component: {
+        render (c) { return c('router-view') }
+      },
+      children: [
+        {
+          path: '',
+          name: 'Uploader',
+          component: Uploader
+        },
+      ]
+    },
+    // {
+    //   path: '/',
+    //   component: {
+    //     render (c) { return c('router-view') }
+    //   },
+    //   children: [
+    //     {
+    //       path: 'forgot',
+    //       name: 'Forgot',
+    //       component: Forgot
+    //     },
+    //   ]
+    // }
   ]
 })
