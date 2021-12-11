@@ -68,11 +68,10 @@
                                 size="sm"
                                 style="position:absolute; top:5px; right:10px;"
                             >
-                                <CDropdownItem>Convert and Save as Draft</CDropdownItem>
-                                <CDropdownItem>Convert and Save as Approved</CDropdownItem>
-                                <CDropdownItem>Convert and Adjust Estimate</CDropdownItem>
+                                <CDropdownItem @click="covert(info, 'draft')">Convert and Save as Draft</CDropdownItem>
+                                <CDropdownItem @click="covert(info, 'approved')">Convert and Save as Approved</CDropdownItem>
                                 <CDropdownDivider/>
-                                <CDropdownItem @click="covert(info)">Convert</CDropdownItem>
+                                <CDropdownItem @click="covert(info, '')">Convert</CDropdownItem>
                             </CDropdown>
                         </div>
                     </CCardHeader>
@@ -157,21 +156,26 @@
                                     </CCol>
                                 </CRow>
                             </CTab>
-                            <CTab title="Documents">
+                            <CTab>
+                                <template #title>
+                                    Documents <CBadge color="danger">{{info.documents.length}}</CBadge>
+                                </template>
+                                <CButton @click="AddDocumentData = {trigger: new Date(), data: info}" class="mt-2" color="primary" size="sm">ADD DOCUMENT</CButton>
                                 <DocumentsTable
                                 :items="info.documents"
+                                v-on:document_added="documentAdded"
                                 />
                             </CTab>
                             <CTab>
                                 <template #title>
                                     LOA <CBadge color="danger">{{info.loa_documents.length}}</CBadge>
                                 </template>
+                                <CButton @click="AddLoaDocumentData = {trigger: new Date(), data: info}" class="mt-2" color="primary" size="sm">ADD LOA DOCUMENT</CButton>
                                 <LoaDocumentTable
                                 :items="info.loa_documents"
+                                v-on:document_added="documentAdded"
                                 />
-                                <!-- <DocumentsTable
-                                :items="info.documents"
-                                /> -->
+                                
                             </CTab>
                             <!-- <CTab title="Reminders">
                                 2. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
@@ -184,7 +188,8 @@
                                 <simple-timeline :items='activity_log'></simple-timeline>
                             </CTab>
                             <CTab title="Mail">
-                                <h4>No tracked emails sent</h4>
+                                <simple-timeline v-if="mail_log != ''" :items='mail_log'></simple-timeline>
+                                 <h4 v-else>No tracked emails sent</h4>
                             </CTab>
                         </CTabs>
                     </CCardBody>
@@ -537,6 +542,18 @@
     <SubmitApprovalModal
     :AddSaveAndSendData="AddSaveAndSendData"
     />
+    <AddDocumentModal
+    :AddDocumentData="AddDocumentData"
+    v-on:document_added="documentAdded"
+    />
+    <AddLoaDocument
+    :AddLoaDocumentData="AddLoaDocumentData"
+    v-on:document_added="documentAdded"
+    />
+    <SendMailModal
+    :SendMailData="SendMailData"
+    v-on:document_added="documentAdded"
+    />
     </div>
 </template>
 <script>
@@ -545,6 +562,9 @@ import DocumentsTable from './DocumentsTable';
 import VueHtml2pdf from 'vue-html2pdf'
 import LoaDocumentTable from './LoaDocumentTable'
 import SubmitApprovalModal from './SubmitApprovalModal'
+import AddDocumentModal from './AddDocumentModal'
+import AddLoaDocument from './AddLoaDocument'
+import SendMailModal from './SendMailModal'
 
 export default {
     data(){
@@ -552,6 +572,9 @@ export default {
         colSize: '12',
         info: '',
         AddSaveAndSendData: '',
+        AddDocumentData: '',
+        AddLoaDocumentData: '',
+        SendMailData: '',
         items: [
             {
             tag: '2018-01-12',
@@ -567,18 +590,37 @@ export default {
         DocumentsTable,
         VueHtml2pdf,
         LoaDocumentTable,
-        SubmitApprovalModal
+        SubmitApprovalModal,
+        AddDocumentModal,
+        AddLoaDocument,
+        SendMailModal
     },
     computed: {
         activity_log(){
             const log = [];
+            
             if(this.info){
                 this.info.activity_log.forEach(item => {
                     log.push({
+                    id: item.id,
                     tag: this.$root.momentFormatDateTime(item.created_at),
                     color: '#84C529',
                     content: '<span class="timeline-time">' + this.$root.momentParse(item.created_at) + '</span>',
                     footer: '<span class="timeline-name">' + item.user.name + '</span> - ' +item.activity,
+                    });
+                })
+            }
+            return log.sort((a, b) => parseFloat(b.id) - parseFloat(a.id));
+        },
+        mail_log(){
+            const log = [];
+            if(this.info){
+                this.info.mail.forEach(item => {
+                    log.push({
+                    tag: this.$root.momentFormatDateTime(item.created_at),
+                    color: '#84C529',
+                    content: '<span class="timeline-time">' + this.$root.momentParse(item.created_at) + '</span>',
+                    footer: '<span class="timeline-name">' + item.user.name + '</span> - ' +item.action + ' <span class="timeline-name">' + item.email + '</span>',
                     });
                 })
             }
@@ -629,6 +671,10 @@ export default {
                 windowTitle: 'RAKKII AUTO SERVICES',
             });
         },
+        documentAdded(data){
+            console.log(data);
+            this.info = data;
+        },
         downloadPdf () {
             this.$refs.html2Pdf.generatePdf()
         },
@@ -660,15 +706,25 @@ export default {
                 id: id,
                 status: status
             }
-            this.$store.dispatch('estimate/updateStatusEstimate', params).then(() => {
-                this.info.status = status;
+            this.$store.dispatch('estimate/updateStatusEstimate', params).then(response => {
+                this.info = response;
             });
         },
-        covert(data){
+        covert(data, status){
             console.log(data);
-            this.$store.dispatch('estimate/convertEstimate', data).then(() => {
-                this.info = '';
-                this.colSize = 12;
+            const params = {
+                id: data.id,
+                status: status
+            }
+            this.$store.dispatch('estimate/convertEstimate', params).then(response => {
+                console.log(response);
+                if(response.status == null){
+                    this.colSize = 12;
+                    this.info = '';
+                }else{
+                    this.info = response.data;
+                }
+                
             });
         },
         deleteEstimate(data){
@@ -679,7 +735,7 @@ export default {
             }
         },
         showMail(){
-            this.AddSaveAndSendData = {
+            this.SendMailData = {
                 trigger: new Date(),
                 data: this.info
             }

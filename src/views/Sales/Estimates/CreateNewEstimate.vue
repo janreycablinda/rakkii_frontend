@@ -304,7 +304,7 @@ export default {
       insuranceFilter(data){
         if(data){
             const options = data.reduce((option, item) => {
-                option.push({label: item.insurance_name, insurance_type:item.insurance_type, value: item.id, email: item.email, phone: item.phone})
+                option.push({label: item.insurance_name, insurance_type:item.insurance_type, value: item.id, email: item.email, phone: item.phone, contact_person: item.contact_person})
                 return option
             }, [])
             return options;
@@ -453,7 +453,7 @@ export default {
               files: '',
               prefix: 'OSS'
             },
-             {
+            {
               document_name: 'Tax Clearance/ITR',
               files: '',
               prefix: 'TC'
@@ -563,40 +563,6 @@ export default {
       submit_approval(){
         this.validate();
         if (this.isValid) {
-          // let formData = new FormData();
-          // formData.append('status', 'draft');
-          // formData.append('customer_id', this.form.customer_id.value);
-          // formData.append('date', this.form.date);
-          // formData.append('insurance', this.form.insurance.value);
-          // formData.append('vehicle_id', this.form.vehicle_id.value);
-          // var services = JSON.stringify(this.form.services);
-          // formData.append('services', services);
-          // var documents = JSON.stringify(this.form.documents);
-          // formData.append('documents', documents);
-          // this.form.documents.forEach(item => {
-          // formData.append('files[]', item.files);
-          //   if(item.prefix == 'P'){
-          //     item.files.forEach(pic => {
-          //       console.log(pic);
-          //       formData.append('pic[]', pic);
-          //     });
-          //   }
-          // });
-
-          // formData.append('user_id', this.$store.getters['auth/user'].id);
-          
-          // const config = {
-          //         headers: { 'content-type': 'multipart/form-data' }
-          // }
-          // const params = {
-          //     formData: formData,
-          //     config: config,
-          // }
-          // this.$store.dispatch('estimate/addEstimate', params).then(() => {
-          //     this.$router.replace({
-          //       name: "Estimates"
-          //     });
-          // });
 
           this.AddSaveAndSendData = {
             trigger: new Date(),

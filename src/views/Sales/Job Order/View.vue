@@ -27,7 +27,7 @@
                             <CButton @click="deleteEstimate(info)" size="sm" color="danger" style="position:absolute; top:10px; right:212px;">
                                 <CIcon name="cil-trash" />
                             </CButton>
-                            <CButton :to="'/sales/estimates/edit-estimate/' + info.id" size="sm" color="secondary" style="position:absolute; top:10px; right:172px;">
+                            <CButton :to="'/sales/job-order/edit-job-order/' + info.id" size="sm" color="secondary" style="position:absolute; top:10px; right:172px;">
                                 <CIcon name="cil-pen" />
                             </CButton>
                             <!-- <CButton size="sm" color="secondary" style="position:absolute; top:10px; right:272px;">
@@ -156,7 +156,10 @@
                                     </CCol>
                                 </CRow>
                             </CTab>
-                            <CTab title="Documents">
+                            <CTab>
+                                <template #title>
+                                    Documents <CBadge color="danger">{{info.documents.length}}</CBadge>
+                                </template>
                                 <DocumentsTable
                                 :items="info.documents"
                                 />

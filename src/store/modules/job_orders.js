@@ -23,6 +23,16 @@ export default {
         commit('SET_JOB_ORDER', response.data);
     },
 
+    async findJobOrder({commit}, id) {
+        return new Promise((resolve, reject) => {
+          axios.get(`resources/find_job_order/${id}`).then(response => {
+                resolve(response.data);
+            }, error => {
+                reject(error);
+            });
+        })
+    },
+
     async findTimeline({commit}, id) {
         return new Promise((resolve, reject) => {
           axios.get(`resources/find_timeline/${id}`).then(response => {
@@ -137,6 +147,35 @@ export default {
                 message: 'Successfully Updated!'
             }, {root: true});
           commit('UPDATE_JOB_ORDER', response.data);
+        }, () => {
+          dispatch('notification/addNotification', {
+            type: 'danger',
+            message: 'Ops! Something went wrong!'
+          }, {root: true});
+        });
+    },
+
+    async updateJobOrder({commit, dispatch}, data) {
+      console.log(data);
+        await axios.post("resources/update_job_order", {
+          id: data.form.id,
+          date: data.form.date,
+          insurance_id: data.form.insurance,
+          vehicle_id: data.form.vehicle_id,
+          services: data.form.services,
+          customer_id: data.form.customer_id,
+          total_repair_cost: data.payment_form.total_repair_cost,
+          policy_deductible: data.payment_form.policy_deductible,
+          betterment: data.payment_form.betterment,
+          discount: data.payment_form.discount,
+          net: data.payment_form.net,
+        }).then(response => {
+            dispatch('notification/addNotification', {
+                type: 'success',
+                message: 'Successfully Added!'
+            }, {root: true});
+            // console.log(response.data);
+          // commit('ADD_ESTIMATE', response.data);
         }, () => {
           dispatch('notification/addNotification', {
             type: 'danger',

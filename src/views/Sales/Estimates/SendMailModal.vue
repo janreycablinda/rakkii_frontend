@@ -2,7 +2,7 @@
     <CModal
       title="INSURANCE INFORMATION"
       color="primary"
-      :show.sync="showModalSaveAndSend"
+      :show.sync="showModalSendMail"
       centered
       :closeOnBackdrop="false"
     >
@@ -53,8 +53,8 @@
             
         </CForm>
         <template #footer>
-            <CButton @click="submit" id="save-and-send-btn" color="primary" class="branding-btn">SEND & SAVE</CButton>
-            <CButton @click="showModalSaveAndSend = false" color="danger">Cancel</CButton>
+            <CButton @click="submit" id="send-mail-estimate-btn" color="primary" class="branding-btn">SEND</CButton>
+            <CButton @click="showModalSendMail = false" color="danger">Cancel</CButton>
         </template>
     </CModal>
 </template>
@@ -65,7 +65,7 @@ export default {
     data(){
         return {
             placement: 'bottom',
-            showModalSaveAndSend: false,
+            showModalSendMail: false,
             form_modal: this.getFormData(),
             form: ''
         }
@@ -84,58 +84,30 @@ export default {
             }
         },
     },
-    props: ['AddSaveAndSendData'],
+    props: ['SendMailData'],
     watch: {
-        AddSaveAndSendData(data){
-            console.log(data.data)
-            this.form_modal.insurance = data.data.insurance.label;
+        SendMailData(data){
+            this.form_modal.insurance = data.data.insurance.insurance_name;
             this.form_modal.email = data.data.insurance.email;
             this.form_modal.phone = data.data.insurance.phone;
             this.form_modal.message = '<p>Dear ' + data.data.insurance.contact_person + ',</p><br /><p>Thank you for your estimate request.</p><p>Download the attachment to view document required.</p><p>Please contact us for more information.</p><br /><p>Kind Regards,</p><p>{email_signature}</p>';
             this.form = data.data;
-            this.showModalSaveAndSend = true;
+            this.showModalSendMail = true;
         }
     },
     methods: {
         submit(){
-          let formData = new FormData();
-          formData.append('status', 'draft');
-          formData.append('customer_id', this.form.customer_id.value);
-          formData.append('date', this.form.date);
-          formData.append('insurance', this.form.insurance.value);
-          formData.append('vehicle_id', this.form.vehicle_id.value);
-          var services = JSON.stringify(this.form.services);
-          formData.append('services', services);
-          var documents = JSON.stringify(this.form.documents);
-          formData.append('documents', documents);
-          this.form.documents.forEach(item => {
-          formData.append('files[]', item.files);
-            if(item.prefix == 'P'){
-              item.files.forEach(pic => {
-                console.log(pic);
-                formData.append('pic[]', pic);
-              });
-            }
-          });
-
-          var message = JSON.stringify(this.form_modal.message);
-          formData.append('form_email', this.form_modal.email);
-          formData.append('form_message', message);
-
-          formData.append('user_id', this.$store.getters['auth/user'].id);
-            const config = {
-                  headers: { 'content-type': 'multipart/form-data' }
-            }
             const params = {
-              formData: formData,
-              config: config
+                email: this.form_modal.email,
+                message: this.form_modal.message,
+                id: this.form.id
             }
-            this.$root.btn_load(true, 'save-and-send-btn', 'SAVE & SEND');
-            this.$store.dispatch('estimate/addEstimateSaveSend', params).then(() => {
-                this.$root.btn_load(false, 'save-and-send-btn', 'SAVE & SEND');
-                this.$router.replace({
-                    name: "Estimates"
-                });
+
+            this.$root.btn_load(true, 'send-mail-estimate-btn', 'SEND');
+            this.$store.dispatch('estimate/sendEstimateToLoa', params).then(response => {
+                this.$root.btn_load(false, 'send-mail-estimate-btn', 'SEND');
+                this.$emit('document_added', response);
+                this.showModalSendMail = false;
             });
             // this.$root.btn_load(true, 'add-services-type-btn-modal', 'ADD');
             // this.$store.dispatch('services_type/addServicesType', this.form).then(() => {
@@ -146,10 +118,11 @@ export default {
         },
         getFormData(){
             return {
+                id: '',
                 insurance: '',
                 email: '',
                 phone: '',
-                message: ''
+                message: '<p>Dear {contact_firstname} {contact_lastname}</p><br /><p>Thank you for your estimate request.</p><p>Download the attachment to view document required.</p><p>Please contact us for more information.</p><br /><p>Kind Regards,</p><p>{email_signature}</p>'
             }
         },
     },

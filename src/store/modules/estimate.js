@@ -79,7 +79,15 @@ export default {
     },
 
     async updateEstimate({commit, dispatch}, data) {
-        await axios.post("resources/update_estimate", data.formData, data.config).then(response => {
+      console.log(data);
+        await axios.post("resources/update_estimate", {
+          id: data.id,
+          date: data.date,
+          insurance_id: data.insurance,
+          vehicle_id: data.vehicle_id,
+          services: data.services,
+          customer_id: data.customer_id
+        }).then(response => {
             dispatch('notification/addNotification', {
                 type: 'success',
                 message: 'Successfully Added!'
@@ -91,7 +99,6 @@ export default {
             type: 'danger',
             message: 'Ops! Something went wrong!'
           }, {root: true});
-          
         });
     },
 
@@ -113,23 +120,57 @@ export default {
     },
 
     async updateStatusEstimate({commit, dispatch, rootState}, data) {
-      await axios.post("resources/update_status_estimate", {
-        id: data.id,
-        status: data.status,
-        user_id: rootState.auth.user.id
-      }).then(response => {
+      return new Promise((resolve, reject) => {
+        axios.post('resources/update_status_estimate', {
+          id: data.id,
+          status: data.status,
+          user_id: rootState.auth.user.id
+        }).then(response => {
           dispatch('notification/addNotification', {
-              type: 'success',
-              message: 'Successfully Updated!'
+            type: 'success',
+            message: 'Successfully Updated!'
           }, {root: true});
 
-         commit('UPDATE_ESTIMATE', response.data);
-      }, () => {
-        dispatch('notification/addNotification', {
-          type: 'danger',
-          message: 'Ops! Something went wrong!'
-        }, {root: true});
-        
+          commit('UPDATE_ESTIMATE', response.data);
+
+          resolve(response.data);
+        }, error => {
+
+          dispatch('notification/addNotification', {
+            type: 'danger',
+            message: 'Ops! Something went wrong!'
+          }, {root: true});
+
+          reject(error);
+        });
+      });
+    },
+
+    async sendEstimateToLoa({commit, dispatch, rootState}, data) {
+      return new Promise((resolve, reject) => {
+        axios.post('resources/send_estimate_to_loa', {
+          id: data.id,
+          email: data.email,
+          message: data.message,
+          user_id: rootState.auth.user.id
+        }).then(response => {
+          dispatch('notification/addNotification', {
+            type: 'success',
+            message: 'Successfully Updated!'
+          }, {root: true});
+
+          commit('UPDATE_ESTIMATE', response.data);
+
+          resolve(response.data);
+        }, error => {
+
+          dispatch('notification/addNotification', {
+            type: 'danger',
+            message: 'Ops! Something went wrong!'
+          }, {root: true});
+
+          reject(error);
+        });
       });
     },
 
@@ -149,22 +190,34 @@ export default {
         }
     },
 
-    async convertEstimate({commit, dispatch}, data) {
-      await axios.post("resources/convert_estimate", {
-        id: data.id
-      }).then(response => {
+    async convertEstimate({commit, dispatch, rootState}, data) {
+      return new Promise((resolve, reject) => {
+        axios.post('resources/convert_estimate', {
+          id: data.id,
+          status: data.status,
+          user_id: rootState.auth.user.id
+        }).then(response => {
           dispatch('notification/addNotification', {
               type: 'success',
               message: 'Successfully Updated!'
           }, {root: true});
+         
+          if(response.data.status == null){
+            commit('DELETE_ESTIMATE', response.data.data.id);
+          }else{
+            commit('UPDATE_ESTIMATE', response.data.data);
+          }
+         
+          resolve(response.data);
+        }, error => {
 
-         commit('DELETE_ESTIMATE', response.data);
-      }, () => {
-        dispatch('notification/addNotification', {
-          type: 'danger',
-          message: 'Ops! Something went wrong!'
-        }, {root: true});
-        
+          dispatch('notification/addNotification', {
+            type: 'danger',
+            message: 'Ops! Something went wrong!'
+          }, {root: true});
+
+          reject(error);
+        });
       });
     },
 

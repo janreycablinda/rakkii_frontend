@@ -25,8 +25,100 @@ export default {
             link.download = file_name;
             link.click()
         })
+    },
 
-        // commit('SET_ESTIMATE', response.data);
+    async addDocuments({commit, dispatch}, data) {
+      return new Promise((resolve, reject) => {
+        axios.post('resources/add_documents', data.formData, data.config).then(response => {
+          dispatch('notification/addNotification', {
+              type: 'success',
+              message: 'Successfully Added!'
+          }, {root: true});
+
+          commit('estimate/UPDATE_ESTIMATE', response.data, { root: true });
+
+          resolve(response.data);
+        }, error => {
+
+          dispatch('notification/addNotification', {
+            type: 'danger',
+            message: 'Ops! Something went wrong!'
+          }, {root: true});
+
+          reject(error);
+        });
+      })
+    },
+
+    async addLoaDocuments({commit, dispatch}, data) {
+      return new Promise((resolve, reject) => {
+        axios.post('resources/add_loa_documents', data.formData, data.config).then(response => {
+          dispatch('notification/addNotification', {
+              type: 'success',
+              message: 'Successfully Added!'
+          }, {root: true});
+
+          commit('estimate/UPDATE_ESTIMATE', response.data, { root: true });
+
+          resolve(response.data);
+        }, error => {
+
+          dispatch('notification/addNotification', {
+            type: 'danger',
+            message: 'Ops! Something went wrong!'
+          }, {root: true});
+
+          reject(error);
+        });
+      })
+    },
+
+    async deleteDocument({commit, dispatch}, data) {
+      return new Promise((resolve, reject) => {
+        axios.delete(`resources/delete_document/${data.id}/${data.estimate_id}`).then(response => {
+          dispatch('notification/addNotification', {
+              type: 'success',
+              message: 'Successfully Deleted!'
+          }, {root: true});
+
+          commit('estimate/UPDATE_ESTIMATE', response.data, { root: true });
+
+          resolve(response.data);
+        }, error => {
+
+          dispatch('notification/addNotification', {
+            type: 'danger',
+            message: 'Ops! Something went wrong!'
+          }, {root: true});
+
+          reject(error);
+        });
+
+      });
+    },
+
+    async deleteLoaDocument({commit, dispatch}, data) {
+      return new Promise((resolve, reject) => {
+        axios.delete(`resources/delete_loa_document/${data.id}/${data.estimate_id}`).then(response => {
+          dispatch('notification/addNotification', {
+              type: 'success',
+              message: 'Successfully Deleted!'
+          }, {root: true});
+
+          commit('estimate/UPDATE_ESTIMATE', response.data, { root: true });
+
+          resolve(response.data);
+        }, error => {
+
+          dispatch('notification/addNotification', {
+            type: 'danger',
+            message: 'Ops! Something went wrong!'
+          }, {root: true});
+
+          reject(error);
+        });
+
+      });
     },
 
   }

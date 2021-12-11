@@ -3,7 +3,7 @@
     <router-view></router-view>
     <notifications-list />
     <loading-panel />
-    <Updating/>
+    <!-- <Updating/> -->
   </div>
 </template>
 

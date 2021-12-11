@@ -3,6 +3,9 @@
         <CCard>
             <CCardHeader>
                 <strong>Request Job Estimate</strong>
+                <div class="card-header-actions">
+                    <strong>EST-000{{form.estimate_no}}</strong>
+                </div>
             </CCardHeader>
             <CCardBody>
                 <CMedia>
@@ -145,21 +148,9 @@
                         </table>
                     </CCol>
                 </CRow>
-              <CRow>
-                <CCol lg="12" align="center">
-                  <hr>
-                  <h4>Document's Verification</h4>
-                </CCol>
-                <CCol lg="6" v-for="(docs, index) in form.documents" :key="index">
-                  <Documents
-                  :documents="docs"
-                  v-on:pass_files="passFiles"
-                  />
-                </CCol>
-              </CRow>
               </CMedia>
               <CElementCover v-if="media" :opacity="0.9"/>
-              <CRow>
+              <CRow class="mt-3">
                 <CCol lg="12">
                   <CButton @click="submit" color="success">UPDATE</CButton>
                   <!-- <CButton @click="submit_approval" class="ml-2" color="success">SAVE & SEND</CButton> -->
@@ -197,7 +188,6 @@ import AddSubServicesModal from './AddSubServicesModal';
 import AddCarPropertyModal from './AddCarPropertyModal';
 import SubmitApprovalModal from './SubmitApprovalModal';
 import AddInsuranceModal from './AddInsuranceModal';
-import Documents from './EditDocuments';
 
 export default {
     data(){
@@ -217,6 +207,7 @@ export default {
           insurance: '',
           insurance_type: '',
           vehicle_id: '',
+          estimate_no: '',
           services: [
             {
             services_id: '',
@@ -224,8 +215,7 @@ export default {
             parts_fee: 0,
             sub_services: []
             }
-          ],
-          documents: []
+          ]
         }
       }
     },
@@ -238,7 +228,6 @@ export default {
         AddCarPropertyModal,
         SubmitApprovalModal,
         AddInsuranceModal,
-        Documents
     },
     filters: {
       customerFilter(data){
@@ -275,142 +264,6 @@ export default {
         this.$store.dispatch('property/emptyProperty');
         this.$store.dispatch('property/findProperty', newVal);
       },
-      insurance(newVal){
-        if(newVal.insurance_type == 'Private Insurance'){
-          this.form.documents = [
-            {
-              document_name: 'Vehicle OR/CR',
-              files: '',
-              prefix: 'VOC'
-            },
-            {
-              document_name: 'Driver’s License w/OR',
-              files: '',
-              prefix: 'DL'
-            },
-            {
-              document_name: 'Police Report/Affidavit of Accident',
-              files: '',
-              prefix: 'PR'
-            },
-            {
-              document_name: 'Comprehensive Insurance Policy',
-              files: '',
-              prefix: 'CIP'
-            },
-            {
-              document_name: 'Pictures',
-              files: [],
-              prefix: 'P'
-            },
-          ]
-        }else if(newVal.insurance_type == 'Third Party Claim'){
-          this.form.documents = [
-            {
-              document_name: 'Vehicle OR/CR',
-              files: '',
-              prefix: 'VOC'
-            },
-            {
-              document_name: 'Driver’s License w/OR',
-              files: '',
-              prefix: 'DL'
-            },
-            {
-              document_name: 'Police Report/Affidavit of Accident',
-              files: '',
-              prefix: 'PR'
-            },
-            {
-              document_name: 'Comprehensive Insurance Policy',
-              files: '',
-              prefix: 'CIP'
-            },
-            {
-              document_name: 'Pictures',
-              files: [],
-              prefix: 'P'
-            },
-            {
-              document_name: 'Certificate of No Claim',
-              files: '',
-              prefix: 'CONC'
-            },
-          ]
-        }else if(newVal.insurance_type == 'GSIS'){
-          this.form.documents = [
-            {
-              document_name: 'Vehicle OR/CR',
-              files: '',
-              prefix: 'VOR'
-            },
-            {
-              document_name: 'Driver’s License w/OR',
-              files: '',
-              prefix: 'DL'
-            },
-            {
-              document_name: 'Police Report/Affidavit of Accident',
-              files: '',
-              prefix: 'PR'
-            },
-            {
-              document_name: 'Comprehensive Insurance Policy',
-              files: '',
-              prefix: 'CIP'
-            },
-            {
-              document_name: 'Pictures',
-              files: [],
-              prefix: 'P'
-            },
-            {
-              document_name: 'Trip Ticket',
-              files: '',
-              prefix: 'TT'
-            },
-            {
-              document_name: 'Authorization Letter with Letterhead for government agencies',
-              files: '',
-              prefix: 'ALG'
-            },
-            {
-              document_name: 'Authorization Letter for individual',
-              files: '',
-              prefix: 'ALI'
-            },
-          ]
-        }else if(newVal.insurance_type == 'Bidding'){
-          this.form.documents = [
-            {
-              document_name: 'Request for Quotation',
-              files: '',
-              prefix: 'RFQ'
-            },
-            {
-              document_name: 'Mayor’s Permit',
-              files: '',
-              prefix: 'MP'
-            },
-            {
-              document_name: 'PHILGEPS',
-              files: '',
-              prefix: 'PS'
-            },
-            {
-              document_name: 'Omnibus Sworn Statement',
-              files: '',
-              prefix: 'OSS'
-            },
-             {
-              document_name: 'Tax Clearance/ITR',
-              files: '',
-              prefix: 'TC'
-            },
-          ]
-        }
-        
-      }
     },
     computed:{
       sub_total_labor(){
@@ -457,92 +310,12 @@ export default {
         }
       },
       submit(){
-        let formData = new FormData();
-        formData.append('status', 'draft');
-        formData.append('id', this.form.id);
-        formData.append('customer_id', this.form.customer_id);
-        formData.append('date', this.form.date);
-        formData.append('insurance', this.form.insurance);
-        formData.append('vehicle_id', this.form.vehicle_id);
-
-        var services = JSON.stringify(this.form.services);
-        formData.append('services', services);
-
-        var documents = JSON.stringify(this.form.documents);
-     
-        formData.append('documents', documents);
         
-        this.form.documents.forEach(item => {
-            console.log(item.files);
-            
-            formData.append('files[]', item.files);
-            
-            if(item.prefix == 'P'){
-              item.files.forEach(pic => {
-                formData.append('pic[]', pic);
-              });
-            }
-        });
-        
-
-        formData.append('user_id', this.$store.getters['auth/user'].id);
-        const config = {
-                headers: { 'content-type': 'multipart/form-data' }
-        }
-        const params = {
-            formData: formData,
-            config: config,
-        }
-        this.$store.dispatch('estimate/updateEstimate', params).then(() => {
-            
+        this.$store.dispatch('estimate/updateEstimate', this.form).then(() => {
             this.$router.replace({
               name: "Estimates"
             });
         });
-      },
-      submit_approval(){
-        let formData = new FormData();
-        // documents
-        formData.append('vehicle_or_cr', this.form.documents.vehicle_or_cr);
-        formData.append('drivers_license_or', this.form.documents.drivers_license_or);
-        formData.append('police_report_affidavit_accident', this.form.documents.police_report_affidavit_accident);
-        formData.append('comprehensive_insurance', this.form.documents.comprehensive_insurance);
-        formData.append('pictures', this.form.documents.pictures);
-        formData.append('certificate_of_claim', this.form.documents.certificate_of_claim);
-        formData.append('trip_ticket', this.form.documents.trip_ticket);
-        formData.append('authorization_letter_for_government', this.form.documents.authorization_letter_for_government);
-        formData.append('authorization_letter_for_individual', this.form.documents.authorization_letter_for_individual);
-        formData.append('request_for_qoutation', this.form.documents.request_for_qoutation);
-        formData.append('mayors_permit', this.form.documents.mayors_permit);
-        formData.append('philgeps', this.form.documents.philgeps);
-        formData.append('omnibus', this.form.documents.omnibus);
-        formData.append('tax_clearance', this.form.documents.tax_clearance);
-        formData.append('status', 'draft');
-
-        formData.append('customer_id', this.form.customer_id.value);
-        formData.append('date', this.form.date);
-        formData.append('insurance_type_id', this.form.insurance_type);
-        formData.append('insurance', this.form.insurance);
-        formData.append('vehicle_id', this.form.vehicle_id.value);
-
-        var services = JSON.stringify(this.form.services);
-        formData.append('services', services);
-
-        formData.append('user_id', this.$store.getters['auth/user'].id);
-
-        const config = {
-                headers: { 'content-type': 'multipart/form-data' }
-        }
-        const params = {
-            formData: formData,
-            config: config,
-        }
-
-        this.AddSaveAndSendData = {
-          trigger: new Date(),
-          params: params,
-          data: this.form
-        }
       },
      
       child_action(data, event){
@@ -689,31 +462,7 @@ export default {
       this.$store.dispatch('insurance/fetchInsurance');
       
       this.$store.dispatch('estimate/findEstimate', this.$route.params.id).then(response => {
-          
-        //   let services = [];
-        //   response.scope.forEach(item => {
-        //       this.$store.dispatch('estimate/findSubServices', item.id).then(sub => {
-        //           services.push({
-        //                 id: item.id,
-        //                 services_id: item.services_id,
-        //                 labor_fee: item.labor_fee,
-        //                 parts_fee: item.parts_fee,
-        //                 sub_services: sub
-        //           });
-        //       })
-        //   })
-            var groupByType = this.convertByProperty(response.documents, 'document_type', 'customer_id'); 
-            console.log(groupByType);
-            console.log(response.documents);
-            var property = 'document_type'; // by this item property array will be grouped
-
-            // var groups = response.documents.reduce(function(groups, item) {
-            // var name = item[property]
-            // var group = groups[name] || (groups[name] = []);
-            // group.push(item);
-            // return groups;
-            // }, { });
-
+        
             this.form = {
                 id: response.id,
                 customer_id: response.customer_id,
@@ -722,7 +471,7 @@ export default {
                 vehicle_id: response.vehicle_id,
                 vehicle: response.vehicle_id,
                 services: response.scope,
-                documents: groupByType
+                estimate_no: response.estimate_no
             }
             
           setTimeout(() => this.media = false, 1000);

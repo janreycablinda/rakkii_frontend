@@ -24,15 +24,15 @@
             </CLink>
           </td>
         </template>
-        <!-- <template #action="{item}">
+        <template #action="{item}">
             <td>
                 <div>
-                <CButton @click="getValue(item)" color="info"><CIcon name="cil-pencil"/></CButton> &nbsp;
-                <CButton @click="getValue(item)" color="warning"><CIcon name="cil-check-alt"/></CButton> &nbsp;
-                <CButton @click="getValueDel(item)" color="danger"><CIcon name="cil-trash"/></CButton>
+                <!-- <CButton @click="getValue(item)" color="info"><CIcon name="cil-pencil"/></CButton> &nbsp;
+                <CButton @click="getValue(item)" color="warning"><CIcon name="cil-check-alt"/></CButton> &nbsp; -->
+                <CButton size="sm" @click="getValueDel(item)" color="danger"><CIcon name="cil-trash"/></CButton>
                 </div>
             </td>
-        </template> -->
+        </template>
       </CDataTable>
     </div>
 </template>
@@ -46,7 +46,7 @@ export default {
     fields: {
       type: Array,
       default () {
-        return ['file', 'document_type']
+        return ['file', 'document_type', 'action']
       }
     },
     caption: {
@@ -72,8 +72,10 @@ export default {
       this.$emit('event_child', data);
     },
     getValueDel(data){
-      if (confirm('Are you sure you want to delete ' + data.customer.company_name +'?')) {
-        // Save it!
+      if (confirm('Are you sure you want to delete ' + data.file_name +'?')) {
+        this.$store.dispatch('document/deleteDocument', data).then(response => {
+          this.$emit('document_added', response);
+        });
       }
     },
     downloadDocs(data){

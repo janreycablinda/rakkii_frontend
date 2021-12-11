@@ -2,7 +2,10 @@
     <div>
         <CCard>
             <CCardHeader>
-                <strong>Request Job Estimate</strong>
+                <strong>Job Order</strong>
+                <div class="card-header-actions">
+                    <strong>JO-000{{form.job_order_no}}</strong>
+                </div>
             </CCardHeader>
             <CCardBody>
                 <CMedia>
@@ -98,7 +101,7 @@
                             </tr>
                           <div style="width:125%;"  class="mt-2">
                             <ol class="c" >
-                              <!-- <li v-for="(serv, index) in form.services" :key="index">
+                              <li v-for="(serv, index) in form.services" :key="index">
                                 <Services
                                 v-on:child_data="child_action"
                                 :services="serv"
@@ -106,7 +109,7 @@
                                 v-on:child_add_sub_services="childAddSubServices"
                                 v-on:child_sub_services_changes="childSubChanges"
                                 />
-                              </li> -->
+                              </li>
                             </ol>
                           </div>
                           <tr>
@@ -145,29 +148,98 @@
                         </table>
                     </CCol>
                 </CRow>
-              <CRow>
-                <CCol lg="12" align="center">
-                  <hr>
-                  <h4>Document's Verification</h4>
-                </CCol>
-                <CCol lg="6" v-for="(docs, index) in form.documents" :key="index">
-                  <!-- <Documents
-                  :documents="docs"
-                  v-on:pass_files="passFiles"
-                  /> -->
+                <CRow class="mt-3">
+                  <CCol lg="6">
+                    <CRow class="m-1 bordered">
+                      <CCol lg="12" align="center">
+                        <h5>PURCHASED ITEMS</h5>
+                        <CButton style="position:absolute; top: 3px; right:15px;" color="primary" size="sm"><CIcon name="cil-plus"/></CButton>
+                      </CCol>
+                      <CCol lg="12">
+                        <table class="custom-table mt-2 mb-2">
+                          <tr>
+                            <th>
+                              Purchase Item
+                            </th>
+                            <th>
+                              Supplier
+                            </th>
+                            <th>
+                              Date
+                            </th>
+                            <th>
+                              Amount
+                            </th>
+                            <th>
+                              
+                            </th>
+                          </tr>
+                          <tr>
+                            <td>
+                              Purchase Item
+                            </td>
+                            <td>
+                              Supplier
+                            </td>
+                            <td>
+                              Date
+                            </td>
+                            <td>
+                              Date
+                            </td>
+                            <td align="center">
+                              <CLink style="color:red;"><CIcon name="cil-trash"/></CLink>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+
+                            </td>
+                            <td colspan="2" align="right">
+                              Total Amount Purchase:
+                            </td>
+                            <td colspan="2" align="left">
+                              ₱0
+                            </td>
+                          </tr>
+                        </table>
+                        
+                      </CCol>
+                    </CRow>
+                  </CCol>
+                  <CCol lg="6">
+                      <CRow class="m-1 bordered">
+                        <CCol lg="12" align="center">
+                          <h5>APPROVED BUDGET</h5>
+                        </CCol>
+                        <CCol lg="12" class="mt-2">
+                          <CInput v-model="payment_form.total_repair_cost" onblur="this.placeholder = 'Total Repair Cost'" onfocus="this.placeholder = ''" description="Total Repair Cost" placeholder="Total Repair Cost"/>
+                        </CCol>
+                        <CCol lg="12">
+                          <CInput v-model="payment_form.policy_deductible" onblur="this.placeholder = 'Less: Policy Deductible'" onfocus="this.placeholder = ''" description="Less: Policy Deductible" placeholder="Less: Policy Deductible"/>
+                        </CCol>
+                        <CCol lg="12">
+                          <CInput v-model="payment_form.betterment" onblur="this.placeholder = 'Betterment'" onfocus="this.placeholder = ''" description="Betterment" placeholder="Betterment"/>
+                        </CCol>
+                        <CCol lg="12">
+                          <CInput v-model="payment_form.discount" onblur="this.placeholder = 'Discount'" onfocus="this.placeholder = ''" description="Discount" placeholder="Discount"/>
+                        </CCol>
+                        <CCol lg="12">
+                          <CInput readonly :value="payment_form.net" onblur="this.placeholder = 'NET'" onfocus="this.placeholder = ''" description="NET" placeholder="NET"/>
+                        </CCol>
+                      </CRow>
+                  </CCol>
+                </CRow>
+              <CRow class="mt-3">
+                <CCol lg="12">
+                  <CButton @click="submit" color="success">UPDATE</CButton>
                 </CCol>
               </CRow>
               </CMedia>
               <CElementCover v-if="media" :opacity="0.9"/>
-              <CRow>
-                <CCol lg="12">
-                  <CButton @click="submit" color="success">UPDATE</CButton>
-                  <!-- <CButton @click="submit_approval" class="ml-2" color="success">SAVE & SEND</CButton> -->
-                </CCol>
-              </CRow>
             </CCardBody>
         </CCard>
-        <!-- <AddCustomerModal
+        <AddCustomerModal
         :showModalAddData="showModalAddData"
         />
         <AddServicesModal
@@ -184,20 +256,19 @@
         />
         <AddInsuranceModal
         :AddInsuranceData="AddInsuranceData"
-        /> -->
+        />
     </div>
 </template>
 <script>
-import vSelect from 'vue-select'
-import { createPopper } from '@popperjs/core'
-// import Services from './EditServices';
-// import AddCustomerModal from './AddCustomerModal';
-// import AddServicesModal from './AddServicesModal';
-// import AddSubServicesModal from './AddSubServicesModal';
-// import AddCarPropertyModal from './AddCarPropertyModal';
-// import SubmitApprovalModal from './SubmitApprovalModal';
-// import AddInsuranceModal from './AddInsuranceModal';
-// import Documents from './EditDocuments';
+import vSelect from 'vue-select';
+import { createPopper } from '@popperjs/core';
+import Services from '../Estimates/EditServices';
+import AddCustomerModal from '../Estimates/AddCustomerModal';
+import AddServicesModal from '../Estimates/AddServicesModal';
+import AddSubServicesModal from '../Estimates/AddSubServicesModal';
+import AddCarPropertyModal from '../Estimates/AddCarPropertyModal';
+import SubmitApprovalModal from '../Estimates/SubmitApprovalModal';
+import AddInsuranceModal from '../Estimates/AddInsuranceModal';
 
 export default {
     data(){
@@ -212,6 +283,7 @@ export default {
         media: true,
         form: {
           id: '',
+          job_order_no: '',
           customer_id: '',
           date: '',
           insurance: '',
@@ -225,20 +297,25 @@ export default {
             sub_services: []
             }
           ],
-          documents: []
+        },
+        payment_form: {
+          total_repair_cost: 0,
+          policy_deductible: 0,
+          betterment: 0,
+          discount: 0,
+          net: 0
         }
       }
     },
     components: {
         vSelect,
-        // Services,
-        // AddCustomerModal,
-        // AddServicesModal,
-        // AddSubServicesModal,
-        // AddCarPropertyModal,
-        // SubmitApprovalModal,
-        // AddInsuranceModal,
-        // Documents
+        Services,
+        AddCustomerModal,
+        AddServicesModal,
+        AddSubServicesModal,
+        AddCarPropertyModal,
+        SubmitApprovalModal,
+        AddInsuranceModal
     },
     filters: {
       customerFilter(data){
@@ -275,141 +352,8 @@ export default {
         this.$store.dispatch('property/emptyProperty');
         this.$store.dispatch('property/findProperty', newVal);
       },
-      insurance(newVal){
-        if(newVal.insurance_type == 'Private Insurance'){
-          this.form.documents = [
-            {
-              document_name: 'Vehicle OR/CR',
-              files: '',
-              prefix: 'VOC'
-            },
-            {
-              document_name: 'Driver’s License w/OR',
-              files: '',
-              prefix: 'DL'
-            },
-            {
-              document_name: 'Police Report/Affidavit of Accident',
-              files: '',
-              prefix: 'PR'
-            },
-            {
-              document_name: 'Comprehensive Insurance Policy',
-              files: '',
-              prefix: 'CIP'
-            },
-            {
-              document_name: 'Pictures',
-              files: [],
-              prefix: 'P'
-            },
-          ]
-        }else if(newVal.insurance_type == 'Third Party Claim'){
-          this.form.documents = [
-            {
-              document_name: 'Vehicle OR/CR',
-              files: '',
-              prefix: 'VOC'
-            },
-            {
-              document_name: 'Driver’s License w/OR',
-              files: '',
-              prefix: 'DL'
-            },
-            {
-              document_name: 'Police Report/Affidavit of Accident',
-              files: '',
-              prefix: 'PR'
-            },
-            {
-              document_name: 'Comprehensive Insurance Policy',
-              files: '',
-              prefix: 'CIP'
-            },
-            {
-              document_name: 'Pictures',
-              files: [],
-              prefix: 'P'
-            },
-            {
-              document_name: 'Certificate of No Claim',
-              files: '',
-              prefix: 'CONC'
-            },
-          ]
-        }else if(newVal.insurance_type == 'GSIS'){
-          this.form.documents = [
-            {
-              document_name: 'Vehicle OR/CR',
-              files: '',
-              prefix: 'VOR'
-            },
-            {
-              document_name: 'Driver’s License w/OR',
-              files: '',
-              prefix: 'DL'
-            },
-            {
-              document_name: 'Police Report/Affidavit of Accident',
-              files: '',
-              prefix: 'PR'
-            },
-            {
-              document_name: 'Comprehensive Insurance Policy',
-              files: '',
-              prefix: 'CIP'
-            },
-            {
-              document_name: 'Pictures',
-              files: [],
-              prefix: 'P'
-            },
-            {
-              document_name: 'Trip Ticket',
-              files: '',
-              prefix: 'TT'
-            },
-            {
-              document_name: 'Authorization Letter with Letterhead for government agencies',
-              files: '',
-              prefix: 'ALG'
-            },
-            {
-              document_name: 'Authorization Letter for individual',
-              files: '',
-              prefix: 'ALI'
-            },
-          ]
-        }else if(newVal.insurance_type == 'Bidding'){
-          this.form.documents = [
-            {
-              document_name: 'Request for Quotation',
-              files: '',
-              prefix: 'RFQ'
-            },
-            {
-              document_name: 'Mayor’s Permit',
-              files: '',
-              prefix: 'MP'
-            },
-            {
-              document_name: 'PHILGEPS',
-              files: '',
-              prefix: 'PS'
-            },
-            {
-              document_name: 'Omnibus Sworn Statement',
-              files: '',
-              prefix: 'OSS'
-            },
-             {
-              document_name: 'Tax Clearance/ITR',
-              files: '',
-              prefix: 'TC'
-            },
-          ]
-        }
-        
+      total_net(newVal){
+        this.payment_form.net = newVal;
       }
     },
     computed:{
@@ -423,6 +367,9 @@ export default {
           })
         })
         return service_labor + sub_service_parts;
+      },
+      total_net(){
+        return this.payment_form.total_repair_cost - this.payment_form.policy_deductible - this.payment_form.betterment - this.payment_form.discount;
       },
       insurance(){
         return this.form.insurance;
@@ -457,92 +404,16 @@ export default {
         }
       },
       submit(){
-        let formData = new FormData();
-        formData.append('status', 'draft');
-        formData.append('id', this.form.id);
-        formData.append('customer_id', this.form.customer_id);
-        formData.append('date', this.form.date);
-        formData.append('insurance', this.form.insurance);
-        formData.append('vehicle_id', this.form.vehicle_id);
-
-        var services = JSON.stringify(this.form.services);
-        formData.append('services', services);
-
-        var documents = JSON.stringify(this.form.documents);
-     
-        formData.append('documents', documents);
-        
-        this.form.documents.forEach(item => {
-            console.log(item.files);
-            
-            formData.append('files[]', item.files);
-            
-            if(item.prefix == 'P'){
-              item.files.forEach(pic => {
-                formData.append('pic[]', pic);
-              });
-            }
-        });
-        
-
-        formData.append('user_id', this.$store.getters['auth/user'].id);
-        const config = {
-                headers: { 'content-type': 'multipart/form-data' }
-        }
         const params = {
-            formData: formData,
-            config: config,
+          form: this.form,
+          payment_form: this.payment_form
         }
-        this.$store.dispatch('estimate/updateEstimate', params).then(() => {
+        this.$store.dispatch('job_orders/updateJobOrder', params).then(() => {
             
             this.$router.replace({
-              name: "Estimates"
+              name: "JobOrder"
             });
         });
-      },
-      submit_approval(){
-        let formData = new FormData();
-        // documents
-        formData.append('vehicle_or_cr', this.form.documents.vehicle_or_cr);
-        formData.append('drivers_license_or', this.form.documents.drivers_license_or);
-        formData.append('police_report_affidavit_accident', this.form.documents.police_report_affidavit_accident);
-        formData.append('comprehensive_insurance', this.form.documents.comprehensive_insurance);
-        formData.append('pictures', this.form.documents.pictures);
-        formData.append('certificate_of_claim', this.form.documents.certificate_of_claim);
-        formData.append('trip_ticket', this.form.documents.trip_ticket);
-        formData.append('authorization_letter_for_government', this.form.documents.authorization_letter_for_government);
-        formData.append('authorization_letter_for_individual', this.form.documents.authorization_letter_for_individual);
-        formData.append('request_for_qoutation', this.form.documents.request_for_qoutation);
-        formData.append('mayors_permit', this.form.documents.mayors_permit);
-        formData.append('philgeps', this.form.documents.philgeps);
-        formData.append('omnibus', this.form.documents.omnibus);
-        formData.append('tax_clearance', this.form.documents.tax_clearance);
-        formData.append('status', 'draft');
-
-        formData.append('customer_id', this.form.customer_id.value);
-        formData.append('date', this.form.date);
-        formData.append('insurance_type_id', this.form.insurance_type);
-        formData.append('insurance', this.form.insurance);
-        formData.append('vehicle_id', this.form.vehicle_id.value);
-
-        var services = JSON.stringify(this.form.services);
-        formData.append('services', services);
-
-        formData.append('user_id', this.$store.getters['auth/user'].id);
-
-        const config = {
-                headers: { 'content-type': 'multipart/form-data' }
-        }
-        const params = {
-            formData: formData,
-            config: config,
-        }
-
-        this.AddSaveAndSendData = {
-          trigger: new Date(),
-          params: params,
-          data: this.form
-        }
       },
      
       child_action(data, event){
@@ -688,41 +559,18 @@ export default {
       this.$store.dispatch('services/fetchServices');
       this.$store.dispatch('insurance/fetchInsurance');
       
-      this.$store.dispatch('estimate/findEstimate', this.$route.params.id).then(response => {
-          
-        //   let services = [];
-        //   response.scope.forEach(item => {
-        //       this.$store.dispatch('estimate/findSubServices', item.id).then(sub => {
-        //           services.push({
-        //                 id: item.id,
-        //                 services_id: item.services_id,
-        //                 labor_fee: item.labor_fee,
-        //                 parts_fee: item.parts_fee,
-        //                 sub_services: sub
-        //           });
-        //       })
-        //   })
-            var groupByType = this.convertByProperty(response.documents, 'document_type', 'customer_id'); 
-            console.log(groupByType);
-            console.log(response.documents);
-            var property = 'document_type'; // by this item property array will be grouped
-
-            // var groups = response.documents.reduce(function(groups, item) {
-            // var name = item[property]
-            // var group = groups[name] || (groups[name] = []);
-            // group.push(item);
-            // return groups;
-            // }, { });
+      this.$store.dispatch('job_orders/findJobOrder', this.$route.params.id).then(response => {
+          console.log(response);
 
             this.form = {
                 id: response.id,
+                job_order_no: response.job_order_no,
                 customer_id: response.customer_id,
                 date: response.date,
                 insurance: response.insurance_id,
                 vehicle_id: response.vehicle_id,
                 vehicle: response.vehicle_id,
-                services: response.scope,
-                documents: groupByType
+                services: response.scope
             }
             
           setTimeout(() => this.media = false, 1000);
