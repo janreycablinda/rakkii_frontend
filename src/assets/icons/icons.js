@@ -49,6 +49,7 @@ import {
   cilPhone,
   cilGarage,
   cilExitToApp,
+  cilCart
 } from '@coreui/icons'
 import { logo } from './logo'
 
@@ -103,5 +104,6 @@ export const iconsSet = Object.assign({}, {
   cibGmail,
   cilPhone,
   cilGarage,
-  cilExitToApp
+  cilExitToApp,
+  cilCart
 })

@@ -160,27 +160,33 @@
                                 <template #title>
                                     Documents <CBadge color="danger">{{info.documents.length}}</CBadge>
                                 </template>
+                                <CButton @click="AddDocumentData = {trigger: new Date(), data: info}" class="mt-2" color="primary" size="sm">ADD DOCUMENT</CButton>
                                 <DocumentsTable
                                 :items="info.documents"
                                 />
                             </CTab>
                             <CTab >
                                 <template #title>
-                                    LOA <CBadge color="danger">0</CBadge>
+                                    LOA <CBadge color="danger">{{info.loa_documents.length}}</CBadge>
                                 </template>
+                                <CButton @click="AddLoaDocumentData = {trigger: new Date(), data: info}" class="mt-2" color="primary" size="sm">ADD LOA DOCUMENT</CButton>
+                                <LoaDocumentsTable
+                                    :items="info.loa_documents"
+                                />
                             </CTab>
-                            <!-- <CTab title="Reminders">
-                                2. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
-                                et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-                                aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
-                                dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
-                                officia deserunt mollit anim id est laborum.
-                            </CTab> -->
                             <CTab title="Activity Log">
                                 <simple-timeline :items='activity_log'></simple-timeline>
                             </CTab>
                             <CTab title="Mail">
                                 <h4>No tracked emails sent</h4>
+                            </CTab>
+                            <CTab >
+                                <template #title>
+                                    <CIcon name="cil-cart"/>
+                                </template>
+                                <LoaDocumentsTable
+                                    :items="info.loa_documents"
+                                />
                             </CTab>
                         </CTabs>
                     </CCardBody>
@@ -536,6 +542,7 @@
 import JobOrderTable from './JobOrderTable';
 import DocumentsTable from './DocumentsTable';
 import VueHtml2pdf from 'vue-html2pdf'
+import LoaDocumentsTable from './LoaDocumentsTable';
 export default {
     data(){
       return {
@@ -554,7 +561,8 @@ export default {
     components: {
         JobOrderTable,
         DocumentsTable,
-        VueHtml2pdf
+        VueHtml2pdf,
+        LoaDocumentsTable
     },
     computed: {
         activity_log(){

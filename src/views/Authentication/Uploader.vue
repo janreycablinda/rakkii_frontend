@@ -5,7 +5,7 @@
         <CCol md="7" sm="12" lg="4" class="text-center">
             <img width="100%" src="/img/upload/logo.png">
             <CCard class="p-4">
-              <CCardBody>
+              <CCardBody v-if="uploadDone == false">
                 <CForm class="text-center" v-if="showUploader">
                   <h1>UPLOADER</h1>
                   <p class="text-muted">Please upload LOA documents here.</p>
@@ -24,6 +24,11 @@
                     <h1>LINK IS EXPIRED</h1>
                 </CForm>
               </CCardBody>
+              <CCardBody v-else>
+                <CForm class="text-center">
+                    <h1>SUCCESSFULLY UPLOADED</h1>
+                </CForm>
+              </CCardBody>
             </CCard>
         </CCol>
       </CRow>
@@ -37,7 +42,8 @@ export default {
   data(){
       return {
           files: '',
-          showUploader: false
+          showUploader: false,
+          uploadDone: false
       }
   },
   methods: {
@@ -61,7 +67,7 @@ export default {
         }
 
         this.$store.dispatch('uploader/uploadLoaDocument', params).then(() => {
-            
+            this.uploadDone = true;
         });
       }
   },

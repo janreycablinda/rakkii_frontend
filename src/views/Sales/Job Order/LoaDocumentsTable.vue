@@ -24,6 +24,11 @@
             </CLink>
           </td>
         </template>
+        <template #date="{item}">
+          <td>
+              {{$root.momentFormatDateTime(item.created_at)}}
+          </td>
+        </template>
         <template #action="{item}">
             <td>
                 <div>
@@ -46,7 +51,7 @@ export default {
     fields: {
       type: Array,
       default () {
-        return ['file', 'document_type', 'action']
+        return ['file', 'date', 'action']
       }
     },
     caption: {
@@ -72,14 +77,14 @@ export default {
       this.$emit('event_child', data);
     },
     getValueDel(data){
+      console.log(data);
       if (confirm('Are you sure you want to delete ' + data.file_name +'?')) {
-        this.$store.dispatch('document/deleteDocument', data).then(response => {
+        this.$store.dispatch('document/deleteLoaDocument', data).then(response => {
           this.$emit('document_added', response);
         });
       }
     },
     downloadDocs(data){
-        console.log(data.file_name);
         this.$store.dispatch('document/downloadDocument', data.file_name);
     }
   },

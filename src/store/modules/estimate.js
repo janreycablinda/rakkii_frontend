@@ -199,7 +199,7 @@ export default {
         }).then(response => {
           dispatch('notification/addNotification', {
               type: 'success',
-              message: 'Successfully Updated!'
+              message: 'Successfully Converted!'
           }, {root: true});
          
           if(response.data.status == null){

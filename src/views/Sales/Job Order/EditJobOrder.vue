@@ -158,19 +158,19 @@
                       <CCol lg="12">
                         <table class="custom-table mt-2 mb-2">
                           <tr>
-                            <th>
+                            <th width="40%">
                               Purchase Item
                             </th>
-                            <th>
+                            <th width="30%">
                               Supplier
                             </th>
-                            <th>
+                            <th width="10%">
                               Date
                             </th>
-                            <th>
+                            <th width="12%">
                               Amount
                             </th>
-                            <th>
+                            <th width="8%">
                               
                             </th>
                           </tr>
@@ -185,9 +185,10 @@
                               Date
                             </td>
                             <td>
-                              Date
+                              ₱0
                             </td>
                             <td align="center">
+                              <CLink><CIcon name="cil-pen"/></CLink>
                               <CLink style="color:red;"><CIcon name="cil-trash"/></CLink>
                             </td>
                           </tr>
@@ -213,19 +214,55 @@
                           <h5>APPROVED BUDGET</h5>
                         </CCol>
                         <CCol lg="12" class="mt-2">
-                          <CInput v-model="payment_form.total_repair_cost" onblur="this.placeholder = 'Total Repair Cost'" onfocus="this.placeholder = ''" description="Total Repair Cost" placeholder="Total Repair Cost"/>
+                          <CInput 
+                          v-model="payment_form.total_repair_cost" 
+                          onblur="this.placeholder = 'Total Repair Cost'" 
+                          onfocus="this.placeholder = ''" 
+                          description="Total Repair Cost" 
+                          placeholder="Total Repair Cost">
+                          <template #prepend-content>₱</template>
+                          </CInput>
                         </CCol>
                         <CCol lg="12">
-                          <CInput v-model="payment_form.policy_deductible" onblur="this.placeholder = 'Less: Policy Deductible'" onfocus="this.placeholder = ''" description="Less: Policy Deductible" placeholder="Less: Policy Deductible"/>
+                          <CInput 
+                          v-model="payment_form.policy_deductible" 
+                          onblur="this.placeholder = 'Less: Policy Deductible'" 
+                          onfocus="this.placeholder = ''" 
+                          description="Less: Policy Deductible" 
+                          placeholder="Less: Policy Deductible">
+                          <template #prepend-content>₱</template>
+                          </CInput>
                         </CCol>
                         <CCol lg="12">
-                          <CInput v-model="payment_form.betterment" onblur="this.placeholder = 'Betterment'" onfocus="this.placeholder = ''" description="Betterment" placeholder="Betterment"/>
+                          <CInput 
+                          v-model="payment_form.betterment" 
+                          onblur="this.placeholder = 'Betterment'" 
+                          onfocus="this.placeholder = ''" 
+                          description="Betterment" 
+                          placeholder="Betterment">
+                          <template #prepend-content>₱</template>
+                          </CInput>
                         </CCol>
                         <CCol lg="12">
-                          <CInput v-model="payment_form.discount" onblur="this.placeholder = 'Discount'" onfocus="this.placeholder = ''" description="Discount" placeholder="Discount"/>
+                          <CInput 
+                          v-model="payment_form.discount" 
+                          onblur="this.placeholder = 'Discount'" 
+                          onfocus="this.placeholder = ''" 
+                          description="Discount" 
+                          placeholder="Discount">
+                          <template #prepend-content>₱</template>
+                          </CInput>
                         </CCol>
                         <CCol lg="12">
-                          <CInput readonly :value="payment_form.net" onblur="this.placeholder = 'NET'" onfocus="this.placeholder = ''" description="NET" placeholder="NET"/>
+                          <CInput 
+                          readonly 
+                          :value="payment_form.net" 
+                          onblur="this.placeholder = 'NET'" 
+                          onfocus="this.placeholder = ''" 
+                          description="NET"
+                          placeholder="NET">
+                          <template #prepend-content>₱</template>
+                          </CInput>
                         </CCol>
                       </CRow>
                   </CCol>
@@ -571,6 +608,14 @@ export default {
                 vehicle_id: response.vehicle_id,
                 vehicle: response.vehicle_id,
                 services: response.scope
+            }
+            console.log(response.payables);
+            this.payment_form = {
+                total_repair_cost: response.payables.total_repair_cost,
+                policy_deductible: response.payables.policy_deductible,
+                betterment: response.payables.betterment,
+                discount: response.payables.discount,
+                net: response.payables.net
             }
             
           setTimeout(() => this.media = false, 1000);

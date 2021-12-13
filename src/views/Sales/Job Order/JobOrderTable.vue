@@ -94,10 +94,10 @@ export default {
   },
   methods: {
     getBadge (status) {
-    return status === 'approved' ? 'success'
-        : status === 'draft' ? 'secondary'
-        : status === 'sent' ? 'warning'
-        : status === 'disapproved' ? 'danger' : 'primary'
+    return status === 'completed' ? 'success'
+        : status === 'pending' ? 'secondary'
+        : status === 'inprogress' ? 'warning'
+        : status === 'onhold' ? 'danger' : 'primary'
     },
     getValue(data){
       console.log(data);
