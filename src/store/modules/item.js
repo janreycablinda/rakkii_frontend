@@ -3,7 +3,7 @@ import axios from "axios";
 export default {
   namespaced: true,
   state: {
-    item: null,
+    item: [],
   },
   getters: {
     items(state) {
@@ -41,16 +41,8 @@ export default {
 
     async createItem({commit, dispatch, rootState}, data) {
         await axios.post("resources/create_item", {
-            item: data.item,
-            description: data.description,
+            product_name: data.product_name,
             brand: data.brand,
-            qty: data.qty,
-            price: data.price,
-            unit: data.unit,
-            notifier: data.notifier,
-            unit_cost: data.unit_cost,
-            group_id: data.group_id.value,
-            user_id: rootState.auth.user.id,
         }).then(response => {
             dispatch('notification/addNotification', {
                 type: 'success',

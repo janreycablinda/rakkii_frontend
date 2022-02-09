@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import ability from '../../services/ability';
 
 export default {
   namespaced: true,
@@ -37,6 +37,21 @@ export default {
             message: 'Successfully Login!'
         }, {root: true});
       }
+
+      let permissions = [];
+      let permission = [];
+      response.data.permissions.forEach(item => {
+        if(item.permission){
+          permission.push({action: item.permission.action, subject: item.permission.page})
+          permissions.push({action: item.permission.action, page: item.permission.page})
+        }
+      });
+
+      ability.update(permission);
+      
+      localStorage.setItem("permissions", JSON.stringify(permissions));
+      
+
       return dispatch("attempt", response.data.access_token);
     },
 
@@ -57,6 +72,7 @@ export default {
       try {
         let response = await axios.get("auth/me");
         commit("SET_USER", response.data);
+        
       } catch (e) {
         commit("SET_TOKEN", null);
         commit("SET_USER", null);
@@ -149,6 +165,9 @@ export default {
       return axios.post("auth/logout").then(() => {
         commit("SET_TOKEN", null);
         commit("SET_USER", null);
+        localStorage.removeItem("permissions");
+        ability.update([]);
+
         dispatch('notification/addNotification', {
             type: 'success',
             message: 'Successfully Logout!'

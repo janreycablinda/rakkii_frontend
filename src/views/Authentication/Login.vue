@@ -27,12 +27,12 @@
                     <template #prepend-content><CIcon name="cil-lock-locked"/></template>
                   </CInput>
                   <CRow>
-                    <CCol col="6" class="text-left">
-                      <CButton id="login-btn" @click="submit" color="primary">Login</CButton>
+                    <CCol col="12" class="text-left">
+                      <CButton block id="login-btn" @click="submit" color="primary">LOGIN</CButton>
                     </CCol>
-                    <CCol col="6" class="text-right">
+                    <!-- <CCol col="6" class="text-right">
                       <CButton to="/forgot" color="link" class="px-0 text-white-darkmode">Forgot password?</CButton>
-                    </CCol>
+                    </CCol> -->
                   </CRow>
                 </CForm>
               </CCardBody>
@@ -48,8 +48,7 @@ export default {
   name: 'Login',
   data(){
     return {
-      form: this.getEmptyForm(),
-      spinner: false
+      form: this.getEmptyForm()
     }
   },
   methods: {
@@ -63,7 +62,6 @@ export default {
       this.$root.btn_load(true, 'login-btn', 'Login');
       this.$store.dispatch('auth/signIn', this.form)
       .then(() => {
-        this.spinner = false;
         this.$router.replace({
           name: "Dashboard"
         });
@@ -71,7 +69,6 @@ export default {
       })
       .catch(() => {
           this.$root.btn_load(false, 'login-btn', 'Login');
-          this.spinner = false;
           this.form.password = '';
           this.$store.dispatch('notification/addNotification', {
               type: 'danger',

@@ -11,7 +11,8 @@
                 <CMedia>
                 <CRow>
                     <CCol lg="6">
-                      <div class="inline">
+                      <div class="inline form-group">
+                          <label>Customer</label>
                           <v-select
                             :options="$store.state.customer.customer | customerFilter"
                             placeholder="Select Customer"
@@ -37,35 +38,79 @@
                             <small class="form-text text-muted w-100">Customer</small>
                           </template>
                           <template #list-header>
-                            <li style="text-align: center; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="showModalAddData = new Date()">ADD CUSTOMER</a></li>
+                            <div style="display:flex;">
+                              <li style="text-align: center; width:50%; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="showModalAddData = new Date()"><CIcon name="cil-plus"/> ADD</a></li>
+                              <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#" @click="AddAgentData = new Date()"><CIcon name="cil-trash"/> DELETE</a></li>
+                            </div>
                           </template>
                           </v-select>
                       </div>
 
                     </CCol>
-                    <CCol lg="6">
+                    <CCol lg="3">
+                        <div class="inline form-group">
+                          <label>Agent</label>
+                          <v-select
+                            :options="$store.state.agent.agent | agentFilter"
+                            placeholder="Nothing Selected"
+                            class="style-chooser"
+                            :reduce="label => label.value"
+                            label="label"
+                            append-to-body
+                            :calculate-position="withPopper"
+                            style="width:100%;"
+                            v-model="form.agent_id"
+                          >
+                          <template #open-indicator="{ attributes }">
+                            &nbsp;
+                          </template>
+                          <template #spinner="{ loading }">
+                          <div
+                            v-if="true"
+                          >
+                            🔍
+                          </div>
+                          </template>
+                          <template #footer>
+                            <small class="form-text text-muted w-100">Agent</small>
+                          </template>
+                          <template #list-header>
+                            <div style="display:flex;">
+                            <li style="text-align: center; width:50%; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="AddAgentData = new Date()"><CIcon name="cil-plus"/> ADD</a></li>
+                            <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#" @click="AddAgentData = new Date()"><CIcon name="cil-trash"/> DELETE</a></li>
+                            </div>
+                          </template>
+                          </v-select>
+                      </div>
+                    </CCol>
+                    <CCol lg="3">
                         <CInput v-model="form.date" onblur="this.placeholder = 'Date'" onfocus="this.placeholder = ''" description="Date" placeholder="Date" type="date"/>
                     </CCol>
                 </CRow>
                 <CRow>
                     <CCol lg="6">
-                        <v-select
-                          :options="$store.state.property.property | propertyFilter"
-                          placeholder="Select Vehicle"
-                          class="style-chooser"
-                          append-to-body
-                          :calculate-position="withPopper"
-                          style="width:100%;"
-                          v-model="form.vehicle_id"
-                          :reduce="label => label.value"
-                          label="label"
-                        >
-                        <template #list-header>
-                            <li v-if="form.customer_id" style="text-align: center; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="addCarProperty(form.customer_id)">ADD CAR PROPERTY</a></li>
-                        </template>
-                        </v-select>
+                        <div class="form-group">
+                          <label>Vehicle</label>
+                          <v-select
+                            :options="$store.state.property.property | propertyFilter"
+                            placeholder="Select Vehicle"
+                            class="style-chooser"
+                            append-to-body
+                            :calculate-position="withPopper"
+                            style="width:100%;"
+                            v-model="form.vehicle_id"
+                            :reduce="label => label.value"
+                            label="label"
+                          >
+                          <template #list-header>
+                              <li v-if="form.customer_id" style="text-align: center; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="addCarProperty(form.customer_id)">ADD CAR PROPERTY</a></li>
+                          </template>
+                          </v-select>
+                        </div>
                     </CCol>
                     <CCol lg="6">
+                      <div class="form-group">
+                        <label>Insurance</label>
                         <v-select
                           :options="$store.state.insurance.insurance | insuranceFilter"
                           placeholder="Select Insurance"
@@ -81,6 +126,7 @@
                             <li style="text-align: center; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="AddInsuranceData = new Date()">ADD INSURANCE</a></li>
                         </template>
                         </v-select>
+                      </div>
                     </CCol>
                 </CRow>
                 <CRow class="mt-3">
@@ -153,39 +199,51 @@
                     <CRow class="m-1 bordered">
                       <CCol lg="12" align="center">
                         <h5>PURCHASED ITEMS</h5>
-                        <CButton style="position:absolute; top: 3px; right:15px;" color="primary" size="sm"><CIcon name="cil-plus"/></CButton>
+                        <CButton @click="AddPurchaseData = {trigger: new Date(), data: form}" style="position:absolute; top: 3px; right:15px;" color="primary" size="sm"><CIcon name="cil-plus"/></CButton>
                       </CCol>
                       <CCol lg="12">
                         <table class="custom-table mt-2 mb-2">
                           <tr>
-                            <th width="40%">
+                            <th width="36%">
                               Purchase Item
                             </th>
-                            <th width="30%">
+                            <th width="20%">
                               Supplier
                             </th>
                             <th width="10%">
                               Date
                             </th>
-                            <th width="12%">
-                              Amount
+                            <th width="6%">
+                              Qty
+                            </th>
+                            <th width="10%">
+                              Price
+                            </th>
+                            <th width="10%">
+                              Total
                             </th>
                             <th width="8%">
                               
                             </th>
                           </tr>
-                          <tr>
+                          <tr v-for="purchase in purchase_items" :key="purchase.id">
                             <td>
-                              Purchase Item
+                              {{purchase.item.product_name}}
                             </td>
                             <td>
-                              Supplier
+                              {{purchase.supplier.supplier_name}}
                             </td>
                             <td>
-                              Date
+                              {{purchase.date}}
                             </td>
                             <td>
-                              ₱0
+                              {{purchase.qty}}
+                            </td>
+                            <td>
+                              ₱{{purchase.price}}
+                            </td>
+                            <td>
+                              ₱{{purchase.qty * purchase.price}}
                             </td>
                             <td align="center">
                               <CLink><CIcon name="cil-pen"/></CLink>
@@ -196,11 +254,11 @@
                             <td>
 
                             </td>
-                            <td colspan="2" align="right">
-                              Total Amount Purchase:
+                            <td colspan="4" align="right">
+                              Total Amount Purchased:
                             </td>
                             <td colspan="2" align="left">
-                              ₱0
+                              ₱{{ totalPurchased }}
                             </td>
                           </tr>
                         </table>
@@ -294,6 +352,18 @@
         <AddInsuranceModal
         :AddInsuranceData="AddInsuranceData"
         />
+        <AddAgentModal
+        :AddAgentData="AddAgentData"
+        />
+        <AddPurchaseModal
+        :AddPurchaseData="AddPurchaseData"
+        v-on:add_supplier="addSupplier"
+        v-on:add_item="addItem"
+        v-on:purchase_added="purchaseAdded"
+        />
+        <AddSupplierModal
+        :AddSupplierData="AddSupplierData"
+        />
     </div>
 </template>
 <script>
@@ -306,22 +376,30 @@ import AddSubServicesModal from '../Estimates/AddSubServicesModal';
 import AddCarPropertyModal from '../Estimates/AddCarPropertyModal';
 import SubmitApprovalModal from '../Estimates/SubmitApprovalModal';
 import AddInsuranceModal from '../Estimates/AddInsuranceModal';
+import AddAgentModal from './AddAgentModal';
+import AddPurchaseModal from './AddPurchaseModal';
+import AddSupplierModal from '../../Supplier/AddSupplierModal';
 
 export default {
     data(){
       return {
         showModalAddData: '',
         AddServicesData: '',
+        AddAgentData: '',
         AddSubServicesData: '',
+        AddPurchaseData: '',
         AddSaveAndSendData: '',
         AddCarPropertyData: '',
         AddInsuranceData: '',
+        AddItemData: '',
+        AddSupplierData: '',
         placement: 'bottom',
         media: true,
         form: {
           id: '',
           job_order_no: '',
           customer_id: '',
+          agent_id: '',
           date: '',
           insurance: '',
           insurance_type: '',
@@ -335,6 +413,7 @@ export default {
             }
           ],
         },
+        purchase_items: [],
         payment_form: {
           total_repair_cost: 0,
           policy_deductible: 0,
@@ -352,13 +431,25 @@ export default {
         AddSubServicesModal,
         AddCarPropertyModal,
         SubmitApprovalModal,
-        AddInsuranceModal
+        AddInsuranceModal,
+        AddAgentModal,
+        AddPurchaseModal,
+        AddSupplierModal
     },
     filters: {
       customerFilter(data){
         if(data){
             const options = data.reduce((option, item) => {
                 option.push({label: item.company_name, value: item.id})
+                return option
+            }, [])
+            return options;
+        }
+      },
+      agentFilter(data){
+        if(data){
+            const options = data.reduce((option, item) => {
+                option.push({label: item.name, value: item.id})
                 return option
             }, [])
             return options;
@@ -405,6 +496,14 @@ export default {
         })
         return service_labor + sub_service_parts;
       },
+      totalPurchased(){
+        let sum = 0;
+        this.purchase_items.forEach(item => {
+          let multi = item.qty * item.price;
+          sum += multi;
+        })
+        return sum;
+      },
       total_net(){
         return this.payment_form.total_repair_cost - this.payment_form.policy_deductible - this.payment_form.betterment - this.payment_form.discount;
       },
@@ -448,7 +547,7 @@ export default {
         this.$store.dispatch('job_orders/updateJobOrder', params).then(() => {
             
             this.$router.replace({
-              name: "JobOrder"
+              name: "Job Order"
             });
         });
       },
@@ -505,6 +604,17 @@ export default {
       },
       openAddServices(){
         this.AddServicesData = new Date();
+      },
+      addItem(data){
+          this.AddItemData = {
+              trigger: new Date()
+          }
+      },
+      addSupplier(){
+        this.AddSupplierData = new Date();
+      },
+      purchaseAdded(data){
+        // this.form = data;
       },
       convertByProperty(originalObject, groupByProperty, secondProperty) {  
         var finalArray = [];  
@@ -597,11 +707,12 @@ export default {
       this.$store.dispatch('insurance/fetchInsurance');
       
       this.$store.dispatch('job_orders/findJobOrder', this.$route.params.id).then(response => {
-          console.log(response);
+          
 
             this.form = {
                 id: response.id,
                 job_order_no: response.job_order_no,
+                agent_id: response.agent_id,
                 customer_id: response.customer_id,
                 date: response.date,
                 insurance: response.insurance_id,
@@ -609,7 +720,23 @@ export default {
                 vehicle: response.vehicle_id,
                 services: response.scope
             }
-            console.log(response.payables);
+            let purchases = [];
+            response.purchases.forEach(item => {
+              item.purchase_items.forEach(purchase => {
+                purchases.push({
+                  item_id: purchase.id,
+                  item: purchase.item,
+                  unit_id: purchase.unit_id,
+                  qty: purchase.qty,
+                  price: purchase.price,
+                  date: item.date,
+                  supplier: item.supplier
+                });
+              });
+            })
+            console.log(purchases);
+            this.purchase_items = purchases;
+            
             this.payment_form = {
                 total_repair_cost: response.payables.total_repair_cost,
                 policy_deductible: response.payables.policy_deductible,

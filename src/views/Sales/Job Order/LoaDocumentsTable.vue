@@ -79,7 +79,7 @@ export default {
     getValueDel(data){
       console.log(data);
       if (confirm('Are you sure you want to delete ' + data.file_name +'?')) {
-        this.$store.dispatch('document/deleteLoaDocument', data).then(response => {
+        this.$store.dispatch('document/deleteJobOrderLoaDocument', data).then(response => {
           this.$emit('document_added', response);
         });
       }

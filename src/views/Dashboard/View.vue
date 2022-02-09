@@ -3,15 +3,16 @@
     <CRow>
         <CCol col="12" sm="6" lg="3">
             <CWidgetIcon
-            header="0"
+            v-if="$ability.can('read', 'Dashboard')"
+            :header="''+ follow_up + ''"
             text="For follow up"
             color="gradient-primary"
             :icon-padding="false"
             >
-            <img src="/img/icons/philippines-peso-currency-symbol.svg" name="cil-settings" width="24"/>
+            <img src="/img/icons/follow-up.svg" name="cil-settings" width="24"/>
             <template #footer>
                 <div class="wedgit-footer">
-                    <a href="#">View</a>
+                    <CLink to="/sales/estimates">View</CLink>
                 </div>
             </template>
             </CWidgetIcon>
@@ -23,10 +24,10 @@
             color="gradient-primary"
             :icon-padding="false"
             >
-            <img src="/img/icons/philippines-peso-currency-symbol.svg" name="cil-settings" width="24"/>
+            <img src="/img/icons/in-progress.svg" name="cil-settings" width="24"/>
             <template #footer>
                 <div class="wedgit-footer">
-                    <a href="#">View</a>
+                    <CLink to="/sales/job-order">View</CLink>
                 </div>
             </template>
             </CWidgetIcon>
@@ -43,7 +44,7 @@
         </CCol> -->
         <CCol col="12" sm="6" lg="3">
             <CWidgetIcon
-            header="₱0"
+            :header="'₱'+ cash_collected"
             text="Cash Collected"
             color="gradient-primary"
             :icon-padding="false"
@@ -59,7 +60,7 @@
         <CCol col="12" sm="6" lg="3">
             <CWidgetIcon
             header="₱0"
-            text="Expenses"
+            text="Cash Collectables"
             color="gradient-primary"
             :icon-padding="false"
             >
@@ -75,7 +76,11 @@
     <CRow>
         <CCol col="12" sm="12" lg="8">
             <CCard>
-                <BarChart/>
+                <BarChart
+                :job_orders="$store.state.job_orders.job_orders"
+                :cash_collected="$store.state.chart.cash_collected"
+                :cash_collectables="$store.state.chart.cash_collectables"
+                />
             </CCard>
         </CCol>
         <CCol col="12" sm="12" lg="4">
@@ -109,7 +114,21 @@
     </CRow>
     <CRow>
         <CCol lg="8">
-            <CCard>
+            <CCard style="min-height:475px;">
+                <CCardBody>
+                    <CTabs>
+                        <CTab title="Projects" active>
+                            <ProjectTable/>
+                        </CTab>
+                        <CTab title="My Reminders">
+                            <RemindersTable
+                            :items="$store.state.job_orders.job_orders"
+                            />
+                        </CTab>
+                    </CTabs>
+                </CCardBody>
+            </CCard>
+            <!-- <CCard>
                 <CRow class="mb-3">
                     <CCol lg="4">
                         <div class="container mt-3">
@@ -296,8 +315,8 @@
                         </CWidgetSimple>
                     </CCol>
                 </CRow>
-                </div>
-            </CCard>
+                </div> -->
+            <!-- </CCard> -->
         </CCol>
         <CCol lg="4">
             <CCard>
@@ -312,19 +331,7 @@
     </CRow>
     <CRow>
         <CCol lg="8">
-            <CCard>
-                <CCardBody>
-                    <CTabs>
-                        <CTab title="Projects" active>
-                            <ProjectTable/>
-                        </CTab>
-                        <CTab title="My Reminders">
-                            <RemindersTable/>
-                        </CTab>
-                        
-                    </CTabs>
-                </CCardBody>
-            </CCard>
+            
         </CCol>
     </CRow>
     <CRow>
@@ -346,7 +353,7 @@
             </CCard>
         </CCol>
     </CRow>
-    <CRow>
+    <!-- <CRow>
         <CCol lg="8">
             <CCard>
                 <CCardHeader>
@@ -357,7 +364,7 @@
                 </CCardBody>
             </CCard>
         </CCol>
-    </CRow>
+    </CRow> -->
   </div>
 </template>
 
@@ -408,6 +415,18 @@ import Calendar from './Calendar'
                 }
                 
                 return inprogress + '/' + total_job_order;
+            },
+            follow_up(){
+                let sum = 0;
+                sum = this.$store.state.estimate.estimate.length;
+                return sum;
+            },
+            cash_collected(){
+                let sum = 0;
+                this.$store.state.payments.payment.forEach(item => {
+                    sum += item.amount;
+                });
+                return sum;
             }
         },
 		methods: {
@@ -417,6 +436,11 @@ import Calendar from './Calendar'
 		},
         created(){
             this.$store.dispatch('job_orders/fetchJobOrder');
+            this.$store.dispatch('estimate/fetchEstimate');
+            this.$store.dispatch('payments/fetchPayment');
+            this.$store.dispatch('chart/fetchCashCollected');
+            this.$store.dispatch('chart/fetchCashCollectables');
+            
         }
 	}
 </script>

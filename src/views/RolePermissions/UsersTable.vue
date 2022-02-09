@@ -60,7 +60,9 @@ export default {
       this.$emit('event_child', data, 'edit');
     },
     getValueDel(data){
-      this.$emit('event_child', data, 'delete');
+      if (confirm('Are you sure you want to delete ' + data.name +'?')) {
+        this.$store.dispatch('users/deleteUser', data.id);
+      }
     },
   }
 }

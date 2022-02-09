@@ -4,6 +4,7 @@ export default {
   namespaced: true,
   state: {
     job_orders: null,
+    job_orders_status: null
   },
   mutations: {
     SET_JOB_ORDER(state, data) {
@@ -15,6 +16,9 @@ export default {
           state.job_orders.splice(index, 1, data);
         }
     },
+    SET_JOB_ORDER_STATUS(state, data){
+      state.job_orders_status = data;
+    }
   },
   actions: {
     async fetchJobOrder({commit}) {
@@ -31,6 +35,12 @@ export default {
                 reject(error);
             });
         })
+    },
+
+    async findJobOrderStatus({commit}, data) {
+        const response = await axios.get(`resources/find_job_order/${data.id}/${data.property_id}/${data.status}`);
+        console.log(response.data);
+        commit('SET_JOB_ORDER_STATUS', response.data);
     },
 
     async findTimeline({commit}, id) {
@@ -109,26 +119,26 @@ export default {
         });
     },
     
-    async updateStatusJobOrder({commit, dispatch, rootState}, data) {
-        await axios.post("resources/update_status_job_order", {
-            id: data.id,
-            status: data.status,
-            user_id: rootState.auth.user.id
-        }).then(response => {
-            dispatch('notification/addNotification', {
-                type: 'success',
-                message: 'Successfully Updated!'
-            }, {root: true});
+    // async updateStatusJobOrder({commit, dispatch, rootState}, data) {
+    //     await axios.post("resources/update_status_job_order", {
+    //         id: data.id,
+    //         status: data.status,
+    //         user_id: rootState.auth.user.id
+    //     }).then(response => {
+    //         dispatch('notification/addNotification', {
+    //             type: 'success',
+    //             message: 'Successfully Updated!'
+    //         }, {root: true});
 
-            commit('UPDATE_JOB_ORDER', response.data);
-        }, () => {
-            dispatch('notification/addNotification', {
-            type: 'danger',
-            message: 'Ops! Something went wrong!'
-            }, {root: true});
+    //         commit('UPDATE_JOB_ORDER', response.data);
+    //     }, () => {
+    //         dispatch('notification/addNotification', {
+    //         type: 'danger',
+    //         message: 'Ops! Something went wrong!'
+    //         }, {root: true});
             
-        });
-    },
+    //     });
+    // },
 
     async updateTimeline({commit, dispatch, rootState}, data) {
         await axios.post("resources/update_timeline", {
@@ -160,6 +170,7 @@ export default {
         await axios.post("resources/update_job_order", {
           id: data.form.id,
           date: data.form.date,
+          agent_id: data.form.agent_id,
           insurance_id: data.form.insurance,
           vehicle_id: data.form.vehicle_id,
           services: data.form.services,
@@ -184,5 +195,128 @@ export default {
         });
     },
 
+    async updateStatusJobOrder({commit, dispatch, rootState}, data) {
+      return new Promise((resolve, reject) => {
+        axios.post('resources/update_status_job_order', {
+          id: data.id,
+          status: data.status,
+          user_id: rootState.auth.user.id
+        }).then(response => {
+          dispatch('notification/addNotification', {
+            type: 'success',
+            message: 'Successfully Updated!'
+          }, {root: true});
+
+          commit('UPDATE_JOB_ORDER', response.data);
+
+          resolve(response.data);
+        }, error => {
+
+          dispatch('notification/addNotification', {
+            type: 'danger',
+            message: 'Ops! Something went wrong!'
+          }, {root: true});
+
+          reject(error);
+        });
+      });
+    },
+
+    async addPayment({commit, dispatch}, data) {
+      return new Promise((resolve, reject) => {
+        axios.post("resources/add_payment", {
+          job_order_id: data.id,
+          payment_of: data.payment_of,
+          amount: data.amount,
+          date: data.date,
+        }).then(response => {
+          dispatch('notification/addNotification', {
+            type: 'success',
+            message: 'Successfully Added!'
+          }, {root: true});
+          
+          commit('UPDATE_JOB_ORDER', response.data.job_order);
+          console.log(response.data.payments);
+          resolve(response.data.payments);
+        }, error => {
+
+          dispatch('notification/addNotification', {
+            type: 'danger',
+            message: 'Ops! Something went wrong!'
+          }, {root: true});
+
+          reject(error);
+        });
+      });
+    },
+
+    async deletePayment({commit, dispatch}, data) {
+      return new Promise((resolve, reject) => {
+        axios.delete(`resources/delete_payment/${data.id}/${data.job_order_id}`).then(response => {
+            dispatch('notification/addNotification', {
+                type: 'success',
+                message: 'Successfully Deleted!'
+            }, {root: true});
+
+            commit('UPDATE_JOB_ORDER', response.data);
+
+            resolve(data.id);
+          }, error => {
+            dispatch('notification/addNotification', {
+                type: 'danger',
+                message: 'Ops! Something went wrong!'
+            }, {root: true});
+
+            reject(error);
+          });
+      })
+    },
+
+    async sendJobOrderEstimateToLoa({commit, dispatch, rootState}, data) {
+      return new Promise((resolve, reject) => {
+        axios.post('resources/send_job_order_estimate_to_loa', {
+          id: data.id,
+          email: data.email,
+          message: data.message,
+          user_id: rootState.auth.user.id
+        }).then(response => {
+          dispatch('notification/addNotification', {
+            type: 'success',
+            message: 'Successfully Updated!'
+          }, {root: true});
+
+          commit('UPDATE_ESTIMATE', response.data);
+
+          resolve(response.data);
+        }, error => {
+
+          dispatch('notification/addNotification', {
+            type: 'danger',
+            message: 'Ops! Something went wrong!'
+          }, {root: true});
+
+          reject(error);
+        });
+      });
+    },
+
+    async submitComplete({commit, dispatch}, data) {
+      await axios.post("resources/job_order_complete", {
+        id: data.id
+      }).then(response => {
+          dispatch('notification/addNotification', {
+              type: 'success',
+              message: 'Successfully Completed!'
+          }, {root: true});
+          console.log(response.data);
+          commit('UPDATE_JOB_ORDER', response.data);
+      }, () => {
+        dispatch('notification/addNotification', {
+          type: 'danger',
+          message: 'Ops! Something went wrong!'
+        }, {root: true});
+        
+      });
+    },
   }
 };

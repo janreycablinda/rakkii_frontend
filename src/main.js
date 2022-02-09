@@ -11,6 +11,12 @@ import Vuelidate from 'vuelidate'
 import VCalendar from 'v-calendar'
 import SimpleTimeline from 'vue-simple-timeline';
 import VueHtmlToPaper from 'vue-html-to-paper';
+
+axios.defaults.baseURL = process.env.VUE_APP_BACKEND + "/api/";
+
+import { abilitiesPlugin } from '@casl/vue';
+import ability from './services/ability';
+
 const options = {
   name: '_blank',
   specs: [
@@ -47,9 +53,11 @@ require("@/store/subscriber");
 
 Vue.use(CoreuiVuePro)
 Vue.prototype.$log = console.log.bind(console)
-axios.defaults.baseURL = process.env.VUE_APP_BACKEND + "/api/";
+
 
 store.dispatch("auth/attempt", localStorage.getItem("token")).then(() => {
+  
+  Vue.use(abilitiesPlugin, ability);
   new Vue({
     el: '#app',
     router,

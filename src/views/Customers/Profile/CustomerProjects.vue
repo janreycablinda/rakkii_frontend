@@ -13,12 +13,23 @@
                         Projects
                     </CCardHeader>
                     <CCardBody>
-                        <CSelect
-                        label="Vehicle Owned"
-                        style="width:30%;"
-                        placeholder="Select Vehicle"
-                        :options="['Car #1', 'Car #2', 'Car #3']"
-                        />
+                        <CRow>
+                            <CCol lg="4">
+                                <CSelect
+                                    label="Vehicle Owned"
+                                    :value.sync="vehicle_owned"
+                                    :options="$store.state.property.property | propertyFilter"
+                                />
+                            </CCol>
+                            <CCol lg="4">
+                                <CSelect
+                                    label="Status"
+                                    :value.sync="vehicle_owned"
+                                    :options="['All', 'Completed', 'Inprogress', 'Cancel']"
+                                />
+                            </CCol>
+                        </CRow>
+                        
                           <TransactionHistory
                           :items="items"
                           />
@@ -32,16 +43,43 @@
     </div>
 </template>
 <script>
-import vSelect from 'vue-select'
-import { createPopper } from '@popperjs/core'
 import TransactionHistory from './TransactionHistory'
 import Sidebar from './Sidebar'
 
 export default {
     components: {
-        vSelect,
         TransactionHistory,
         Sidebar
+    },
+    filters: {
+        propertyFilter(data){
+            if(data){
+                const options = data.reduce((option, item) => {
+                    option.push({label: item.vehicle.vehicle_name + ' - ' + item.plate_no, value: item.id})
+                    return option
+                }, [])
+                options.unshift('All');
+                return options;
+            }
+        }
+    },
+    watch: {
+        vehicle_owned(id){
+            const params = {
+                id: this.$route.params.id,
+                property_id: id,
+                status: this.status
+            }
+            this.$store.dispatch('job_orders/findJobOrderStatus', params);
+        },
+        status(status){
+            const params = {
+                id: this.$route.params.id,
+                property_id: this.vehicle_owned,
+                status: status
+            }
+            this.$store.dispatch('job_orders/findJobOrderStatus', params);
+        }
     },
     data(){
         return {
@@ -51,120 +89,25 @@ export default {
                 date: '11/4/2021',
                 personnel_assigned: 'Joshua',
                 status: 'Inprogress'
-            }]
+            }],
+            vehicle_owned: 'All',
+            status: 'All'
         }
     },
     methods: {
-        withPopper(dropdownList, component, { width }) {
-        /**
-         * We need to explicitly define the dropdown width since
-         * it is usually inherited from the parent with CSS.
-         */
-        dropdownList.style.width = width
-
-        /**
-         * Here we position the dropdownList relative to the $refs.toggle Element.
-         *
-         * The 'offset' modifier aligns the dropdown so that the $refs.toggle and
-         * the dropdownList overlap by 1 pixel.
-         *
-         * The 'toggleClass' modifier adds a 'drop-up' class to the Vue Select
-         * wrapper so that we can set some styles for when the dropdown is placed
-         * above.
-         */
-        const popper = createPopper(component.$refs.toggle, dropdownList, {
-            placement: this.placement,
-            modifiers: [
-            {
-                name: 'offset',
-                options: {
-                offset: [0, -1],
-                },
-            },
-            {
-                name: 'toggleClass',
-                enabled: true,
-                phase: 'write',
-                fn({ state }) {
-                component.$el.classList.toggle(
-                    'drop-up',
-                    state.placement === 'top'
-                )
-                },
-            },
-            ],
-        })
-
-        /**
-         * To prevent memory leaks Popper needs to be destroyed.
-         * If you return function, it will be called just before dropdown is removed from DOM.
-         */
-        return () => popper.destroy()
-        },
+        
     },
     created(){
-        console.log(this.$route);
+
+        const params = {
+            id: this.$route.params.id,
+            property_id: this.vehicle_owned,
+            status: this.status
+        }
+
+        this.$store.dispatch('job_orders/findJobOrderStatus', params);
+        this.$store.dispatch('property/findProperty', this.$route.params.id);
+        
     },
-    multiselectOptions: [
-    { value: 'AL', label: 'Alabama' },
-    { value: 'AK', label: 'Alaska' },
-    { value: 'AS', label: 'American Samoa', $isDisabled: true },
-    { value: 'AZ', label: 'Arizona' },
-    { value: 'AR', label: 'Arkansas' },
-    { value: 'CA', label: 'California' },
-    { value: 'CO', label: 'Colorado' },
-    { value: 'CT', label: 'Connecticut' },
-    { value: 'DE', label: 'Delaware' },
-    { value: 'DC', label: 'District Of Columbia' },
-    { value: 'FM', label: 'Federated States Of Micronesia' },
-    { value: 'FL', label: 'Florida' },
-    { value: 'GA', label: 'Georgia' },
-    { value: 'GU', label: 'Guam' },
-    { value: 'HI', label: 'Hawaii' },
-    { value: 'ID', label: 'Idaho' },
-    { value: 'IL', label: 'Illinois' },
-    { value: 'IN', label: 'Indiana' },
-    { value: 'IA', label: 'Iowa' },
-    { value: 'KS', label: 'Kansas' },
-    { value: 'KY', label: 'Kentucky' },
-    { value: 'LA', label: 'Louisiana' },
-    { value: 'ME', label: 'Maine' },
-    { value: 'MH', label: 'Marshall Islands' },
-    { value: 'MD', label: 'Maryland' },
-    { value: 'MA', label: 'Massachusetts' },
-    { value: 'MI', label: 'Michigan' },
-    { value: 'MN', label: 'Minnesota' },
-    { value: 'MS', label: 'Mississippi' },
-    { value: 'MO', label: 'Missouri' },
-    { value: 'MT', label: 'Montana' },
-    { value: 'NE', label: 'Nebraska' },
-    { value: 'NV', label: 'Nevada' },
-    { value: 'NH', label: 'New Hampshire' },
-    { value: 'NJ', label: 'New Jersey' },
-    { value: 'NM', label: 'New Mexico' },
-    { value: 'NY', label: 'New York' },
-    { value: 'NC', label: 'North Carolina' },
-    { value: 'ND', label: 'North Dakota' },
-    { value: 'MP', label: 'Northern Mariana Islands' },
-    { value: 'OH', label: 'Ohio' },
-    { value: 'OK', label: 'Oklahoma' },
-    { value: 'OR', label: 'Oregon' },
-    { value: 'PW', label: 'Palau' },
-    { value: 'PA', label: 'Pennsylvania' },
-    { value: 'PR', label: 'Puerto Rico' },
-    { value: 'RI', label: 'Rhode Island' },
-    { value: 'SC', label: 'South Carolina' },
-    { value: 'SD', label: 'South Dakota' },
-    { value: 'TN', label: 'Tennessee' },
-    { value: 'TX', label: 'Texas' },
-    { value: 'UT', label: 'Utah' },
-    { value: 'VT', label: 'Vermont' },
-    { value: 'VI', label: 'Virgin Islands' },
-    { value: 'VA', label: 'Virginia' },
-    { value: 'WA', label: 'Washington' },
-    { value: 'WV', label: 'West Virginia' },
-    { value: 'WI', label: 'Wisconsin' },
-    { value: 'WY', label: 'Wyoming' }
-  ]
 }
 </script>

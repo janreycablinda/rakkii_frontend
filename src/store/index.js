@@ -26,6 +26,12 @@ import job_orders from './modules/job_orders';
 import personnel from './modules/personnel';
 import personnel_type from './modules/personnel_type';
 import uploader from './modules/uploader';
+import roles from './modules/roles';
+import purchase from './modules/purchase';
+import agent from './modules/agent';
+import gatepass from './modules/gatepass';
+import payments from './modules/payment';
+import chart from './modules/chart';
 
 Vue.use(Vuex)
 
@@ -83,6 +89,12 @@ export default new Vuex.Store({
     job_orders,
     personnel,
     personnel_type,
-    uploader
+    uploader,
+    roles,
+    purchase,
+    agent,
+    gatepass,
+    payments,
+    chart
   }
 });

@@ -44,7 +44,7 @@
                                 <CDropdownItem @click="downloadPdf">Download</CDropdownItem>
                                 <CDropdownItem @click="print">Print</CDropdownItem>
                             </CDropdown>
-                            <CButton size="sm" color="secondary" style="position:absolute; top:10px; right:82px;">
+                            <CButton @click="showMail" size="sm" color="secondary" style="position:absolute; top:10px; right:82px;">
                                 <CIcon name="cil-envelope-closed" />
                             </CButton>
                             <CDropdown
@@ -58,6 +58,9 @@
                                 </template>
                                 <CDropdownItem @click="changeStatus(info.id, 'cancel')">Mark as Cancel</CDropdownItem>
                                 <CDropdownItem @click="changeStatus(info.id, 'onhold')">Mark as On Hold</CDropdownItem>
+                                <CDropdownItem @click="changeStatus(info.id, 'pending')">Mark as Pending</CDropdownItem>
+                                <CDropdownItem @click="changeStatus(info.id, 'waiting')">Mark as Waiting</CDropdownItem>
+                                <CDropdownItem @click="changeStatus(info.id, 'inprogress')">Mark as Inprogress</CDropdownItem>
                                 <!-- <CDropdownItem @click="changeStatus(info.id, 'disapproved')">Mark as Disapproved</CDropdownItem>
                                 <CDropdownItem @click="changeStatus(info.id, 'approved')">Mark as Approved</CDropdownItem> -->
                             </CDropdown>
@@ -163,6 +166,7 @@
                                 <CButton @click="AddDocumentData = {trigger: new Date(), data: info}" class="mt-2" color="primary" size="sm">ADD DOCUMENT</CButton>
                                 <DocumentsTable
                                 :items="info.documents"
+                                v-on:document_added="documentAdded"
                                 />
                             </CTab>
                             <CTab >
@@ -172,20 +176,36 @@
                                 <CButton @click="AddLoaDocumentData = {trigger: new Date(), data: info}" class="mt-2" color="primary" size="sm">ADD LOA DOCUMENT</CButton>
                                 <LoaDocumentsTable
                                     :items="info.loa_documents"
+                                    v-on:document_added="documentAdded"
                                 />
                             </CTab>
-                            <CTab title="Activity Log">
-                                <simple-timeline :items='activity_log'></simple-timeline>
+                            <CTab title="Payment">
+                                <CButton @click="ModalPaymentData = {trigger: new Date(), data: info}" class="mt-2" color="primary" size="sm">ADD PAYMENT</CButton>
+                                <PaymentTable
+                                :items="info.payments"
+                                />
                             </CTab>
-                            <CTab title="Mail">
-                                <h4>No tracked emails sent</h4>
+                            <CTab>
+                                <template #title>
+                                    <CIcon name="cil-av-timer"/>
+                                </template>
+                                <simple-timeline class="job-order-timeline" :items='activity_log'></simple-timeline>
+                            </CTab>
+                            <CTab>
+                                <template #title>
+                                    <CIcon name="cil-envelope-closed"/>
+                                </template>
+                                <h4 v-if="mail_log == ''">No tracked emails sent</h4>
+                                <simple-timeline class="job-order-timeline" v-else :items='mail_log'></simple-timeline>
                             </CTab>
                             <CTab >
                                 <template #title>
                                     <CIcon name="cil-cart"/>
                                 </template>
-                                <LoaDocumentsTable
-                                    :items="info.loa_documents"
+                                <CButton @click="AddPurchaseData = {trigger: new Date(), data: info}" class="mt-2" color="primary" size="sm">ADD PURCHASE</CButton>
+                                <PurchaseTable
+                                :items="info.purchases"
+                                v-on:purchase_added="purchaseAdded"
                                 />
                             </CTab>
                         </CTabs>
@@ -364,7 +384,7 @@
         :enable-download="true"
         :preview-modal="false"
         :paginate-elements-by-height="1344"
-        :filename="'EST-000' +info.estimate_no"
+        :filename="'JO-000' +info.job_order_no"
         :pdf-quality="1"
         :manual-pagination="false"
         pdf-format="legal"
@@ -536,6 +556,32 @@
             </div>
         </section>
     </vue-html2pdf>
+    <SendMailModal
+    :SendMailData="SendMailData"
+    />
+    <AddPurchaseModal
+    :AddPurchaseData="AddPurchaseData"
+    v-on:add_supplier="addSupplier"
+    v-on:add_item="addItem"
+    v-on:purchase_added="purchaseAdded"
+    />
+    <AddSupplierModal
+    :AddSupplierData="AddSupplierData"
+    />
+    <AddDocumentModal
+    :AddDocumentData="AddDocumentData"
+    v-on:document_added="documentAdded"
+    />
+    <AddLoaDocumentModal
+    :AddLoaDocumentData="AddLoaDocumentData"
+    v-on:document_added="documentAdded"
+    />
+    <AddItemModal
+    :AddItemData="AddItemData"
+    />
+    <PaymentModal
+    :ModalPaymentData="ModalPaymentData"
+    />
     </div>
 </template>
 <script>
@@ -543,11 +589,28 @@ import JobOrderTable from './JobOrderTable';
 import DocumentsTable from './DocumentsTable';
 import VueHtml2pdf from 'vue-html2pdf'
 import LoaDocumentsTable from './LoaDocumentsTable';
+import SendMailModal from './SendMailModal';
+import AddPurchaseModal from './AddPurchaseModal';
+import AddSupplierModal from '../../Supplier/AddSupplierModal';
+import PurchaseTable from './PurchaseTable';
+import AddDocumentModal from './AddDocumentModal';
+import AddLoaDocumentModal from './AddLoaDocumentModal';
+import AddItemModal from './AddItemModal';
+import PaymentTable from '../Monitoring/PaymentTable';
+import PaymentModal from '../Monitoring/PaymentModal';
+
 export default {
     data(){
       return {
         colSize: '12',
         info: '',
+        SendMailData: '',
+        ModalPaymentData: '',
+        AddPurchaseData: '',
+        AddSupplierData: '',
+        AddDocumentData: '',
+        AddLoaDocumentData: '',
+        AddItemData: '',
         items: [
             {
             tag: '2018-01-12',
@@ -562,7 +625,16 @@ export default {
         JobOrderTable,
         DocumentsTable,
         VueHtml2pdf,
-        LoaDocumentsTable
+        LoaDocumentsTable,
+        SendMailModal,
+        AddPurchaseModal,
+        AddSupplierModal,
+        PurchaseTable,
+        AddDocumentModal,
+        AddLoaDocumentModal,
+        AddItemModal,
+        PaymentTable,
+        PaymentModal
     },
     computed: {
         activity_log(){
@@ -570,10 +642,25 @@ export default {
             if(this.info){
                 this.info.activity_log.forEach(item => {
                     log.push({
+                    id: item.id,
                     tag: this.$root.momentFormatDateTime(item.created_at),
                     color: '#84C529',
                     content: '<span class="timeline-time">' + this.$root.momentParse(item.created_at) + '</span>',
                     footer: '<span class="timeline-name">' + item.user.name + '</span> - ' +item.activity,
+                    });
+                })
+            }
+            return log.sort((a, b) => parseFloat(b.id) - parseFloat(a.id));
+        },
+        mail_log(){
+            const log = [];
+            if(this.info){
+                this.info.mail.forEach(item => {
+                    log.push({
+                    tag: this.$root.momentFormatDateTime(item.created_at),
+                    color: '#84C529',
+                    content: '<span class="timeline-time">' + this.$root.momentParse(item.created_at) + '</span>',
+                    footer: '<span class="timeline-name">' + item.user.name + '</span> - ' +item.action + ' <span class="timeline-name">' + item.email + '</span>',
                     });
                 })
             }
@@ -610,13 +697,30 @@ export default {
     },
     methods: {
         eventChild(data){
-            // this.property_data = data;
-            // const params = {
-            //     id: data.id
-            // }
-            // this.$store.dispatch('member/findProperty', params);
             this.info = data;
             this.colSize = 6;
+        },
+        addItem(data){
+            this.AddItemData = {
+                trigger: new Date()
+            }
+        },
+        purchaseAdded(data){
+            console.log(data);
+            this.info = data;
+        },
+        documentAdded(data){
+            console.log(data);
+            this.info = data;
+        },
+        addSupplier(){
+            this.AddSupplierData = new Date();
+        },
+        showMail(){
+            this.SendMailData = {
+                trigger: new Date(),
+                data: this.info
+            }
         },
         print () {
             // Pass the element id here
@@ -628,10 +732,11 @@ export default {
             this.$refs.html2Pdf.generatePdf()
         },
         getBadge (status) {
-        return status === 'approved' ? 'success'
-            : status === 'draft' ? 'secondary'
-            : status === 'sent' ? 'warning'
-            : status === 'disapproved' ? 'danger' : 'primary'
+        return status === 'completed' ? 'success'
+            : status === 'pending' ? 'secondary'
+            : status === 'inprogress' ? 'warning'
+            : status === 'cancel' ? 'danger'
+            : status === 'onhold' ? 'danger' : 'primary'
         },
         toRoman(num){
         const units = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'];
@@ -655,8 +760,8 @@ export default {
                 id: id,
                 status: status
             }
-            this.$store.dispatch('estimate/updateStatusEstimate', params).then(() => {
-                this.info.status = status;
+            this.$store.dispatch('job_orders/updateStatusJobOrder', params).then(response => {
+                this.info = response;
             });
         },
         covert(data){
@@ -699,5 +804,11 @@ export default {
     font-weight:600;
     color:#3C4B64 !important;
 }
-
+.job-order-timeline .item-footer{
+    color:#3C4B64 !important;
+}
+.line-container .item-footer {
+    padding-top: 0px !important;
+    font-size: 80%;
+}
 </style>

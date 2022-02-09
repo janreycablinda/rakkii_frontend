@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import store from "@/store";
+import ability from '../services/ability';
 
 // Containers
 const TheContainer = () => import('@/containers/TheContainer')
@@ -17,10 +18,9 @@ const EditCustomerProjects = () => import('@/views/Customers/EditCustomerProject
 const JobOrder = () => import('@/views/Sales/Job Order/View')
 const EditJobOrder = () => import('@/views/Sales/Job Order/EditJobOrder')
 
-
-const Invoices = () => import('@/views/Sales/Invoices/View')
+const BillingStatement = () => import('@/views/Sales/Billing Statement/View')
 const Monitoring = () => import('@/views/Sales/Monitoring/View')
-const CreateInvoice = () => import('@/views/Sales/Invoices/CreateInvoice')
+// const CreateInvoice = () => import('@/views/Sales/Billing Statement/CreateInvoice')
 const Estimates = () => import('@/views/Sales/Estimates/View')
 const CreateEstimates = () => import('@/views/Sales/Estimates/CreateNewEstimate')
 const EditEstimates = () => import('@/views/Sales/Estimates/EditEstimate')
@@ -49,32 +49,24 @@ const Supplier = () => import('@/views/Supplier/View')
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   mode: 'history', // https://router.vuejs.org/api/#mode
   linkActiveClass: 'open active',
   scrollBehavior: () => ({ y: 0 }),
   routes: [
     {
       path: '/dashboard',
-      name: 'Home',
       component: TheContainer,
       children: [
         {
             path: '',
             name: 'Dashboard',
             component: Dashboard,
-            beforeEnter: (to, from, next) => {
-              if (!store.getters["auth/authenticated"]) {
-                next({
-                  name: "Login"
-                });
-              }
-              next();
-            },
             meta: {
               breadcrumb: [
                 { text: 'Dashboard' }
-              ]
+              ],
+              requiresAuth: true
             }
         }
       ]
@@ -85,20 +77,13 @@ export default new Router({
       children: [
         {
             path: '',
-            name: 'RolePermission',
+            name: 'Users, Roles & Permissions',
             component: RolePermission,
-            beforeEnter: (to, from, next) => {
-              if (!store.getters["auth/authenticated"]) {
-                next({
-                  name: "Login"
-                });
-              }
-              next();
-            },
             meta: {
               breadcrumb: [
                 { text: 'Users, Roles & Permissions' }
-              ]
+              ],
+              requiresAuth: true
             }
         }
       ]
@@ -111,18 +96,11 @@ export default new Router({
             path: '',
             name: 'Insurance',
             component: Insurance,
-            beforeEnter: (to, from, next) => {
-              if (!store.getters["auth/authenticated"]) {
-                next({
-                  name: "Login"
-                });
-              }
-              next();
-            },
             meta: {
               breadcrumb: [
                 { text: 'Insurance' }
-              ]
+              ],
+              requiresAuth: true
             }
         }
       ]
@@ -135,18 +113,11 @@ export default new Router({
             path: '',
             name: 'Supplier',
             component: Supplier,
-            beforeEnter: (to, from, next) => {
-              if (!store.getters["auth/authenticated"]) {
-                next({
-                  name: "Login"
-                });
-              }
-              next();
-            },
             meta: {
               breadcrumb: [
                 { text: 'Supplier' }
-              ]
+              ],
+              requiresAuth: true
             }
         }
       ]
@@ -159,113 +130,71 @@ export default new Router({
             path: '',
             name: 'Customers',
             component: Customers,
-            beforeEnter: (to, from, next) => {
-              if (!store.getters["auth/authenticated"]) {
-                next({
-                  name: "Login"
-                });
-              }
-              next();
-            },
             meta: {
               breadcrumb: [
                 { text: 'Customers' }
-              ]
+              ],
+              requiresAuth: true
             }
         },
         {
           path: '/customers/new-customer',
           name: 'New Customer',
           component: NewCustomers,
-          beforeEnter: (to, from, next) => {
-            if (!store.getters["auth/authenticated"]) {
-              next({
-                name: "Login"
-              });
-            }
-            next();
-          },
           meta: {
             breadcrumb: [
               { text: 'Customers', to: '/customers' },
               { text: 'New Customer' }
-            ]
+            ],
+            requiresAuth: true
           }
         },
         {
           path: '/customers/import-customers',
           name: 'Import Customers',
           component: ImportCustomers,
-          beforeEnter: (to, from, next) => {
-            if (!store.getters["auth/authenticated"]) {
-              next({
-                name: "Login"
-              });
-            }
-            next();
-          },
           meta: {
             breadcrumb: [
               { text: 'Customers', to: '/customers' },
               { text: 'Import Customers' }
-            ]
+            ],
+            requiresAuth: true
           }
         },
         {
           path: '/customers/customer-profile/:id/profile',
           name: 'Customer Profile',
           component: CustomerProfile,
-          beforeEnter: (to, from, next) => {
-            if (!store.getters["auth/authenticated"]) {
-              next({
-                name: "Login"
-              });
-            }
-            next();
-          },
           meta: {
             breadcrumb: [
               { text: 'Customers', to: '/customers' },
               { text: 'Customer Profile' }
-            ]
+            ],
+            requiresAuth: true
           }
         },
-        {
-          path: '/customers/customer-profile/:id/profile/:project_id',
-          name: 'Customer Projects',
-          component: EditCustomerProjects,
-          beforeEnter: (to, from, next) => {
-            if (!store.getters["auth/authenticated"]) {
-              next({
-                name: "Login"
-              });
-            }
-            next();
-          },
-          meta: {
-            breadcrumb: [
-              { text: 'Customers', to: '/customers' },
-              { text: 'Customer Profile' }
-            ]
-          }
-        },
+        // {
+        //   path: '/customers/customer-profile/:id/profile/:project_id',
+        //   name: 'Customer Profile',
+        //   component: EditCustomerProjects,
+        //   meta: {
+        //     breadcrumb: [
+        //       { text: 'Customers', to: '/customers' },
+        //       { text: 'Customer Project' }
+        //     ],
+        //     requiresAuth: true
+        //   }
+        // },
         {
           path: '/customers/customer-profile/:id/projects',
           name: 'Customer Projects',
           component: CustomerProjects,
-          beforeEnter: (to, from, next) => {
-            if (!store.getters["auth/authenticated"]) {
-              next({
-                name: "Login"
-              });
-            }
-            next();
-          },
           meta: {
             breadcrumb: [
               { text: 'Customers', to: '/customers' },
               { text: 'Customer Projects' }
-            ]
+            ],
+            requiresAuth: true
           }
         }
       ]
@@ -275,288 +204,109 @@ export default new Router({
       component: TheContainer,
       children: [
         {
-            path: '/sales/invoices',
-            name: 'Invoices',
-            component: Invoices,
-            beforeEnter: (to, from, next) => {
-              if (!store.getters["auth/authenticated"]) {
-                next({
-                  name: "Login"
-                });
-              }
-              next();
-            },
-            meta: {
-              breadcrumb: [
-                { text: 'Billing Statement' }
-              ]
-            }
-        },
-        {
-            path: '/sales/invoices/create-invoice',
-            name: 'Invoices',
-            component: CreateInvoice,
-            beforeEnter: (to, from, next) => {
-              if (!store.getters["auth/authenticated"]) {
-                next({
-                  name: "Login"
-                });
-              }
-              next();
-            },
+            path: '/sales/billing-statement',
+            name: 'Billing Statement',
+            component: BillingStatement,
             meta: {
               breadcrumb: [
                 { text: 'Billing Statement', to: '/sales/invoices' },
                 { text: 'Create Billing Statement' }
-              ]
+              ],
+              requiresAuth: true
             }
         },
         {
             path: '/sales/estimates',
             name: 'Estimates',
             component: Estimates,
-            beforeEnter: (to, from, next) => {
-              if (!store.getters["auth/authenticated"]) {
-                next({
-                  name: "Login"
-                });
-              }
-              next();
-            },
             meta: {
               breadcrumb: [
                 { text: 'Estimates' }
-              ]
+              ],
+              requiresAuth: true
             }
         },
         {
             path: '/sales/estimates/create-estimate',
             name: 'CreateEstimates',
             component: CreateEstimates,
-            beforeEnter: (to, from, next) => {
-              if (!store.getters["auth/authenticated"]) {
-                next({
-                  name: "Login"
-                });
-              }
-              next();
-            },
             meta: {
               breadcrumb: [
                 { text: 'Estimates', to: '/sales/estimates' },
                 { text: 'Create New Estimates' }
-              ]
+              ],
+              requiresAuth: true
             }
         },
         {
             path: '/sales/job-order',
-            name: 'JobOrder',
+            name: 'Job Order',
             component: JobOrder,
-            beforeEnter: (to, from, next) => {
-              if (!store.getters["auth/authenticated"]) {
-                next({
-                  name: "Login"
-                });
-              }
-              next();
-            },
             meta: {
               breadcrumb: [
                 { text: 'Job Order' }
-              ]
+              ],
+              requiresAuth: true
             }
         },
         {
             path: '/sales/job-order/edit-job-order/:id',
             name: 'EditJobOrder',
             component: EditJobOrder,
-            beforeEnter: (to, from, next) => {
-              if (!store.getters["auth/authenticated"]) {
-                next({
-                  name: "Login"
-                });
-              }
-              next();
-            },
             meta: {
               breadcrumb: [
                 { text: 'Edit Job Order' }
-              ]
+              ],
+              requiresAuth: true
             }
         },
         {
             path: '/sales/estimates/edit-estimate/:id',
             name: 'EditEstimates',
             component: EditEstimates,
-            beforeEnter: (to, from, next) => {
-              if (!store.getters["auth/authenticated"]) {
-                next({
-                  name: "Login"
-                });
-              }
-              next();
-            },
             meta: {
               breadcrumb: [
                 { text: 'Estimates', to: '/sales/estimates' },
                 { text: 'Edit Estimates' }
-              ]
+              ],
+              requiresAuth: true
             }
         },
         {
           path: '/sales/payments',
           name: 'Payments',
           component: Payments,
-          beforeEnter: (to, from, next) => {
-            if (!store.getters["auth/authenticated"]) {
-              next({
-                name: "Login"
-              });
-            }
-            next();
-          },
           meta: {
             breadcrumb: [
               { text: 'Payments' }
-            ]
+            ],
+            requiresAuth: true
           }
         },
         {
           path: '/sales/credit_note',
           name: 'Credit Note',
           component: Credit_Note,
-          beforeEnter: (to, from, next) => {
-            if (!store.getters["auth/authenticated"]) {
-              next({
-                name: "Login"
-              });
-            }
-            next();
-          },
           meta: {
             breadcrumb: [
               { text: 'Credit Note' }
-            ]
+            ],
+            requiresAuth: true
           }
         },
         {
           path: '/sales/monitoring',
           name: 'Monitoring',
           component: Monitoring,
-          beforeEnter: (to, from, next) => {
-            if (!store.getters["auth/authenticated"]) {
-              next({
-                name: "Login"
-              });
-            }
-            next();
-          },
           meta: {
             breadcrumb: [
               { text: 'Monitoring' }
-            ]
+            ],
+            requiresAuth: true
           }
         }
       ]
     },
-    // {
-    //   path: '/inventory',
-    //   component: TheContainer,
-    //   children: [
-    //     {
-    //       path: '',
-    //       name: 'Inventory',
-    //       component: Inventory,
-    //       beforeEnter: (to, from, next) => {
-    //         if (!store.getters["auth/authenticated"]) {
-    //           next({
-    //             name: "Login"
-    //           });
-    //         }
-    //         next();
-    //       },
-    //       meta: {
-    //         breadcrumb: [
-    //           { text: 'Items' }
-    //         ]
-    //       }
-    //     },
-    //     {
-    //         path: '/inventory/items',
-    //         name: 'Items',
-    //         component: Items,
-    //         beforeEnter: (to, from, next) => {
-    //           if (!store.getters["auth/authenticated"]) {
-    //             next({
-    //               name: "Login"
-    //             });
-    //           }
-    //           next();
-    //         },
-    //         meta: {
-    //           breadcrumb: [
-    //             { text: 'Items' }
-    //           ]
-    //         }
-    //     },
-    //     {
-    //       path: '/inventory/import-items',
-    //       name: 'ImportItems',
-    //       component: ImportItems,
-    //       beforeEnter: (to, from, next) => {
-    //         if (!store.getters["auth/authenticated"]) {
-    //           next({
-    //             name: "Login"
-    //           });
-    //         }
-    //         next();
-    //       },
-    //       meta: {
-    //         breadcrumb: [
-    //           { text: 'Items' }
-    //         ]
-    //       }
-    //     },
-    //     {
-    //       path: '/inventory/stockin',
-    //       name: 'Stockin',
-    //       component: Stockin,
-    //       beforeEnter: (to, from, next) => {
-    //         if (!store.getters["auth/authenticated"]) {
-    //           next({
-    //             name: "Login"
-    //           });
-    //         }
-    //         next();
-    //       },
-    //       meta: {
-    //         breadcrumb: [
-    //           { text: 'Items' }
-    //         ]
-    //       }
-    //     },
-    //     {
-    //       path: '/inventory/stockout',
-    //       name: 'Stockout',
-    //       component: Stockout,
-    //       beforeEnter: (to, from, next) => {
-    //         if (!store.getters["auth/authenticated"]) {
-    //           next({
-    //             name: "Login"
-    //           });
-    //         }
-    //         next();
-    //       },
-    //       meta: {
-    //         breadcrumb: [
-    //           { text: 'Items' }
-    //         ]
-    //       }
-    //     },
-        
-    //   ]
-    // },
-    
     {
       path: '/tasks',
       component: TheContainer,
@@ -565,18 +315,11 @@ export default new Router({
             path: '',
             name: 'Tasks',
             component: Tasks,
-            beforeEnter: (to, from, next) => {
-              if (!store.getters["auth/authenticated"]) {
-                next({
-                  name: "Login"
-                });
-              }
-              next();
-            },
             meta: {
               breadcrumb: [
                 { text: 'Tasks' }
-              ]
+              ],
+              requiresAuth: true
             }
         },
       ]
@@ -589,37 +332,23 @@ export default new Router({
             path: '',
             name: 'Contracts',
             component: Contracts,
-            beforeEnter: (to, from, next) => {
-              if (!store.getters["auth/authenticated"]) {
-                next({
-                  name: "Login"
-                });
-              }
-              next();
-            },
             meta: {
               breadcrumb: [
                 { text: 'Contracts' }
-              ]
+              ],
+              requiresAuth: true
             }
         },
         {
             path: '/contracts/add_contracts',
             name: 'AddContract',
             component: AddContract,
-            beforeEnter: (to, from, next) => {
-              if (!store.getters["auth/authenticated"]) {
-                next({
-                  name: "Login"
-                });
-              }
-              next();
-            },
             meta: {
               breadcrumb: [
                 { text: 'Contracts', to: '/contracts' },
                 { text: 'ADD CONTRACTS' }
-              ]
+              ],
+              requiresAuth: true
             }
         },
       ]
@@ -632,46 +361,15 @@ export default new Router({
             path: '',
             name: 'Expenses',
             component: Expenses,
-            beforeEnter: (to, from, next) => {
-              if (!store.getters["auth/authenticated"]) {
-                next({
-                  name: "Login"
-                });
-              }
-              next();
-            },
             meta: {
               breadcrumb: [
                 { text: 'Expenses' }
-              ]
+              ],
+              requiresAuth: true
             }
         },
       ]
     },
-    // {
-    //   path: '/acounting',
-    //   component: TheContainer,
-    //   children: [
-    //     {
-    //         path: '/accounting/dashboard',
-    //         name: 'Account Dashboard',
-    //         component: Accounting_Dashboard,
-    //         beforeEnter: (to, from, next) => {
-    //           if (!store.getters["auth/authenticated"]) {
-    //             next({
-    //               name: "Login"
-    //             });
-    //           }
-    //           next();
-    //         },
-    //         meta: {
-    //           breadcrumb: [
-    //             { text: 'Dashboard' }
-    //           ]
-    //         }
-    //     },
-    //   ]
-    // },
     {
       path: '/profile',
       component: TheContainer,
@@ -680,18 +378,11 @@ export default new Router({
             path: '',
             name: 'Profile',
             component: Profile,
-            beforeEnter: (to, from, next) => {
-              if (!store.getters["auth/authenticated"]) {
-                next({
-                  name: "Login"
-                });
-              }
-              next();
-            },
             meta: {
               breadcrumb: [
                 { text: 'Profile' }
-              ]
+              ],
+              requiresAuth: true
             }
         },
       ]
@@ -704,54 +395,33 @@ export default new Router({
             path: '/report/sales',
             name: 'Sales Report',
             component: SalesReport,
-            beforeEnter: (to, from, next) => {
-              if (!store.getters["auth/authenticated"]) {
-                next({
-                  name: "Login"
-                });
-              }
-              next();
-            },
             meta: {
               breadcrumb: [
                 { text: 'Sales Report' }
-              ]
+              ],
+              requiresAuth: true
             }
         },
         {
           path: '/report/expenses',
           name: 'Expenses Report',
           component: ExpensesReport,
-          beforeEnter: (to, from, next) => {
-            if (!store.getters["auth/authenticated"]) {
-              next({
-                name: "Login"
-              });
-            }
-            next();
-          },
           meta: {
             breadcrumb: [
               { text: 'Expenses Report' }
-            ]
+            ],
+            requiresAuth: true
           }
         },
         {
           path: '/report/expensesvsincome',
           name: 'Expenses vs Income',
           component: ExpensesVsIncome,
-          beforeEnter: (to, from, next) => {
-            if (!store.getters["auth/authenticated"]) {
-              next({
-                name: "Login"
-              });
-            }
-            next();
-          },
           meta: {
             breadcrumb: [
               { text: 'Expenses vs Income' }
-            ]
+            ],
+            requiresAuth: true
           }
         },
       ]
@@ -765,7 +435,10 @@ export default new Router({
         {
           path: '',
           name: 'Login',
-          component: Login
+          component: Login,
+          meta: {
+            requiresAuth: false
+          },
         },
       ]
     },
@@ -778,7 +451,10 @@ export default new Router({
         {
           path: '',
           name: 'Page404',
-          component: Page404
+          component: Page404,
+          meta: {
+            requiresAuth: false
+          },
         },
       ]
     },
@@ -791,22 +467,38 @@ export default new Router({
         {
           path: '',
           name: 'Uploader',
-          component: Uploader
+          component: Uploader,
+          meta: {
+            requiresAuth: false
+          },
         },
       ]
     },
-    // {
-    //   path: '/',
-    //   component: {
-    //     render (c) { return c('router-view') }
-    //   },
-    //   children: [
-    //     {
-    //       path: 'forgot',
-    //       name: 'Forgot',
-    //       component: Forgot
-    //     },
-    //   ]
-    // }
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  if(to.meta.requiresAuth){
+    if (!store.getters["auth/authenticated"]) {
+      next({
+        name: "Login"
+      });
+    }
+
+    if(to.name == 'Profile'){
+      next();
+    }else{
+      if(ability.can('read', to.name)){
+        next();
+      }else{
+        next({
+          name: "Page404"
+        });
+      }
+    }
+  }else{
+    next();
+  }
+});
+
+export default router;

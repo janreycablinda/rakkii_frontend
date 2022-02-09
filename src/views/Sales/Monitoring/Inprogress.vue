@@ -1,12 +1,12 @@
 <template>
     <div :class="getClass()" class="inprogress-item px-3 py-1">
         <div class="ribbon-wrapper">
-            <div class="ribbon bg-danger">
+            <div v-if="inprogress_status" class="ribbon bg-success">
+                DONE
+            </div>
+            <div v-else class="ribbon bg-danger">
                 WORKING
             </div>
-            <!-- <div class="ribbon bg-success">
-                PAID
-            </div> -->
         </div>
         <CRow class="mt-2 pt-1">
             <CCol lg="5">
@@ -18,44 +18,43 @@
                 <p class="m-0"><small><b>DATE OUT: </b>{{inprogress_item.car_out}}</small></p>
             </CCol>
             <CCol lg="7">
-                <simple-timeline :items='timeline'></simple-timeline>
+                <simple-timeline class="inprogress-timeline" :items='timeline'></simple-timeline>
             </CCol>
         </CRow>
         <div style="position:absolute; right:17px; bottom:40px;" class="mb-1">
-            <CBadge color="success"><CIcon name="cil-check-alt"/>Gate Pass</CBadge><br>
-            <CBadge color="success"><CIcon name="cil-check-alt"/>Partial Payment</CBadge>
+            <CBadge color="success" v-if="inprogress_item.gatepass"><CIcon name="cil-check-alt"/>Gate Pass <CLink @mouseover="setGatePass(inprogress_item)" @click="printGatePass(inprogress_item)"><CIcon size="sm" name="cil-print" /></CLink><CLink @click="deleteGatePass(inprogress_item)" style="padding-right:5px; color:red;"><CIcon style="border-radius:5px; margin-right:-15px; background:rgba(0, 0, 0, 0.2); margin-top:-20px;" size="sm" name="cil-x" /></CLink></CBadge><br>
+            <CBadge v-if="settlement_payment == 'PAID'" color="success"><CIcon name="cil-check-alt"/>Settlement Paid</CBadge>
+            <CBadge v-else-if="settlement_payment == 'PARTIAL'" color="success"><CIcon name="cil-check-alt"/>Settlement Partial</CBadge>
         </div>
         <div class="inprogress-item-action" align="right">
-            <CButton size="sm" color="success">
+            <CButton v-if="inprogress_item.gatepass" @click="submitComplete(inprogress_item)" size="sm" color="success">
                 <CIcon name="cil-check-alt"/>
             </CButton>
-            <CButton @click="ModalGatePassData = new Date()" size="sm" class="ml-1" color="info">
+            <CButton v-if="inprogress_item.gatepass == null" @click="ModalGatePassData = {trigger:new Date(), data: inprogress_item}" size="sm" class="ml-1" color="primary">
                 <CIcon name="cil-exit-to-app"/>
             </CButton>
-            <CButton @click="ModalPaymentData = new Date()" size="sm" class="ml-1" color="warning">
+            <CButton v-else size="sm" class="ml-1" color="secondary">
+                <CIcon name="cil-exit-to-app"/>
+            </CButton>
+            <CButton @click="ModalPayment" size="sm" class="ml-1" color="warning">
                 <CIcon name="cil-money"/>
             </CButton>
-            <CButton size="sm" class="ml-1" color="secondary">
-                <CIcon name="cil-info"/>
+            <CButton :to="'/sales/job-order/edit-job-order/' + inprogress_item.id" size="sm" class="ml-1" color="info">
+                <CIcon name="cil-pen"/>
             </CButton>
         </div>
-        <PaymentModal
-        :ModalPaymentData="ModalPaymentData"
-        />
         <GatePassModal
         :ModalGatePassData="ModalGatePassData"
         />
     </div>
 </template>
 <script>
-import PaymentModal from './PaymentModal'
 import GatePassModal from './GatePassModal'
 
 export default {
     data(){
         return {
             items: [],
-            ModalPaymentData: '',
             ModalGatePassData: '',
             inprogress: [
                 {
@@ -85,7 +84,6 @@ export default {
         }
     },
     components: {
-        PaymentModal,
         GatePassModal
     },
     props: ['inprogress_item', 'index'],
@@ -95,18 +93,11 @@ export default {
             if(this.inprogress_item){
                 this.inprogress_item.timeline.forEach(item => {
                     if(item.status == 'pending'){
-                        // timeline.push({
-                        // tag: this.$root.momentFormatDateTime(item.car_in),
-                        // color: '#84C529',
-                        // content: '<span class="timeline-time">' + this.$root.momentParse(item.created_at) + '</span>',
-                        // footer: '<span class="timeline-name">' + item.user.name + '</span> - ' +item.activity,
-                        // });
                         timeline.push({
                         type: 'circle',
                         content: '<b> ' + item.services_type.name + '</b> <a href="#start='+ item.job_order_id + '=' + item.id + '=' + item.services_type.name +'"> <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 512 512" role="img" class="c-icon"><rect width="25" height="25" x="240" y="384" fill="#26994D" class="ci-primary"></rect><rect width="25" height="25" x="96" y="240" fill="#26994D" class="ci-primary"></rect><rect width="32" height="32" x="384" y="240" fill="#26994D" class="ci-primary"></rect><path fill="#fff" d="M414.392,97.608A222.332,222.332,0,0,0,272,32.567V32H240v96h32V64.672C370.41,72.83,448,155.519,448,256c0,105.869-86.131,192-192,192S64,361.869,64,256a191.61,191.61,0,0,1,56.408-135.942l115.624,145.88,25.078-19.876L124.6,73.828l-12.606,10.59a224,224,0,1,0,302.4,13.19Z" class="ci-primary"></path></svg> </a>'
                         });
                     }else if(item.status == 'inprogress'){
-                        //
                         timeline.push({
                         tag: item.date_start,
                         color: '#F9B115',
@@ -127,12 +118,83 @@ export default {
             }
             return timeline;
         },
+        inprogress_status(){
+            let sum = 0;
+            let value = false;
+            this.inprogress_item.timeline.forEach(item => {
+                if(item.status == 'completed'){
+                    sum += 1;
+                }
+            })
+            if(sum == this.inprogress_item.timeline.length){
+                value = true;
+            }else{
+                value = false;
+            }
+            return value;
+        },
+        settlement_payment(){
+            const settlement = this.inprogress_item.payables.policy_deductible + this.inprogress_item.payables.betterment - this.inprogress_item.payables.discount;
+            let status = 'UNPAID'
+            let payment = 0;
+            if(settlement){
+                this.inprogress_item.payments.forEach(item => {
+                    if(item.payment_of == 'Owner'){
+                        payment += item.amount;
+                    }
+                })
+                if(payment){
+                    if(payment >= settlement){
+                    status = 'PAID' 
+                    }else{
+                        status = 'PARTIAL'
+                    }
+                }else{
+                    status = 'UNPAID'
+                }
+                
+            }else{
+                status = 'UNPAID'
+            }
+            
+            return status;
+        }
     },
     methods: {
         getClass(){
             if(this.index > 0){
                 return 'mt-1';
             }
+        },
+        deleteGatePass(data){
+            console.log(data);
+            if (confirm('Are you sure you want to remove gate of ' + data.customer.company_name +'?')) {
+                this.$store.dispatch('gatepass/deleteGatePass', data);
+            }
+        },
+        submitComplete(data){
+            if (confirm('Click OK to confirm')) {
+                this.$store.dispatch('job_orders/submitComplete', data);
+            }
+        },
+        setGatePass(data){
+            this.$emit('event_print', data, 'set');
+        },
+        printGatePass(data){
+            this.$emit('event_print', data, 'print');
+        },
+        getPaymentStatus(data){
+            let sum = 0;
+            data.payments.forEach(item => {
+                if(item.payment_of == "Owner"){
+                    sum += parseInt(item.amount);
+                }
+            })
+            
+            console.log(this.settlement - sum);
+        },
+        ModalPayment(){
+            this.$emit('event_payment', this.inprogress_item);
         },
         showPayment(){
 
@@ -143,3 +205,8 @@ export default {
     }
 }
 </script>
+<style>
+.inprogress-timeline .item-footer{
+    color:#fff !important;
+}
+</style>

@@ -36,7 +36,7 @@ export default {
     fields: {
       type: Array,
       default () {
-        return ['related_to', 'description', 'date']
+        return ['related_to', 'description', 'date', 'action']
       }
     },
     caption: {

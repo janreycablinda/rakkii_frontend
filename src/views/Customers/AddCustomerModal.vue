@@ -146,6 +146,7 @@ export default {
         showModalAddData(){
             this.showModalAddCustomer = true;
         }
-    }
+    },
+    
 }
 </script>

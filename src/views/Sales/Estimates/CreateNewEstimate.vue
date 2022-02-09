@@ -25,6 +25,15 @@
                             :value.sync="$v.form.customer_id.$model"
                             :class="{ 'border-red': $v.form.customer_id.$anyError, 'border-green': $v.form.customer_id.required}"
                           >
+                            <template #search="{attributes, events}">
+                              {{attributes.value}}
+                              <input
+                                class="vs__search"
+                                v-bind="attributes"
+                                v-on="events"
+                                :value="attributes.value"
+                              />
+                            </template>
                             <template #open-indicator="{ attributes }">
                               &nbsp;
                             </template>
@@ -194,6 +203,9 @@
                 <CCol lg="12">
                   <CButton @click="submit_draft" color="success">SAVE AS DRAFT</CButton>
                   <CButton @click="submit_approval" class="ml-2" color="success">SAVE & SEND</CButton>
+                  <form id="form2">
+                  <CButton type="submit" class="ml-2" color="success">SUBMIT</CButton>
+                  </form>
                 </CCol>
               </CRow>
             </CCardBody>

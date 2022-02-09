@@ -15,12 +15,12 @@
                                     <CButton size="sm" @click="ModalCarInData = {trigger:new Date(), data: est}" color="info">
                                         <CIcon name="cil-car-alt"/>
                                     </CButton>
-                                    <CButton size="sm" class="ml-1" color="warning">
+                                    <CButton :to="'/sales/job-order/edit-job-order/' + est.id" size="sm" class="ml-1" color="warning">
                                         <CIcon name="cil-pen"/>
                                     </CButton>
-                                    <CButton size="sm" class="ml-1" color="secondary">
+                                    <!-- <CButton size="sm" class="ml-1" color="secondary">
                                         <CIcon name="cil-info"/>
-                                    </CButton>
+                                    </CButton> -->
                                 </div>
                                 <CRow class="mt-2">
                                     <CCol lg="7">
@@ -41,7 +41,7 @@
                         </div>
                     </div>
                     <div v-else align="center">
-                        <strong>NO WAITING VEHICLE ON THE GARAGE</strong>
+                        <strong>NO WAITING VEHICLE</strong>
                     </div>
                 </CCardBody>
             </CCard>
@@ -57,11 +57,38 @@
                         <Inprogress
                         :inprogress_item="data"
                         :index="index"
+                        v-on:event_payment="openPayment"
+                        v-on:event_print="printGatePass"
                         />
                         </div>
                     </div>
                     <div v-else align="center">
                         <strong>NO INPROGRESS VEHICLE</strong>
+                    </div>
+
+                    <div id="printMe" style="display:none; margin-bottom:250px; margin-left:100px; margin-right:100px;">
+                        <img style="padding-left:40px;" width="100%" src="/img/upload/HEADER.png">
+                        <div style="text-align:center;">
+                            <h1>GATE PASS</h1>
+                        </div>
+                        <div style="display:flex; justify-content:space-between;">
+                            <p><b>Gate Pass No.:</b> {{print_data.gate_pass_no}}</p>
+                        </div>
+                        <div style="display:flex; justify-content:space-between;">
+                            <p><b>Customer Name:</b> {{print_data.customer_name}}</p>
+                            <p><b>Date Issued:</b> {{ $root.momentFormatDateTime(print_data.date_issued)}}</p>
+                        </div>
+                        <div style="display:flex; justify-content:space-between;">
+                            <p><b>Car Model:</b> {{print_data.car_model}}</p>
+                            <p><b>Plate No.:</b> {{print_data.plate_no}}</p>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-top:100px;">
+                            <div style="width:80%;"></div>
+                            <div style="width:20%; text-align:center;">
+                                <p>{{print_data.issued_by}}</p>
+                                <p style="border-top:1px solid #000;"><b>Issued By</b></p>
+                            </div>
+                        </div>
                     </div>
                 </CCardBody>
             </CCard>
@@ -81,6 +108,9 @@
         <ListModal
         :ListModalData="ListModalData"
         />
+        <PaymentModal
+        :ModalPaymentData="ModalPaymentData"
+        />
     </CRow>
 </template>
 <script>
@@ -90,6 +120,7 @@ import CompletedModal from './CompletedModal';
 import EditCompletedModal from './EditCompletedModal';
 import StartModal from './StartModal';
 import ListModal from './ListModal';
+import PaymentModal from './PaymentModal'
 
 export default {
     data(){
@@ -97,8 +128,10 @@ export default {
             ModalCarInData: '',
             CompletedModalData: '',
             EditCompletedModalData: '',
+            ModalPaymentData: '',
             StartData: '',
             ListModalData: '',
+            print_data: this.getPrintData(),
             Inprogress: [
                 {
                     name: 'Chrismer Lao',
@@ -156,7 +189,8 @@ export default {
         CompletedModal,
         EditCompletedModal,
         StartModal,
-        ListModal
+        ListModal,
+        PaymentModal
     },
     watch:{
         '$route' () {
@@ -226,9 +260,45 @@ export default {
             return items;
         }
     },
+    methods: {
+        openPayment(data){
+
+            this.ModalPaymentData = {
+                trigger: new Date(),
+                data: data
+            };
+        },
+        getPrintData(){
+            return {
+                customer_name: '',
+                date_issued: '',
+                car_model: '',
+                plate_no: '',
+                issued_by: '',
+                gate_pass_no: ''
+            }
+        },
+        async print(){
+            await this.$htmlToPaper('printMe', { 
+                windowTitle: 'RAKKII AUTO SERVICES',
+            });
+        },
+        printGatePass(data, action){
+            if(action == 'set'){
+                this.print_data.customer_name = data.customer.company_name;
+                this.print_data.date_issued = data.created_at;
+                this.print_data.car_model = data.property.vehicle.vehicle_name;
+                this.print_data.plate_no = data.property.plate_no;
+                this.print_data.issued_by = data.gatepass.user.name;
+                this.print_data.gate_pass_no = data.gatepass.gate_pass_no;
+            }else{
+                this.print();
+            }
+            
+        }
+    },
     created(){
         this.$store.dispatch('job_orders/fetchJobOrder');
-        
     }
 }
 </script>

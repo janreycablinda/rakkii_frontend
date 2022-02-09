@@ -11,18 +11,18 @@
             <CRow>
                 <CCol lg="12">
                     <v-select
-                            :options="document_type | documentfilter"
-                            placeholder="Nothing Selected"
-                            style="width:100%;"
-                            v-model="form.document_type"
-                          >
-                        </v-select>
+                        :options="document_type | documentfilter"
+                        placeholder="Nothing Selected"
+                        style="width:100%;"
+                        v-model="form.document_type"
+                        >
+                    </v-select>
                 </CCol>
             </CRow>
             <CRow class="mt-3">
                 <CCol lg="12" v-if="form.document_type">
                     <CInputFile
-                        v-if="form.document_type == 'Pictures'"
+                        v-if="form.document_type.label == 'Pictures'"
                         @change="uploadDocs"
                         multiple
                     />
@@ -132,7 +132,7 @@ export default {
     },
     methods: {
         uploadDocs(files){
-            if(this.form.document_type == 'Pictures'){
+            if(this.form.document_type.label == 'Pictures'){
                 this.form.files = files;
             }else{
                 this.form.files = files[0];
@@ -147,7 +147,7 @@ export default {
             formData.append('prefix', this.form.document_type.prefix);
             formData.append('customer_id', this.form.customer_id);
         
-            if(this.form.document_type == 'Pictures'){
+            if(this.form.document_type.label == 'Pictures'){
                 this.form.files.forEach(item => {
                     formData.append('files[]', item);
                 })

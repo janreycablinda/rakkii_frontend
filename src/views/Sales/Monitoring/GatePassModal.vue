@@ -6,18 +6,9 @@
       centered
       size="sm"
     >
-       <!-- <CInput
-            type="date"
-            label="Date In *"
-            autocomplete="name"
-            v-model="form.date_in"
-        />
-        <CInput
-            type="date"
-            label="Date Out"
-            autocomplete="name"
-            v-model="form.date_out"
-        /> -->
+        <p class="text-black"><b>Gate Pass No.:</b> {{form.gate_pass_no}}</p>
+        <p class="text-black"><b>Date Time Issued:</b> {{form.date}}</p>
+        <p class="text-black"><b>Customer:</b> {{form.name}}</p>
         <template #footer>
             <CButton @click="submit" color="primary" class="branding-btn">SUBMIT</CButton>
             <CButton @click="showModalGatePass = false" color="danger">Cancel</CButton>
@@ -32,8 +23,9 @@ export default {
             items: '',
             form: {
                 id: '',
-                date_in: '',
-                date_out: '',
+                gate_pass_no: '',
+                date: new Date().toLocaleTimeString(),
+                name: ''
             }
         }
     },
@@ -41,25 +33,18 @@ export default {
     watch: {
         ModalGatePassData(data){
             this.showModalGatePass = true;
-            // this.items = data.data;
-            // this.form.id = data.data.id;
+            this.form.id = data.data.id;
+            this.form.name = data.data.customer.company_name;
+            this.$store.dispatch('gatepass/getPassNo').then(response => {
+                this.form.gate_pass_no = response;
+            });
         }
     },
     methods: {
         submit(){
-            
-            const params = {
-                group_work_type: this.convertByProperty(this.items.scope, 'job_order_id', 'labor_fee'),
-                form: this.form
-            }
-            
-            this.$store.dispatch('job_orders/carStartWorking', params).then(() => {
-                this.form = {
-                    id: '',
-                    date_in: '',
-                    date_out: '',
-                }
-                this.showModalCarIn = false;
+            this.$store.dispatch('gatepass/submitGatePass', this.form).then(() => {
+                
+                this.showModalGatePass = false;
             });
         },
         convertByProperty(originalObject, groupByProperty, secondProperty) {  
