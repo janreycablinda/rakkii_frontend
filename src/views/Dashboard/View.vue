@@ -52,7 +52,7 @@
             <img src="/img/icons/cash.svg" name="cil-settings" width="24"/>
             <template #footer>
                 <div class="wedgit-footer">
-                    <a href="#">View</a>
+                    <CLink to="/sales/payments">View</CLink>
                 </div>
             </template>
             </CWidgetIcon>
@@ -76,11 +76,13 @@
     <CRow>
         <CCol col="12" sm="12" lg="8">
             <CCard>
+                <CCardBody>
                 <BarChart
                 :job_orders="$store.state.job_orders.job_orders"
                 :cash_collected="$store.state.chart.cash_collected"
                 :cash_collectables="$store.state.chart.cash_collectables"
                 />
+                </CCardBody>
             </CCard>
         </CCol>
         <CCol col="12" sm="12" lg="4">
@@ -89,34 +91,47 @@
                     My To Do Items
                     <div class="card-header-actions">
                         <CLink
+                        @click="showModalDataNewToDo = new Date()"
                         class="card-header-action btn-setting">
                             New To Do
                         </CLink>
-                        |
+                        <!-- |
                         <CLink
                         class="card-header-action btn-setting">
                             View All
-                        </CLink>
+                        </CLink> -->
                     </div>
                 </CCardHeader>
                 <CCardBody>
                     <div class="text-warning bold">
                         <span><CIcon height="12" name="cil-warning"/> Latest to do's</span>
                     </div>
-                    <small>No todos found</small>
+                    <!-- <small v-for="todo in todos" :key="todo.id">{{todo.todo}}</small> -->
+                    <CListGroup accent>
+                        <draggable v-model="todos" group="todos" @change="log">
+                            <CListGroupItem style="display:flex; justify-content: space-between;" v-for="element in todos" :key="element.id" color="warning" accent="warning"><div style="cursor: -webkit-grab; cursor: grab;">{{element.todo}} <br><small>{{$root.momentFormatDateTime(element.created_at)}}</small></div><div> <CLink @click="deleteTodo(element.id, 'todo')" style="color:red;"><CIcon name="cil-trash"/></CLink></div></CListGroupItem>
+                        </draggable>
+                    </CListGroup>
+                    <!-- <draggable v-model="todos" group="id" @start="drag=true" @end="drag=false" @change="log">
+                        <div v-for="element in todos" :key="element.id">{{element.todo}}</div>
+                    </draggable> -->
                     <div class="text-success bold">
                         <span><CIcon height="12" name="cil-check-alt"/> Latest finished to do's</span>
                     </div>
-                    <small>No finished todos found</small>
+                    <CListGroup accent>
+                        <draggable v-model="todos_finished" group="todos" @change="log">
+                            <CListGroupItem style="text-decoration: line-through; display:flex; justify-content: space-between;" v-for="element in todos_finished" :key="element.id" color="success" accent="success"><div style="cursor: -webkit-grab; cursor: grab;">{{element.todo}} <br><small>{{$root.momentFormatDateTime(element.created_at)}}</small></div> <div> <CLink @click="deleteTodo(element.id, 'finished')" style="color:red;"><CIcon name="cil-trash"/></CLink></div></CListGroupItem>
+                        </draggable>
+                    </CListGroup>
                 </CCardBody>
             </CCard>
         </CCol>
     </CRow>
     <CRow>
         <CCol lg="8">
-            <CCard style="min-height:475px;">
+            <CCard>
                 <CCardBody>
-                    <CTabs>
+                    <!-- <CTabs>
                         <CTab title="Projects" active>
                             <ProjectTable/>
                         </CTab>
@@ -125,207 +140,25 @@
                             :items="$store.state.job_orders.job_orders"
                             />
                         </CTab>
-                    </CTabs>
+                    </CTabs> -->
+                    <WeeklyPaymentChart
+                    :weekly_payments="$store.state.payments.weekly_payments"
+                    />
                 </CCardBody>
             </CCard>
-            <!-- <CCard>
-                <CRow class="mb-3">
-                    <CCol lg="4">
-                        <div class="container mt-3">
-                            BILLING OVERVIEW
-                        <hr>
-                        0 DRAFT
-                        <CProgress
-                            :value="0"
-                            color="secondary"
-                            show-value
-                            showPercentage
-                            class="mt-1"
-                        />
-                        0 NOT SENT
-                        <CProgress
-                            :value="0"
-                            color="secondary"
-                            show-value
-                            showPercentage
-                            class="mt-1"
-                        />
-                        0 UNPAID
-                        <CProgress
-                            :value="0"
-                            color="danger"
-                            show-value
-                            showPercentage
-                            class="mt-1"
-                        />
-                        0 PARTIALLY PAID
-                        <CProgress
-                            :value="0"
-                            color="warning"
-                            show-value
-                            showPercentage
-                            class="mt-1"
-                        />
-                        0 OVERDUE
-                        <CProgress
-                            :value="0"
-                            color="warning"
-                            show-value
-                            showPercentage
-                            class="mt-1"
-                        />
-                        0 PAID
-                        <CProgress
-                            :value="0"
-                            color="success"
-                            show-value
-                            showPercentage
-                            class="mt-1"
-                        />
-                        </div>
-                    </CCol>
-                    <CCol lg="4">
-                        <div class="container mt-3">
-                            ESTIMATE OVERVIEW
-                        <hr>
-                        0 DRAFT
-                        <CProgress
-                            :value="0"
-                            color="secondary"
-                            show-value
-                            showPercentage
-                            class="mt-1"
-                        />
-                        0 NOT SENT
-                        <CProgress
-                            :value="0"
-                            color="secondary"
-                            show-value
-                            showPercentage
-                            class="mt-1"
-                        />
-                        0 UNPAID
-                        <CProgress
-                            :value="0"
-                            color="danger"
-                            show-value
-                            showPercentage
-                            class="mt-1"
-                        />
-                        0 PARTIALLY PAID
-                        <CProgress
-                            :value="0"
-                            color="warning"
-                            show-value
-                            showPercentage
-                            class="mt-1"
-                        />
-                        0 OVERDUE
-                        <CProgress
-                            :value="0"
-                            color="warning"
-                            show-value
-                            showPercentage
-                            class="mt-1"
-                        />
-                        0 PAID
-                        <CProgress
-                            :value="0"
-                            color="success"
-                            show-value
-                            showPercentage
-                            class="mt-1"
-                        />
-                        </div>
-                    </CCol>
-                    <CCol lg="4">
-                        <div class="container mt-3">
-                            PROPOSAL OVERVIEW
-                        <hr>
-                        0 DRAFT
-                        <CProgress
-                            :value="0"
-                            color="secondary"
-                            show-value
-                            showPercentage
-                            class="mt-1"
-                        />
-                        0 NOT SENT
-                        <CProgress
-                            :value="0"
-                            color="secondary"
-                            show-value
-                            showPercentage
-                            class="mt-1"
-                        />
-                        0 UNPAID
-                        <CProgress
-                            :value="0"
-                            color="danger"
-                            show-value
-                            showPercentage
-                            class="mt-1"
-                        />
-                        0 PARTIALLY PAID
-                        <CProgress
-                            :value="0"
-                            color="warning"
-                            show-value
-                            showPercentage
-                            class="mt-1"
-                        />
-                        0 OVERDUE
-                        <CProgress
-                            :value="0"
-                            color="warning"
-                            show-value
-                            showPercentage
-                            class="mt-1"
-                        />
-                        0 PAID
-                        <CProgress
-                            :value="0"
-                            color="success"
-                            show-value
-                            showPercentage
-                            class="mt-1"
-                        />
-                        </div>
-                    </CCol>
-                </CRow>
-                <div class="container">
-                <CRow>
-                    
-                    <CCol lg="12">
-                        <hr>
-                    </CCol>
-                    <CCol lg="4">
-                        <CWidgetSimple header="Outstanding Billing" text="₱1,123">
-                        
-                        </CWidgetSimple>
-                    </CCol>
-                    <CCol lg="4">
-                        <CWidgetSimple header="Past Due Billing" text="₱1,123">
-                        
-                        </CWidgetSimple>
-                    </CCol>
-                    <CCol lg="4">
-                        <CWidgetSimple header="Paid Billing" text="₱1,123">
-                        
-                        </CWidgetSimple>
-                    </CCol>
-                </CRow>
-                </div> -->
-            <!-- </CCard> -->
         </CCol>
         <CCol lg="4">
             <CCard>
                 <CCardHeader>Statistics by Project Status</CCardHeader>
-                <StatisticsChart/>
+                <StatisticsChart
+                :job_orders="$store.state.job_orders.job_orders"
+                />
             </CCard>
             <CCard>
                 <CCardHeader>Production Status</CCardHeader>
-                <ProductionStatus/>
+                <ProductionStatus
+                :job_orders="$store.state.job_orders.job_orders"
+                />
             </CCard>
         </CCol>
     </CRow>
@@ -334,14 +167,14 @@
             
         </CCol>
     </CRow>
-    <CRow>
+    <!-- <CRow>
         <CCol lg="8">
             <CCard>
                 <Calendar/>
             </CCard>
         </CCol>
-    </CRow>
-    <CRow>
+    </CRow> -->
+    <!-- <CRow>
         <CCol lg="8">
             <CCard>
                 <CCardHeader>
@@ -352,7 +185,7 @@
                 </CCardBody>
             </CCard>
         </CCol>
-    </CRow>
+    </CRow> -->
     <!-- <CRow>
         <CCol lg="8">
             <CCard>
@@ -365,6 +198,9 @@
             </CCard>
         </CCol>
     </CRow> -->
+    <NewToDo
+    :showModalDataNewToDo="showModalDataNewToDo"
+    />
   </div>
 </template>
 
@@ -377,6 +213,8 @@ import RemindersTable from './RemindersTable'
 import WeeklyPaymentChart from './WeeklyPaymentChart'
 import ContractTable from './ContractTable'
 import Calendar from './Calendar'
+import NewToDo from './NewToDo'
+import draggable from 'vuedraggable'
 // import { CalendarView, CalendarViewHeader } from "vue-simple-calendar"
 // import "vue-simple-calendar/dist/style.css"
 // The next two lines are optional themes
@@ -386,7 +224,10 @@ import Calendar from './Calendar'
 	export default {
 		name: 'app',
 		data: function() {
-			return { showDate: new Date() }
+			return { 
+                showDate: new Date(),
+                showModalDataNewToDo: ''
+            }
 		},
 		components: {
 			// CalendarView,
@@ -398,7 +239,9 @@ import Calendar from './Calendar'
             WeeklyPaymentChart,
             ContractTable,
             Calendar,
-            ProductionStatus
+            ProductionStatus,
+            NewToDo,
+            draggable
 		},
         computed: {
             projectInprogress(){
@@ -407,7 +250,7 @@ import Calendar from './Calendar'
                 let inprogress = 0;
                 if(job_order){
                     job_order.forEach(item => {
-                        if(item.status == 'inprogress'){
+                        if(item.status == 'Inprogress'){
                             inprogress += 1;
                         }
                     })
@@ -427,12 +270,55 @@ import Calendar from './Calendar'
                     sum += item.amount;
                 });
                 return sum;
+            },
+            todos:{
+                get() {
+                    return this.$store.state.todo.todos;
+                },
+                set(value) {
+                    const params = {
+                        status: 'todo',
+                        value: value
+                    }
+                    this.$store.dispatch('todo/updateTodo', params);
+                }
+            },
+            todos_finished:{
+                get() {
+                    return this.$store.state.todo.todos_finished;
+                },
+                set(value) {
+                    const params = {
+                        status: 'finished',
+                        value: value
+                    }
+                    this.$store.dispatch('todo/updateTodo', params);
+                }
             }
         },
 		methods: {
 			setShowDate(d) {
 				this.showDate = d;
 			},
+            add: function() {
+                this.list.push({ name: "Juan" });
+            },
+            log(evt) {
+                if(evt.added){
+                    console.log(evt.added.element);
+                    this.$store.dispatch('todo/changeStatusTodo', evt.added.element);
+                }
+            },
+            deleteTodo(id, status){
+                const params = {
+                    id: id,
+                    status: status
+                }
+                if (confirm('Please click ok to confirm delete')) {
+                    this.$store.dispatch('todo/deleteTodo', params);
+                }
+                
+            }
 		},
         created(){
             this.$store.dispatch('job_orders/fetchJobOrder');
@@ -440,7 +326,8 @@ import Calendar from './Calendar'
             this.$store.dispatch('payments/fetchPayment');
             this.$store.dispatch('chart/fetchCashCollected');
             this.$store.dispatch('chart/fetchCashCollectables');
-            
+            this.$store.dispatch('payments/fetchWeeklyPayment');
+            this.$store.dispatch('todo/fetchToDo');
         }
 	}
 </script>

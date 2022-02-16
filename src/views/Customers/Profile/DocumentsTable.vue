@@ -8,43 +8,37 @@
         :fixed="fixed"
         :items="items"
         :fields="fields"
-        :items-per-page="small ? 10 : 5"
+        :items-per-page="small ? 10 : 10"
         :tableFilter='{ placeholder: "Search", label: " "}'
         :dark="dark"
         :table-filter="true"
         pagination
         items-per-page-select
-        
       >
-        <template ##="{item, index}">
-            <td>
-                {{index+1}}
-            </td>
-        </template>
-        <template #contact_number="{item}">
-            <td>
-                {{item.phone}}
-            </td>
-        </template>
-        <template #status="{item}">
-            <td>
-                <CBadge :color="getBadge('Active')"> Active</CBadge>
-            </td>
+        <template #file="{item}">
+          <td>
+              <CLink
+              @click="downloadDocs(item)"
+              >
+                {{item.file_name}}
+            </CLink>
+          </td>
         </template>
         <template #action="{item}">
             <td>
                 <div>
-                <!-- <CButton @click="getValue(item)" color="info"><CIcon name="cil-pencil"/></CButton> &nbsp; -->
-                <CButton :to="'/insurance/insurance-profile/' + item.id + '/profile'" color="warning"><CIcon name="cil-address-book"/></CButton> &nbsp;
-                <CButton @click="getValueDel(item)" color="danger"><CIcon name="cil-trash"/></CButton>
+                <!-- <CButton @click="getValue(item)" color="info"><CIcon name="cil-pencil"/></CButton> &nbsp;
+                <CButton @click="getValue(item)" color="warning"><CIcon name="cil-check-alt"/></CButton> &nbsp; -->
+                <CButton size="sm" @click="getValueDel(item)" color="danger"><CIcon name="cil-trash"/></CButton>
                 </div>
             </td>
         </template>
       </CDataTable>
     </div>
 </template>
-
 <script>
+
+import axios from 'axios';
 export default {
   name: 'Table',
   props: {
@@ -52,7 +46,7 @@ export default {
     fields: {
       type: Array,
       default () {
-        return ['#', 'insurance_name', 'contact_number', 'address', 'status', 'action']
+        return ['file', 'document_type', 'action']
       }
     },
     caption: {
@@ -74,14 +68,23 @@ export default {
             : status === 'Banned' ? 'danger' : 'primary'
     },
     getValue(data){
-      this.$emit('event_child', data, 'edit');
+      console.log(data);
+      this.$emit('event_child', data);
     },
     getValueDel(data){
-      if (confirm('Are you sure you want to delete ' + data.insurance_name +'?')) {
-          this.$store.dispatch('insurance/deleteInsurance', data.id);
+      if (confirm('Are you sure you want to delete ' + data.file_name +'?')) {
+        this.$store.dispatch('document/deleteDocument', data).then(response => {
+          this.$emit('document_added', response);
+        });
       }
-      // this.$emit('event_child', data, 'delete');
     },
+    downloadDocs(data){
+        console.log(data.file_name);
+        this.$store.dispatch('document/downloadDocument', data.file_name);
+    }
+  },
+  created(){
+      console.log(process.env.VUE_APP_BACKEND);
   }
 }
 </script>

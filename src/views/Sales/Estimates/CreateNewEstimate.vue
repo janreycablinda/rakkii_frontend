@@ -48,7 +48,10 @@
                               <small class="form-text text-muted w-100">Customer</small>
                             </template>
                             <template #list-header>
-                              <li style="text-align: center; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="showModalAddData = new Date()">ADD CUSTOMER</a></li>
+                              <div style="display:flex;">
+                                <li style="text-align: center; width:50%; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="showModalAddData = new Date()"><CIcon name="cil-plus"/> ADD</a></li>
+                                <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#" @click="AddAgentData = new Date()"><CIcon name="cil-trash"/> DELETE</a></li>
+                              </div>
                             </template>
                             </v-select>
                               <div v-if="$v.form.customer_id.$anyError == true" class="invalid-feedback" style="display:block;">
@@ -89,7 +92,10 @@
                           :class="{ 'border-red': $v.form.vehicle_id.$anyError, 'border-green': $v.form.vehicle_id.required}"
                         >
                           <template #list-header>
-                              <li v-if="form.customer_id" style="text-align: center; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="addCarProperty(form.customer_id)">ADD CAR PROPERTY</a></li>
+                              <div v-if="form.customer_id" style="display:flex;">
+                                <li style="text-align: center; width:50%; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="addCarProperty(form.customer_id)"><CIcon name="cil-plus"/> ADD</a></li>
+                                <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#" @click="AddAgentData = new Date()"><CIcon name="cil-trash"/> DELETE</a></li>
+                              </div>
                           </template>
                         </v-select>
                         <div v-if="$v.form.vehicle_id.$anyError == true" class="invalid-feedback" style="display:block;">
@@ -113,7 +119,10 @@
                           :class="{ 'border-red': $v.form.insurance.$anyError, 'border-green': $v.form.insurance.required}"
                         >
                         <template #list-header>
-                            <li style="text-align: center; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="AddInsuranceData = new Date()">ADD INSURANCE</a></li>
+                            <div style="display:flex;">
+                              <li style="text-align: center; width:50%; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="AddInsuranceData = new Date()"><CIcon name="cil-plus"/> ADD</a></li>
+                              <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#" @click="AddAgentData = new Date()"><CIcon name="cil-trash"/> DELETE</a></li>
+                            </div>
                         </template>
                         </v-select>
                         <div v-if="$v.form.insurance.$anyError == true" class="invalid-feedback" style="display:block;">
@@ -203,9 +212,7 @@
                 <CCol lg="12">
                   <CButton @click="submit_draft" color="success">SAVE AS DRAFT</CButton>
                   <CButton @click="submit_approval" class="ml-2" color="success">SAVE & SEND</CButton>
-                  <form id="form2">
-                  <CButton type="submit" class="ml-2" color="success">SUBMIT</CButton>
-                  </form>
+                 
                 </CCol>
               </CRow>
             </CCardBody>
@@ -536,7 +543,7 @@ export default {
         this.validate();
         if (this.isValid) {
           let formData = new FormData();
-          formData.append('status', 'draft');
+          formData.append('status', 'Draft');
           formData.append('customer_id', this.form.customer_id.value);
           formData.append('date', this.form.date);
           formData.append('insurance', this.form.insurance.value);

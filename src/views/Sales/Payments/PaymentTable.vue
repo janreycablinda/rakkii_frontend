@@ -11,19 +11,48 @@
         :items-per-page="small ? 10 : 5"
         :tableFilter='{ placeholder: "Search", label: " "}'
         :dark="dark"
+        size="sm"
         :table-filter="true"
         pagination
         items-per-page-select
-        
       >
-        <template #action="{item}">
+        <template #job_order_no="{item}">
             <td>
-                <div>
-                <CButton @click="getValue(item)" color="info"><CIcon name="cil-pencil"/></CButton> &nbsp;
-                <CButton @click="getValueDel(item)" color="danger"><CIcon name="cil-trash"/></CButton>
-                </div>
+                <CLink
+                    :to="'/sales/job-order/edit-job-order/' + item.job_order_id"
+                >
+                JO-000{{item.job_order_no}}
+                </CLink>
             </td>
         </template>
+        <template #rcpt_no="{item}">
+            <td>
+                RCPT-000{{item.receipt_no}}
+            </td>
+        </template>
+        <template #amount="{item}">
+            <td>
+                ₱{{item.amount}}
+            </td>
+        </template>
+        <template #encoded_by="{item}">
+            <td>
+                {{item.encoded_by}}
+            </td>
+        </template>
+        <template #date="{item}">
+            <td>
+                {{$root.momentFormatDateTime(item.date)}}
+            </td>
+        </template>
+        <!-- <template #action="{item}">
+            <td>
+                <div style="display:flex;">
+                <CLink size="20" @click="getValue(item)" color="info"><CIcon name="cil-pencil"/></CLink> &nbsp;
+                <CLink size="sm" @click="getValueDel(item)" style="color:red;"><CIcon name="cil-trash"/></CLink>
+                </div>
+            </td>
+        </template> -->
       </CDataTable>
     </div>
 </template>
@@ -36,7 +65,7 @@ export default {
     fields: {
       type: Array,
       default () {
-        return ['payment_#', 'invoice_#', 'payment_mode', 'transaction_id', 'customer', 'amount', 'date']
+        return ['job_order_no', 'customer_name', 'rcpt_no', 'amount', 'encoded_by', 'date']
       }
     },
     caption: {
@@ -52,16 +81,27 @@ export default {
   },
   methods: {
     getBadge (status) {
-      return status === 'Active' ? 'success'
-        : status === 'Inactive' ? 'secondary'
-          : status === 'Pending' ? 'warning'
-            : status === 'Banned' ? 'danger' : 'primary'
+    return status === 'completed' ? 'success'
+        : status === 'pending' ? 'secondary'
+        : status === 'inprogress' ? 'warning'
+        : status === 'cancel' ? 'danger'
+        : status === 'onhold' ? 'danger' : 'primary'
     },
     getValue(data){
-      this.$emit('event_child', data, 'edit');
+      console.log(data);
+      this.$emit('event_child', data);
     },
     getValueDel(data){
-      this.$emit('event_child', data, 'delete');
+      
+      if (confirm('Are you sure you want to delete ' + data.receipt_no +'?')) {
+        const params = {
+          id: data.id,
+          job_order_id: data.job_order_id
+        }
+        this.$store.dispatch('job_orders/deletePayment', params).then(response => {
+          this.$emit('event_child', response);
+        })
+      }
     },
   }
 }

@@ -56,11 +56,11 @@
                                 <template #toggler-content>
                                     <span class="my-2 ">More</span>
                                 </template>
-                                <CDropdownItem @click="changeStatus(info.id, 'cancel')">Mark as Cancel</CDropdownItem>
-                                <CDropdownItem @click="changeStatus(info.id, 'onhold')">Mark as On Hold</CDropdownItem>
-                                <CDropdownItem @click="changeStatus(info.id, 'pending')">Mark as Pending</CDropdownItem>
-                                <CDropdownItem @click="changeStatus(info.id, 'waiting')">Mark as Waiting</CDropdownItem>
-                                <CDropdownItem @click="changeStatus(info.id, 'inprogress')">Mark as Inprogress</CDropdownItem>
+                                <CDropdownItem @click="changeStatus(info.id, 'Cancel')">Mark as Cancel</CDropdownItem>
+                                <CDropdownItem @click="changeStatus(info.id, 'On Hold')">Mark as On Hold</CDropdownItem>
+                                <CDropdownItem @click="changeStatus(info.id, 'Pending')">Mark as Pending</CDropdownItem>
+                                <CDropdownItem @click="changeStatus(info.id, 'Waiting')">Mark as Waiting</CDropdownItem>
+                                <CDropdownItem @click="changeStatus(info.id, 'Inprogress')">Mark as Inprogress</CDropdownItem>
                                 <!-- <CDropdownItem @click="changeStatus(info.id, 'disapproved')">Mark as Disapproved</CDropdownItem>
                                 <CDropdownItem @click="changeStatus(info.id, 'approved')">Mark as Approved</CDropdownItem> -->
                             </CDropdown>
@@ -732,11 +732,11 @@ export default {
             this.$refs.html2Pdf.generatePdf()
         },
         getBadge (status) {
-        return status === 'completed' ? 'success'
-            : status === 'pending' ? 'secondary'
-            : status === 'inprogress' ? 'warning'
-            : status === 'cancel' ? 'danger'
-            : status === 'onhold' ? 'danger' : 'primary'
+        return status === 'Completed' ? 'success'
+            : status === 'Pending' ? 'secondary'
+            : status === 'Inprogress' ? 'warning'
+            : status === 'Cancel' ? 'danger'
+            : status === 'On hold' ? 'danger' : 'primary'
         },
         toRoman(num){
         const units = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'];

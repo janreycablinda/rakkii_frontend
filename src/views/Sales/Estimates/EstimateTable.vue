@@ -47,7 +47,7 @@
         <template #insurance="{item}">
           <td>
             <CLink
-              href="#"
+              :to="'/insurance/insurance-profile/' + item.insurance_id + '/profile'"
             >
             {{item.insurance.insurance_name}}
             </CLink>

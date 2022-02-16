@@ -230,7 +230,7 @@ export default {
             let items =[];
             if(this.$store.state.job_orders.job_orders){
                 this.$store.state.job_orders.job_orders.forEach(item => {
-                    if(item.status == 'pending'){
+                    if(item.status == 'Pending'){
                         items.push(item);
                     }
                 });
@@ -241,7 +241,7 @@ export default {
             let items =[];
             if(this.$store.state.job_orders.job_orders){
                 this.$store.state.job_orders.job_orders.forEach(item => {
-                    if(item.status == 'waiting'){
+                    if(item.status == 'Waiting'){
                         items.push(item);
                     }
                 });
@@ -252,7 +252,7 @@ export default {
             let items =[];
             if(this.$store.state.job_orders.job_orders){
                 this.$store.state.job_orders.job_orders.forEach(item => {
-                    if(item.status == 'inprogress'){
+                    if(item.status == 'Inprogress'){
                         items.push(item);
                     }
                 });

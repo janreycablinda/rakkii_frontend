@@ -9,18 +9,26 @@
     <template #toggler>
       <CHeaderNavLink>
         <CIcon name="cil-bell"/>
-        <CBadge shape="pill" color="danger">{{itemsCount}}</CBadge>
+        <CBadge shape="pill" v-if="$store.state.notification.notification_message" color="danger">{{$store.state.notification.notification_message.length}}</CBadge>
       </CHeaderNavLink>
     </template>
     <CDropdownHeader 
       tag="div" 
       class="text-center bg-light"
+      style="background-color:#2E58A6 !important; color:#fff;"
     >
-      <strong>You have {{itemsCount}} notifications</strong>
+      <strong>You have {{$store.state.notification.notification_message.length}} new notifications</strong>
     </CDropdownHeader>
-    <CDropdownItem>
-      <CIcon name="cil-user-follow" class="text-success"/> <b class="mr-1">Janrey </b> created new Job Order
+    <CDropdownItem :to="message.link" v-for="message in $store.state.notification.notification_message" :key="message.id">
+      <div style="width:99%;"><CIcon :name="message.icon" class="text-success"/>{{message.message}} <br> <small style="float:right;">{{$root.momentParse(message.created_at)}}</small></div> <div style="width:1%;"></div>
     </CDropdownItem>
+    <CDropdownHeader
+      tag="div" 
+      class="text-center bg-light pt-1"
+      style="background-color:#2E58A6 !important;"
+    >
+      <CLink style="color:#fff !important;"><strong>View All Notifications</strong></CLink>
+    </CDropdownHeader>
   </CDropdown>
 </template>
 <script>
@@ -28,6 +36,13 @@ export default {
   name: 'TheHeaderDropdownNotif',
   data () {
     return { itemsCount: 0 }
+  },
+  mounted(){
+    window.Echo.channel('notification')
+    .listen('RealTimeNotification', () => {
+      this.$store.dispatch('notification/fetchNotification');
+    })
+    this.$store.dispatch('notification/fetchNotification');
   }
 }
 </script>

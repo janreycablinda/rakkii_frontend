@@ -27,6 +27,30 @@ export default {
         })
     },
 
+    async findDocuments({commit}, id){
+      return new Promise((resolve, reject) => {
+        axios.get(`resources/find_documents/${id}`).then(response => {
+
+          resolve(response.data);
+        }, error => {
+
+          reject(error);
+        });
+      })
+    },
+
+    async findLoaDocuments({commit}, id){
+      return new Promise((resolve, reject) => {
+        axios.get(`resources/find_loa_documents/${id}`).then(response => {
+
+          resolve(response.data);
+        }, error => {
+
+          reject(error);
+        });
+      })
+    },
+
     async addDocuments({commit, dispatch}, data) {
       return new Promise((resolve, reject) => {
         axios.post('resources/add_documents', data.formData, data.config).then(response => {

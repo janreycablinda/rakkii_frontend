@@ -25,7 +25,7 @@
       </CHeaderNavItem>
     </CHeaderNav>
     <CHeaderNav>
-      <CHeaderNavItem>
+      <!-- <CHeaderNavItem>
         <button
           @click="() => $store.commit('toggle', 'darkMode')"
           class="c-header-nav-btn"
@@ -33,7 +33,7 @@
           <CIcon v-if="$store.state.darkMode" name="cil-sun"/>
           <CIcon v-else name="cil-moon"/>
         </button>
-      </CHeaderNavItem>
+      </CHeaderNavItem> -->
       <TheHeaderDropdownNotif/>
       <TheHeaderDropdownAccnt/>
       <!-- <CHeaderNavItem class="px-3">

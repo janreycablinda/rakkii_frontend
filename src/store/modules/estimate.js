@@ -50,6 +50,15 @@ export default {
         });
       })
     },
+    async findEstimateCustomer({commit}, id) {
+      return new Promise((resolve, reject) => {
+        axios.get(`resources/find_estimate_customer/${id}`).then(response => {
+            resolve(response.data);
+        }, error => {
+            reject(error);
+        });
+      })
+    },
 
     async findSubServices({commit}, id) {
       return new Promise((resolve, reject) => {

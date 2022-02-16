@@ -18,8 +18,8 @@
         <template #action="{item}">
             <td>
                 <div>
-                <CButton @click="getValue(item)" color="info"><CIcon name="cil-pencil"/></CButton> &nbsp;
-                <CButton @click="getValueDel(item)" color="danger"><CIcon name="cil-trash"/></CButton>
+                <CButton v-if="$ability.can('update', 'Users, Roles & Permissions')" @click="getValue(item)" color="info"><CIcon name="cil-pencil"/></CButton> &nbsp;
+                <CButton v-if="$ability.can('delete', 'Users, Roles & Permissions')" @click="getValueDel(item)" color="danger"><CIcon name="cil-trash"/></CButton>
                 </div>
             </td>
         </template>

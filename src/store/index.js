@@ -32,6 +32,7 @@ import agent from './modules/agent';
 import gatepass from './modules/gatepass';
 import payments from './modules/payment';
 import chart from './modules/chart';
+import todo from './modules/todo';
 
 Vue.use(Vuex)
 
@@ -95,6 +96,7 @@ export default new Vuex.Store({
     agent,
     gatepass,
     payments,
-    chart
+    chart,
+    todo
   }
 });

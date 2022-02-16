@@ -46,10 +46,15 @@
         <template #insurance="{item}">
           <td>
             <CLink
-              href="#"
+              :to="'/insurance/insurance-profile/' + item.insurance_id + '/profile'"
             >
             {{item.insurance.insurance_name}}
             </CLink>
+          </td>
+        </template>
+        <template #date="{item}">
+          <td>
+            {{$root.momentFormatDateTime(item.date)}}
           </td>
         </template>
         <template #payment_status="{item}">
@@ -146,11 +151,11 @@ export default {
   },
   methods: {
     getBadge (status) {
-    return status === 'completed' ? 'success'
-        : status === 'pending' ? 'secondary'
-        : status === 'inprogress' ? 'warning'
-        : status === 'cancel' ? 'danger'
-        : status === 'onhold' ? 'danger' : 'primary'
+    return status === 'Completed' ? 'success'
+            : status === 'Pending' ? 'secondary'
+            : status === 'Inprogress' ? 'warning'
+            : status === 'Cancel' ? 'danger'
+            : status === 'On hold' ? 'danger' : 'primary'
     },
     getPaymentBadge(status){
     return status === 'Paid' ? 'success'

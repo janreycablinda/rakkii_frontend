@@ -53,11 +53,11 @@ export default {
                 to: '/sales/monitoring',
                 gate: 'monitoring_access',
               },
-              {
-                name: 'Billing Statement',
-                to: '/sales/billing-statement',
-                gate: 'billing_statement_access',
-              },
+              // {
+              //   name: 'Payments',
+              //   to: '/sales/billing-statement',
+              //   gate: 'payments_access',
+              // },
               {
                 name: 'Job Order',
                 to: '/sales/job-order',

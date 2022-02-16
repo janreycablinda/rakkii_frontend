@@ -39,7 +39,7 @@ export default {
             let items =[];
             if(this.$store.state.job_orders.job_orders){
                 this.$store.state.job_orders.job_orders.forEach(item => {
-                    if(item.status == 'pending'){
+                    if(item.status == 'Pending'){
                         items.push(item);
                     }
                 });

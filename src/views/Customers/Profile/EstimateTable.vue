@@ -14,22 +14,14 @@
         :table-filter="true"
         pagination
         items-per-page-select
+
       >
-        <template #job_order_no="{item, index}">
+        <template #estimate_no="{item, index}">
           <td>
             <CLink
-              @click="getValue(item)"
+              :to="'/sales/estimates/edit-estimate/' + item.id"
             >
-              JO-000{{item.job_order_no}}
-            </CLink>
-          </td>
-        </template>
-        <template #customer="{item}">
-          <td>
-            <CLink
-              :to="'/customers/customer-profile/' + item.customer_id + '/profile'"
-            >
-            {{item.customer.company_name}}
+              EST-000{{item.estimate_no}}
             </CLink>
           </td>
         </template>
@@ -57,13 +49,15 @@
             <CBadge :color="getBadge(item.status)" class="capetalize">{{item.status}}</CBadge>
           </td>
         </template>
-        <template #action="{item}">
+        <!-- <template #action="{item}">
             <td>
                 <div>
-                <CButton size="sm" @click="getValue(item)" color="info"><CIcon name="cil-garage"/></CButton>
+                <CButton @click="getValue(item)" color="info"><CIcon name="cil-pencil"/></CButton> &nbsp;
+                <CButton @click="getValue(item)" color="warning"><CIcon name="cil-check-alt"/></CButton> &nbsp;
+                <CButton @click="getValueDel(item)" color="danger"><CIcon name="cil-trash"/></CButton>
                 </div>
             </td>
-        </template>
+        </template> -->
       </CDataTable>
     </div>
 </template>
@@ -76,7 +70,7 @@ export default {
     fields: {
       type: Array,
       default () {
-        return ['job_order_no', 'customer', 'vehicle', 'plate_no', 'insurance', 'date', 'status', 'action']
+        return ['estimate_no', 'vehicle', 'plate_no', 'insurance', 'date', 'status']
       }
     },
     caption: {
@@ -94,18 +88,12 @@ export default {
     getBadge (status) {
     return status === 'approved' ? 'success'
         : status === 'draft' ? 'secondary'
-        : status === 'pending' ? 'warning'
+        : status === 'sent' ? 'warning'
         : status === 'disapproved' ? 'danger' : 'primary'
     },
     getValue(data){
       console.log(data);
-      if (confirm('Please click yes to ' + data.customer.company_name + ' to the garage.')) {
-        const params = {
-            id: data.id,
-            status: 'Waiting'
-        }
-        this.$store.dispatch('job_orders/updateStatusJobOrder', params);
-      }
+      this.$emit('event_child', data);
     },
     getValueDel(data){
       if (confirm('Are you sure you want to delete ' + data.customer.company_name +'?')) {

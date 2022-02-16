@@ -37,7 +37,10 @@
                             <small class="form-text text-muted w-100">Customer</small>
                           </template>
                           <template #list-header>
-                            <li style="text-align: center; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="showModalAddData = new Date()">ADD CUSTOMER</a></li>
+                            <div style="display:flex;">
+                                <li style="text-align: center; width:50%; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="showModalAddData = new Date()"><CIcon name="cil-plus"/> ADD</a></li>
+                                <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#" @click="AddAgentData = new Date()"><CIcon name="cil-trash"/> DELETE</a></li>
+                            </div>
                           </template>
                           </v-select>
                       </div>
@@ -61,7 +64,10 @@
                           label="label"
                         >
                         <template #list-header>
-                            <li v-if="form.customer_id" style="text-align: center; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="addCarProperty(form.customer_id)">ADD CAR PROPERTY</a></li>
+                          <div style="display:flex;">
+                              <li style="text-align: center; width:50%; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="addCarProperty(form.customer_id)"><CIcon name="cil-plus"/> ADD</a></li>
+                              <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#" @click="AddAgentData = new Date()"><CIcon name="cil-trash"/> DELETE</a></li>
+                          </div>
                         </template>
                         </v-select>
                     </CCol>
@@ -78,7 +84,10 @@
                           label="label"
                         >
                         <template #list-header>
-                            <li style="text-align: center; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="AddInsuranceData = new Date()">ADD INSURANCE</a></li>
+                          <div style="display:flex;">
+                              <li style="text-align: center; width:50%; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="AddInsuranceData = new Date()"><CIcon name="cil-plus"/> ADD</a></li>
+                              <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#" @click="AddAgentData = new Date()"><CIcon name="cil-trash"/> DELETE</a></li>
+                          </div>
                         </template>
                         </v-select>
                     </CCol>

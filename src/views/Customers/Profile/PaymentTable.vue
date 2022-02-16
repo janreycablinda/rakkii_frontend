@@ -16,6 +16,15 @@
         pagination
         items-per-page-select
       >
+        <template #job_order_no="{item}">
+            <td>
+                <CLink
+                    :to="'/sales/job-order/edit-job-order/' + item.job_order_id"
+                >
+                JO-000{{item.job_order_no}}
+                </CLink>
+            </td>
+        </template>
         <template #rcpt_no="{item}">
             <td>
                 RCPT-000{{item.receipt_no}}
@@ -28,7 +37,7 @@
         </template>
         <template #encoded_by="{item}">
             <td>
-                {{item.user.name}}
+                {{item.encoded_by}}
             </td>
         </template>
         <template #date="{item}">
@@ -56,7 +65,7 @@ export default {
     fields: {
       type: Array,
       default () {
-        return ['rcpt_no', 'amount', 'payment_of', 'encoded_by', 'date', 'action']
+        return ['job_order_no', 'rcpt_no', 'amount', 'encoded_by', 'date', 'action']
       }
     },
     caption: {

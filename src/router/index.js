@@ -14,6 +14,11 @@ const NewCustomers = () => import('@/views/Customers/NewCustomers')
 const ImportCustomers = () => import('@/views/Customers/ImportCustomers')
 const CustomerProfile = () => import('@/views/Customers/Profile/CustomerProfile')
 const CustomerProjects = () => import('@/views/Customers/Profile/CustomerProjects')
+const CustomerDocuments = () => import('@/views/Customers/Profile/CustomerDocuments')
+const CustomerEstimate = () => import('@/views/Customers/Profile/CustomerEstimate')
+const CustomerPayments = () => import('@/views/Customers/Profile/CustomerPayments')
+const InsuranceProfile = () => import('@/views/Insurance/Profile/InsuranceProfile')
+const SupplierProfile = () => import('@/views/Supplier/Profile/SupplierProfile')
 const EditCustomerProjects = () => import('@/views/Customers/EditCustomerProjects')
 const JobOrder = () => import('@/views/Sales/Job Order/View')
 const EditJobOrder = () => import('@/views/Sales/Job Order/EditJobOrder')
@@ -102,7 +107,20 @@ const router = new Router({
               ],
               requiresAuth: true
             }
-        }
+        },
+        {
+            path: '/insurance/insurance-profile/:id/profile',
+            name: 'Insurance Profile',
+            component: InsuranceProfile,
+            meta: {
+              breadcrumb: [
+                { text: 'Insurance', to: '/insurance' },
+                { text: 'Insurance Profile' }
+              ],
+              requiresAuth: true
+            }
+        },
+        
       ]
     },
     {
@@ -173,18 +191,42 @@ const router = new Router({
             requiresAuth: true
           }
         },
-        // {
-        //   path: '/customers/customer-profile/:id/profile/:project_id',
-        //   name: 'Customer Profile',
-        //   component: EditCustomerProjects,
-        //   meta: {
-        //     breadcrumb: [
-        //       { text: 'Customers', to: '/customers' },
-        //       { text: 'Customer Project' }
-        //     ],
-        //     requiresAuth: true
-        //   }
-        // },
+        {
+          path: '/customers/customer-profile/:id/documents',
+          name: 'Customer Documents',
+          component: CustomerDocuments,
+          meta: {
+            breadcrumb: [
+              { text: 'Customers', to: '/customers' },
+              { text: 'Customer Documents' }
+            ],
+            requiresAuth: true
+          }
+        },
+        {
+          path: '/customers/customer-profile/:id/estimate',
+          name: 'Customer Estimate',
+          component: CustomerEstimate,
+          meta: {
+            breadcrumb: [
+              { text: 'Customers', to: '/customers' },
+              { text: 'Customer Estimate' }
+            ],
+            requiresAuth: true
+          }
+        },
+        {
+          path: '/customers/customer-profile/:id/payments',
+          name: 'Customer Payments',
+          component: CustomerPayments,
+          meta: {
+            breadcrumb: [
+              { text: 'Customers', to: '/customers' },
+              { text: 'Customer Payments' }
+            ],
+            requiresAuth: true
+          }
+        },
         {
           path: '/customers/customer-profile/:id/projects',
           name: 'Customer Projects',
@@ -262,7 +304,7 @@ const router = new Router({
         },
         {
             path: '/sales/estimates/edit-estimate/:id',
-            name: 'EditEstimates',
+            name: 'Edit Estimates',
             component: EditEstimates,
             meta: {
               breadcrumb: [

@@ -56,10 +56,10 @@
                                 <template #toggler-content>
                                     <span class="my-2 ">More</span>
                                 </template>
-                                <CDropdownItem @click="changeStatus(info.id, 'sent')">Mark as Sent</CDropdownItem>
-                                <CDropdownItem @click="changeStatus(info.id, 'draft')">Mark as Draft</CDropdownItem>
-                                <CDropdownItem @click="changeStatus(info.id, 'disapproved')">Mark as Disapproved</CDropdownItem>
-                                <CDropdownItem @click="changeStatus(info.id, 'approved')">Mark as Approved</CDropdownItem>
+                                <CDropdownItem @click="changeStatus(info.id, 'Sent')">Mark as Sent</CDropdownItem>
+                                <CDropdownItem @click="changeStatus(info.id, 'Draft')">Mark as Draft</CDropdownItem>
+                                <CDropdownItem @click="changeStatus(info.id, 'Disapproved')">Mark as Disapproved</CDropdownItem>
+                                <CDropdownItem @click="changeStatus(info.id, 'Approved')">Mark as Approved</CDropdownItem>
                             </CDropdown>
                             <CDropdown 
                                 toggler-text="Convert To Job Order" 
@@ -68,8 +68,8 @@
                                 size="sm"
                                 style="position:absolute; top:5px; right:10px;"
                             >
-                                <CDropdownItem @click="covert(info, 'draft')">Convert and Save as Draft</CDropdownItem>
-                                <CDropdownItem @click="covert(info, 'approved')">Convert and Save as Approved</CDropdownItem>
+                                <CDropdownItem @click="covert(info, 'Draft')">Convert and Save as Draft</CDropdownItem>
+                                <CDropdownItem @click="covert(info, 'Approved')">Convert and Save as Approved</CDropdownItem>
                                 <CDropdownDivider/>
                                 <CDropdownItem @click="covert(info, '')">Convert</CDropdownItem>
                             </CDropdown>

@@ -10,8 +10,8 @@
                                 <!-- <CListGroupItem href="#" color="dark" accent="dark">Invoices Report</CListGroupItem>
                                 <CListGroupItem href="#" color="dark" accent="dark">Items Report</CListGroupItem> -->
                                 <CListGroupItem href="#" color="dark" accent="dark">Cash Collected Report</CListGroupItem>
-                                <CListGroupItem href="#" color="dark" accent="dark">Payments Report</CListGroupItem>
-                                <CListGroupItem href="#" color="dark" accent="dark">Estimates Report</CListGroupItem>
+                                <CListGroupItem href="#" color="dark" accent="dark">Cash Collectables Report</CListGroupItem>
+                                <!-- <CListGroupItem href="#" color="dark" accent="dark">Estimates Report</CListGroupItem> -->
                             </CListGroup>
                         </CCol>
                         <CCol lg="4">

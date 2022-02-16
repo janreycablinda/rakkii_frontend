@@ -12,34 +12,61 @@ import { CChartBar } from '@coreui/vue-chartjs'
 export default {
   name: 'CChartBarExample',
   components: { CChartBar },
+  props: ['job_orders'],
   computed: {
     defaultDatasets () {
+      console.log(this.job_orders);
+      var pending = 0;
+      var inprogress = 0;
+      var on_hold = 0;
+      var cancelled = 0;
+      var completed = 0;
+      if(this.job_orders){
+        this.job_orders.forEach(item => {
+          if(item.status == 'Pending'){
+            pending += 1;
+          }
+          if(item.status == 'Inprogress'){
+            inprogress += 1;
+          }
+          if(item.status == 'On Hold'){
+            on_hold += 1;
+          }
+          if(item.status == 'Cancel'){
+            cancelled += 1;
+          }
+          if(item.status == 'Completed'){
+            cancelled += 1;
+          }
+        })
+      }
+      
       return [
         {
-          label: 'Not Started',
+          label: 'Pending',
           backgroundColor: '#989898',
-          data: [10]
+          data: [pending, 0]
         },
         {
           label: 'In Progress',
-          backgroundColor: '#03A9F4',
-          data: [20]
+          backgroundColor: '#F9BC08',
+          data: [inprogress]
         },
         {
           label: 'On Hold',
-          backgroundColor: '#FF6F00',
-          data: [30]
+          backgroundColor: '#000000',
+          data: [on_hold]
         },
         {
           label: 'Cancelled',
-          backgroundColor: '#989898',
-          data: [40]
+          backgroundColor: '#FF0000',
+          data: [cancelled]
         },
         {
-          label: 'Finished',
+          label: 'Completed(This Month)',
           backgroundColor: '#84C529',
-          data: [50]
-        }
+          data: [completed]
+        },
       ]
     }
   }

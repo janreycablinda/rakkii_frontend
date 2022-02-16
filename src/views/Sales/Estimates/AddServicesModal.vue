@@ -18,7 +18,10 @@
                             label="label"
                         >
                             <template #list-header>
-                                <li style="text-align: center; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" @click="openAddServicesType" href="#">ADD SERVICES TYPE</a></li>
+                                <div style="display:flex;">
+                                    <li style="text-align: center; width:50%; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="openAddServicesType"><CIcon name="cil-plus"/> ADD</a></li>
+                                    <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#" @click="AddAgentData = new Date()"><CIcon name="cil-trash"/> DELETE</a></li>
+                                </div>
                             </template>
                         </v-select>
                     </CCol>

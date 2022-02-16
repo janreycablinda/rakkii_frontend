@@ -37,6 +37,17 @@ export default {
         })
     },
 
+    
+    async findCustomerJobOrder({commit}, id) {
+      return new Promise((resolve, reject) => {
+        axios.get(`resources/find_customer_job_order/${id}`).then(response => {
+              resolve(response.data);
+          }, error => {
+              reject(error);
+          });
+      })
+    },
+
     async findJobOrderStatus({commit}, data) {
         const response = await axios.get(`resources/find_job_order/${data.id}/${data.property_id}/${data.status}`);
         console.log(response.data);

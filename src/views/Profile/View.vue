@@ -66,6 +66,12 @@
                                 :value="this.$store.getters['auth/user'].role"
                             />
                         </CCol>
+                        <CCol>
+                            <label>Upload Signature</label>
+                            <CInputFile
+                                @change="uploadDocs"
+                            />
+                        </CCol>
                     </CRow>
                 </CCardBody>
                 <CCardFooter>

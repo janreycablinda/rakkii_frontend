@@ -99,7 +99,7 @@ export default {
     methods: {
         submit(){
           let formData = new FormData();
-          formData.append('status', 'draft');
+          formData.append('status', 'Sent');
           formData.append('customer_id', this.form.customer_id.value);
           formData.append('date', this.form.date);
           formData.append('insurance', this.form.insurance.value);

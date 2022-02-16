@@ -4,10 +4,14 @@ export default {
   namespaced: true,
   state: {
     insurance: [],
+    insurance_profile: []
   },
   mutations: {
     SET_INSURANCE(state, data) {
         state.insurance = data;
+    },
+    SET_INSURANCE_PROFILE(state, data) {
+        state.insurance_profile = data;
     },
     NEW_INSURANCE(state, data) {
         let items = state.insurance.concat(data);
@@ -23,6 +27,12 @@ export default {
         const response = await axios.get(`resources/insurance`);
         
         commit('SET_INSURANCE', response.data);
+    },
+
+    async fetchInsuranceProfile({commit}, id) {
+        const response = await axios.get(`resources/find_insurance/${id}`);
+        console.log(response.data);
+        commit('SET_INSURANCE_PROFILE', response.data);
     },
 
     async addInsurance({commit, dispatch}, data) {
