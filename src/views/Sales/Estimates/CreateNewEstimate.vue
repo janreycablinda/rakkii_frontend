@@ -346,6 +346,7 @@ export default {
         this.$store.dispatch('property/findProperty', newVal.value);
       },
       insurance(newVal){
+        console.log(newVal.insurance_type);
         if(newVal.insurance_type == 'Private Insurance'){
           this.form.documents = [
             {
@@ -555,13 +556,11 @@ export default {
           this.form.documents.forEach(item => {
           formData.append('files[]', item.files);
             if(item.prefix == 'P'){
-              if(item.files){
-                item.files.forEach(pic => {
-                  console.log(pic);
-                  formData.append('pic[]', pic);
-                });
-              }
-              
+              console.log(item.prefix);
+              item.files.forEach(pic => {
+                console.log(pic);
+                formData.append('pic[]', pic);
+              });
             }
           });
 
