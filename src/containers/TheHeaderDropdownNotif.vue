@@ -22,6 +22,9 @@
     <CDropdownItem :to="message.link" v-for="message in $store.state.notification.notification_message" :key="message.id">
       <div style="width:99%;"><CIcon :name="message.icon" class="text-success"/>{{message.message}} <br> <small style="float:right;">{{$root.momentParse(message.created_at)}}</small></div> <div style="width:1%;"></div>
     </CDropdownItem>
+    <CDropdownItem v-if="$store.state.notification.notification_message.length == 0" style="justify-content:center;">
+      No New Notification Found
+    </CDropdownItem>
     <CDropdownHeader
       tag="div" 
       class="text-center bg-light pt-1"
