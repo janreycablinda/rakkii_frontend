@@ -557,8 +557,7 @@ export default {
             console.log(item.files);
           formData.append('files[]', item.files);
             if(item.prefix == 'P'){
-              console.log(item.files);
-              item.files.forEach(pic => {
+              Array.from(item.files).forEach(pic => {
                 console.log(pic);
                 formData.append('pic[]', pic);
               });
