@@ -554,6 +554,7 @@ export default {
           var documents = JSON.stringify(this.form.documents);
           formData.append('documents', documents);
           this.form.documents.forEach(item => {
+            console.log(item.files);
           formData.append('files[]', item.files);
             if(item.prefix == 'P'){
               console.log(item.files);
