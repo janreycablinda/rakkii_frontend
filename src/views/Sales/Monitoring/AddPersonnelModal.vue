@@ -34,7 +34,10 @@
         v-model="form.personnel_type_id"
         >
         <template #list-header>
-            <li class="hover-pointer" style="text-align: center; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" @click="addPersonnelTypeData = new Date()">ADD POSITION</a></li>
+            <div style="display:flex;">
+                <li style="text-align: center; width:50%; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="addPersonnelTypeData = new Date()"><CIcon name="cil-plus"/> ADD</a></li>
+                <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#"  @click="showModalDataDelete({trigger:new Date(), delete_type: 'PERSONNEL TYPE', modal_size:'sm'})"><CIcon name="cil-trash"/> DELETE</a></li>
+            </div>
         </template>
         </v-select>
         <template #footer>
@@ -95,6 +98,9 @@ export default {
                     personnel_type_id: ''
                 }
             });
+        },
+        showModalDataDelete(data){
+            this.$emit('child_delete', data);
         },
         hideCompletedModal(){
             this.$router.replace({

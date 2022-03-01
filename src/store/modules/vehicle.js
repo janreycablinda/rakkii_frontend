@@ -13,6 +13,10 @@ export default {
         let items = state.vehicle.concat(data);
         state.vehicle = items;
     },
+    DELETE_VEHICLE(state, id) {
+        let items = state.vehicle.filter(item => item.id != id);
+        state.vehicle = items;
+    },
   },
   actions: {
     async fetchVehicle({commit}, data) {
@@ -30,7 +34,6 @@ export default {
                 type: 'success',
                 message: 'Successfully Added!'
             }, {root: true});
-            
             commit('NEW_VEHICLE', response.data);
         }, () => {
           dispatch('notification/addNotification', {
@@ -39,6 +42,22 @@ export default {
           }, {root: true});
           
         });
+    },
+
+    async deleteVehicle({commit, dispatch}, id) {
+      const response = await axios.delete(`resources/delete_vehicle/${id}`);
+      if(response.data == 200){
+          dispatch('notification/addNotification', {
+              type: 'success',
+              message: 'Successfully Deleted!'
+          }, {root: true});
+          commit('DELETE_VEHICLE', id);
+      }else{
+          dispatch('notification/addNotification', {
+              type: 'danger',
+              message: 'Ops! Something went wrong!'
+          }, {root: true});
+      }
     },
   }
 };

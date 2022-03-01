@@ -13,6 +13,10 @@ export default {
         let items = state.personnel.concat(data);
         state.personnel = items;
     },
+    REMOVE_PERSONNEL(state, id) {
+        let items = state.personnel.filter(item => item.id != id);
+        state.personnel = items;
+    },
   },
   actions: {
     async fetchPersonnel({commit}) {
@@ -40,6 +44,27 @@ export default {
             message: 'Ops! Something went wrong!'
           }, {root: true});
         });
+    },
+
+    async deletePersonnel({commit, dispatch}, id) {
+      return new Promise((resolve, reject) => {
+        axios.delete(`resources/delete_personnel/${id}`).then(response => {
+            dispatch('notification/addNotification', {
+                type: 'success',
+                message: 'Successfully Deleted!'
+            }, {root: true});
+
+            commit('REMOVE_PERSONNEL', id);
+            resolve(response.data);
+          }, error => {
+            dispatch('notification/addNotification', {
+                type: 'danger',
+                message: 'Ops! Something went wrong!'
+            }, {root: true});
+
+            reject(error);
+          });
+      })
     },
   }
 };

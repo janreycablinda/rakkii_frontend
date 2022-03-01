@@ -32,8 +32,8 @@ export default {
                 type: 'success',
                 message: 'Successfully Added!'
             }, {root: true});
-
-            commit('job_orders/UPDATE_JOB_ORDER', response.data, {root: true});
+            // commit('job_orders/UPDATE_JOB_ORDER', response.data, {root: true});
+            
             resolve(response.data);
           }, error => {
             dispatch('notification/addNotification', {

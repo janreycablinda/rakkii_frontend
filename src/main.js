@@ -95,6 +95,12 @@ store.dispatch("auth/attempt", localStorage.getItem("token")).then(() => {
       momentFormatDateTime(data){
         return moment(data, "YYYY-MM-DD h:mm:ss").format('YYYY/MM/DD hh:mm A');
       },
+      momentFormatDateTimeInput(data){
+        return moment(data, "YYYY-MM-DD HH:mm:ss").format('YYYY-MM-DDTHH:mm');
+      },
+      momentFormatDateTimeConvert(data){
+        return moment(data, "YYYY-MM-DDThh:mm").format('YYYY-MM-DD HH:mm:ss');
+      }
     },
     icons,
     template: '<App/>',

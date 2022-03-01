@@ -23,7 +23,10 @@
                             label="label"
                         >
                             <template #list-header>
-                                <li style="text-align: center; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" @click="AddVehicleData = new Date()" href="#">ADD VEHICLE</a></li>
+                                <div style="display:flex;">
+                                    <li style="text-align: center; width:50%; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="AddVehicleData = new Date()"><CIcon name="cil-plus"/> ADD</a></li>
+                                    <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#" @click="showModalDataDelete = {trigger:new Date(), delete_type: 'VEHICLE', modal_size:'sm'}"><CIcon name="cil-trash"/> DELETE</a></li>
+                                </div>
                             </template>
                         </v-select>
                     </CCol>
@@ -47,24 +50,30 @@
         <AddVehicleModal
         :AddVehicleData="AddVehicleData"
         />
+        <ModalDelete
+        :showModalDataDelete="showModalDataDelete"
+        />
     </CModal>
 </template>
 <script>
 import vSelect from 'vue-select'
 import AddVehicleModal from './AddVehicleModal';
+import ModalDelete from '../../DeleteModal/View';
 
 export default {
     data(){
         return {
             placement: 'bottom',
             AddVehicleData: '',
+            showModalDataDelete: '',
             showModalAddCarProperty: false,
             form: this.getFormData(),
         }
     },
     components: {
         vSelect,
-        AddVehicleModal
+        AddVehicleModal,
+        ModalDelete
     },
     filters: {
         vehicleFilter(data){

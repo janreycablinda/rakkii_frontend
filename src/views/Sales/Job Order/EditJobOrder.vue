@@ -40,7 +40,7 @@
                           <template #list-header>
                             <div style="display:flex;">
                               <li style="text-align: center; width:50%; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="showModalAddData = new Date()"><CIcon name="cil-plus"/> ADD</a></li>
-                              <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#" @click="AddAgentData = new Date()"><CIcon name="cil-trash"/> DELETE</a></li>
+                              <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#" @click="showModalDataDelete = {trigger:new Date(), delete_type: 'CUSTOMER', modal_size:'lg'}"><CIcon name="cil-trash"/> DELETE</a></li>
                             </div>
                           </template>
                           </v-select>
@@ -77,14 +77,14 @@
                           <template #list-header>
                             <div style="display:flex;">
                             <li style="text-align: center; width:50%; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="AddAgentData = new Date()"><CIcon name="cil-plus"/> ADD</a></li>
-                            <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#" @click="AddAgentData = new Date()"><CIcon name="cil-trash"/> DELETE</a></li>
+                            <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#"  @click="showModalDataDelete = {trigger:new Date(), delete_type: 'AGENT', modal_size:'md'}"><CIcon name="cil-trash"/> DELETE</a></li>
                             </div>
                           </template>
                           </v-select>
                       </div>
                     </CCol>
                     <CCol lg="3">
-                        <CInput v-model="form.date" onblur="this.placeholder = 'Date'" onfocus="this.placeholder = ''" description="Date" placeholder="Date" type="date"/>
+                        <CInput v-model="form.date" onblur="this.placeholder = 'Date'" onfocus="this.placeholder = ''" description="Date" placeholder="Date" type="datetime-local"/>
                     </CCol>
                 </CRow>
                 <CRow>
@@ -105,7 +105,7 @@
                           <template #list-header>
                               <div style="display:flex;">
                                 <li style="text-align: center; width:50%; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="addCarProperty(form.customer_id)"><CIcon name="cil-plus"/> ADD</a></li>
-                                <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#" @click="AddAgentData = new Date()"><CIcon name="cil-trash"/> DELETE</a></li>
+                                <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#" @click="showModalDataDelete = {trigger:new Date(), delete_type: 'PROPERTY', customer_id: {value:form.customer_id}, modal_size:'md'}"><CIcon name="cil-trash"/> DELETE</a></li>
                               </div>
                           </template>
                           </v-select>
@@ -128,7 +128,7 @@
                         <template #list-header>
                             <div style="display:flex;">
                               <li style="text-align: center; width:50%; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="AddInsuranceData = new Date()"><CIcon name="cil-plus"/> ADD</a></li>
-                              <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#" @click="AddAgentData = new Date()"><CIcon name="cil-trash"/> DELETE</a></li>
+                              <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#" @click="showModalDataDelete = {trigger:new Date(), delete_type: 'INSURANCE', modal_size:'lg'}"><CIcon name="cil-trash"/> DELETE</a></li>
                             </div>
                         </template>
                         </v-select>
@@ -154,12 +154,22 @@
                           <div style="width:125%;"  class="mt-2">
                             <ol class="c" >
                               <li v-for="(serv, index) in form.services" :key="index">
-                                <Services
+                                <!-- <Services
                                 v-on:child_data="child_action"
                                 :services="serv"
                                 v-on:child_services="openAddServices"
                                 v-on:child_add_sub_services="childAddSubServices"
                                 v-on:child_sub_services_changes="childSubChanges"
+                                /> -->
+                                <Services
+                                v-on:child_data="child_action"
+                                :trigger_add_sub="trigger_add_sub"
+                                :trigger_delete_sub="trigger_delete_sub"
+                                :services="serv"
+                                v-on:child_services="openAddServices"
+                                v-on:child_add_sub_services="childAddSubServices"
+                                v-on:child_sub_services_changes="childSubChanges"
+                                v-on:child_delete_services="deleteModal"
                                 />
                               </li>
                             </ol>
@@ -345,8 +355,10 @@
         />
         <AddServicesModal
         :AddServicesData="AddServicesData"
+        v-on:delete_modal="deleteModalShow"
         />
         <AddSubServicesModal
+         v-on:child_add_subservices="addSubServices"
         :AddSubServicesData="AddSubServicesData"
         />
         <AddCarPropertyModal
@@ -366,9 +378,16 @@
         v-on:add_supplier="addSupplier"
         v-on:add_item="addItem"
         v-on:purchase_added="purchaseAdded"
+        v-on:child_delete_modal="deleteModalShow"
         />
         <AddSupplierModal
         :AddSupplierData="AddSupplierData"
+        />
+        <ModalDelete
+        :showModalDataDelete="showModalDataDelete"
+        />
+        <AddItemModal
+        :AddItemData="AddItemData"
         />
     </div>
 </template>
@@ -385,6 +404,8 @@ import AddInsuranceModal from '../Estimates/AddInsuranceModal';
 import AddAgentModal from './AddAgentModal';
 import AddPurchaseModal from './AddPurchaseModal';
 import AddSupplierModal from '../../Supplier/AddSupplierModal';
+import ModalDelete from '../../DeleteModal/View';
+import AddItemModal from './AddItemModal';
 
 export default {
     data(){
@@ -395,11 +416,14 @@ export default {
         AddSubServicesData: '',
         AddPurchaseData: '',
         AddSaveAndSendData: '',
+        showModalDataDelete: '',
         AddCarPropertyData: '',
         AddInsuranceData: '',
         AddItemData: '',
         AddSupplierData: '',
         placement: 'bottom',
+        trigger_add_sub: '',
+        trigger_delete_sub: '',
         media: true,
         form: {
           id: '',
@@ -440,7 +464,9 @@ export default {
         AddInsuranceModal,
         AddAgentModal,
         AddPurchaseModal,
-        AddSupplierModal
+        AddSupplierModal,
+        ModalDelete,
+        AddItemModal
     },
     filters: {
       customerFilter(data){
@@ -540,18 +566,45 @@ export default {
     },
     methods: {
       addCarProperty(data){
+        let name = '';
+        this.$store.state.property.property.forEach(item => {
+          if(data == item.customer_id){
+            name = item.customer.company_name;
+          }
+        });
+        const params = {
+          label: name,
+          value: data
+        }
         this.AddCarPropertyData = {
           trigger: new Date(),
-          data: data
+          data: params
         }
       },
+      deleteModal(data){
+          this.showModalDataDelete = data;
+      },
+      deleteModalShow(data){
+        this.showModalDataDelete = data;
+      },
       submit(){
+
         const params = {
-          form: this.form,
-          payment_form: this.payment_form
+          id: this.form.id,
+          date: this.$root.momentFormatDateTimeConvert(this.form.date),
+          agent_id: this.form.agent_id,
+          insurance_id: this.form.insurance,
+          vehicle_id: this.form.vehicle_id,
+          services: this.form.services,
+          customer_id: this.form.customer_id,
+          total_repair_cost: this.payment_form.total_repair_cost,
+          policy_deductible: this.payment_form.policy_deductible,
+          betterment: this.payment_form.betterment,
+          discount: this.payment_form.discount,
+          net: this.payment_form.net
         }
+        
         this.$store.dispatch('job_orders/updateJobOrder', params).then(() => {
-            
             this.$router.replace({
               name: "Job Order"
             });
@@ -607,6 +660,12 @@ export default {
           trigger: new Date(),
           data: data
         }
+      },
+      addSubServices(data){
+        this.trigger_add_sub = {
+          trigger: new Date(),
+          data: data
+        };
       },
       openAddServices(){
         this.AddServicesData = new Date();
@@ -714,42 +773,61 @@ export default {
       
       this.$store.dispatch('job_orders/findJobOrder', this.$route.params.id).then(response => {
           
-
-            this.form = {
+          this.form = {
                 id: response.id,
-                job_order_no: response.job_order_no,
-                agent_id: response.agent_id,
                 customer_id: response.customer_id,
-                date: response.date,
+                date: this.$root.momentFormatDateTimeInput(response.date),
                 insurance: response.insurance_id,
                 vehicle_id: response.vehicle_id,
                 vehicle: response.vehicle_id,
-                services: response.scope
-            }
-            let purchases = [];
-            response.purchases.forEach(item => {
-              item.purchase_items.forEach(purchase => {
-                purchases.push({
-                  item_id: purchase.id,
-                  item: purchase.item,
-                  unit_id: purchase.unit_id,
-                  qty: purchase.qty,
-                  price: purchase.price,
-                  date: item.date,
-                  supplier: item.supplier
-                });
-              });
-            })
-            console.log(purchases);
-            this.purchase_items = purchases;
-            
-            this.payment_form = {
+                services: response.scope,
+                estimate_no: response.estimate_no,
+                agent_id: response.agent_id
+          }
+
+          this.payment_form = {
                 total_repair_cost: response.payables.total_repair_cost,
                 policy_deductible: response.payables.policy_deductible,
                 betterment: response.payables.betterment,
                 discount: response.payables.discount,
                 net: response.payables.net
             }
+
+            // this.form = {
+            //     id: response.id,
+            //     job_order_no: response.job_order_no,
+            //     agent_id: response.agent_id,
+            //     customer_id: response.customer_id,
+            //     date: response.date,
+            //     insurance: response.insurance_id,
+            //     vehicle_id: response.vehicle_id,
+            //     vehicle: response.vehicle_id,
+            //     services: response.scope
+            // }
+            // let purchases = [];
+            // response.purchases.forEach(item => {
+            //   item.purchase_items.forEach(purchase => {
+            //     purchases.push({
+            //       item_id: purchase.id,
+            //       item: purchase.item,
+            //       unit_id: purchase.unit_id,
+            //       qty: purchase.qty,
+            //       price: purchase.price,
+            //       date: item.date,
+            //       supplier: item.supplier
+            //     });
+            //   });
+            // })
+            // console.log(purchases);
+            // this.purchase_items = purchases;
+            
+            // this.payment_form = {
+            //     total_repair_cost: response.payables.total_repair_cost,
+            //     policy_deductible: response.payables.policy_deductible,
+            //     betterment: response.payables.betterment,
+            //     discount: response.payables.discount,
+            //     net: response.payables.net
+            // }
             
           setTimeout(() => this.media = false, 1000);
           

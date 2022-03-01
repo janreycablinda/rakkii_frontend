@@ -29,7 +29,10 @@
         label="label"
         >
         <template #list-header>
-            <li class="hover-pointer" style="text-align: center; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" @click="addPersonnelData = new Date()">ADD PERSONNEL</a></li>
+            <div style="display:flex;">
+                <li style="text-align: center; width:50%; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="addPersonnelData = new Date()"><CIcon name="cil-plus"/> ADD</a></li>
+                <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#"  @click="showModalDataDelete({trigger:new Date(), delete_type: 'PERSONNEL', modal_size:'md'})"><CIcon name="cil-trash"/> DELETE</a></li>
+            </div>
         </template>
         </v-select>
         <CInput
@@ -39,6 +42,7 @@
         />
         <AddPersonnelModal
         :addPersonnelData="addPersonnelData"
+        v-on:child_delete="showModalDataDelete"
         />
         <template #footer>
             <CButton @click="submit" color="primary" class="branding-btn">SUBMIT</CButton>
@@ -105,6 +109,9 @@ export default {
                     name: "Monitoring"
                 });
             });
+        },
+        showModalDataDelete(data){
+            this.$emit('child_delete', data)
         },
         hideCompletedModal(){
             this.$router.replace({

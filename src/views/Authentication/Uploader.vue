@@ -54,7 +54,7 @@ export default {
       submit(){
         let formData = new FormData();
         formData.append('id', this.$route.params.signature);
-        this.files.forEach(file => {
+        Array.from(this.files).forEach(file => {
             formData.append('files[]', file);
         });
 

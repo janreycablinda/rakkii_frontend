@@ -111,7 +111,7 @@ export default {
           this.form.documents.forEach(item => {
           formData.append('files[]', item.files);
             if(item.prefix == 'P'){
-              item.files.forEach(pic => {
+              Array.from(item.files).forEach(pic => {
                 console.log(pic);
                 formData.append('pic[]', pic);
               });

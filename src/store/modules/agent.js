@@ -14,6 +14,10 @@ export default {
         let items = state.agent.concat(data);
         state.agent = items;
     },
+    DELETE_AGENT(state, id) {
+        let items = state.agent.filter(item => item.id != id);
+        state.agent = items;
+    },
   },
   actions: {
     async fetchAgent({commit}) {
@@ -42,6 +46,22 @@ export default {
             message: 'Ops! Something went wrong!'
           }, {root: true});
         });
+    },
+
+    async deleteAgent({commit, dispatch}, id) {
+        const response = await axios.delete(`resources/delete_agent/${id}`);
+        if(response.data == 200){
+            dispatch('notification/addNotification', {
+                type: 'success',
+                message: 'Successfully Deleted!'
+            }, {root: true});
+            commit('DELETE_AGENT', id);
+        }else{
+            dispatch('notification/addNotification', {
+                type: 'danger',
+                message: 'Ops! Something went wrong!'
+            }, {root: true});
+        }
     },
   }
 };

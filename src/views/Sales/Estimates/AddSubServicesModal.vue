@@ -55,16 +55,17 @@ export default {
     props: ['AddSubServicesData'],
     watch: {
         AddSubServicesData(data){
-            console.log(data.data.services_id);
-            this.form.services_id = data.data.services_id;
-            this.form.services_name = data.data.services_name;
+            this.form.services_id = data.data.sub_services.services_id;
+            this.form.services_name = data.data.sub_services.services.services_name;
             this.showModalAddSubServices = true;
         }
     },
     methods: {
         submit(){
             this.$root.btn_load(true, 'add-services-sub-btn-modal', 'ADD');
-            this.$store.dispatch('sub_services/addSubServices', this.form).then(() => {
+            this.$store.dispatch('sub_services/addSubServices', this.form).then(response => {
+                this.$emit('child_add_subservices', response);
+                
                 this.$root.btn_load(false, 'add-services-sub-btn-modal', 'ADD');
                 this.showModalAddSubServices = false;
                 this.form = this.getFormData();

@@ -57,7 +57,6 @@ export default {
             type: 'danger',
             message: 'Ops! Something went wrong!'
           }, {root: true});
-          
         });
     },
 

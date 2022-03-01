@@ -11,19 +11,19 @@
                 <CRow class="mt-3">
                     <CCol lg="6">
                         <CInput
-                            onblur="this.placeholder = 'Insurance'" 
+                            onblur="this.placeholder = 'Insurance *'" 
                             onfocus="this.placeholder = ''"
-                            description="Insurance"
-                            placeholder="Insurance"
+                            description="Insurance *"
+                            placeholder="Insurance *"
                             v-model="form.insurance_name"
                         />
                     </CCol>
                     <CCol lg="6">
                         <CTextarea
-                            onblur="this.placeholder = 'Address'" 
+                            onblur="this.placeholder = 'Address *'" 
                             onfocus="this.placeholder = ''"
-                            description="Address"
-                            placeholder="Address"
+                            description="Address *"
+                            placeholder="Address *"
                             v-model="form.address"
                         />
                     </CCol>
@@ -32,24 +32,24 @@
                             :value.sync="form.insurance_type"
                             placeholder="Nothing Selected"
                             :options="['Private Insurance', 'Third Party Claim', 'GSIS', 'Bidding']"
-                            onblur="this.placeholder = 'Insurance Type'" onfocus="this.placeholder = ''" description="Insurance Type"
+                            onblur="this.placeholder = 'Insurance Type *'" onfocus="this.placeholder = ''" description="Insurance Type *"
                         />
                     </CCol>
                     <CCol lg="6">
                         <CInput
-                            onblur="this.placeholder = 'Contact Person'" 
+                            onblur="this.placeholder = 'Contact Person *'" 
                             onfocus="this.placeholder = ''"
-                            description="Contact Person"
-                            placeholder="Contact Person"
+                            description="Contact Person *"
+                            placeholder="Contact Person *"
                             v-model="form.contact_person"
                         />
                     </CCol>
                     <CCol lg="6">
                         <CInput
-                            onblur="this.placeholder = 'Contact No.'" 
+                            onblur="this.placeholder = 'Contact No. *'" 
                             onfocus="this.placeholder = ''"
-                            description="Contact No."
-                            placeholder="Contact No."
+                            description="Contact No. *"
+                            placeholder="Contact No. *"
                             v-model="form.phone"
                         />
                     </CCol>

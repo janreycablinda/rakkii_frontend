@@ -1,20 +1,5 @@
 <template>
     <CRow>
-        <CCol lg="4">
-            <CCard>
-                <CCardHeader>
-                    Profile Picture
-                </CCardHeader>
-                <CCardBody>
-                    <div class="text-center">
-                        <img class="c-avatar-img" style="width:60%;" src="/img/upload/blank.png">
-                    </div>
-                </CCardBody>
-                <CCardFooter>
-                    <CButton color="primary">SAVE</CButton>
-                </CCardFooter>
-            </CCard>
-        </CCol>
         <CCol lg="8">
             <CCard>
                 <CCardHeader>
@@ -52,7 +37,7 @@
                                 onfocus="this.placeholder = ''"
                                 description="Username" 
                                 placeholder="Username"
-                                :value="this.$store.getters['auth/user'].username"
+                                v-model="form.username"
                             />
                         </CCol>
                         <CCol lg="6">
@@ -63,19 +48,20 @@
                                 onfocus="this.placeholder = ''"
                                 description="Role" 
                                 placeholder="Role"
-                                :value="this.$store.getters['auth/user'].role"
+                                v-model="form.role_name"
                             />
                         </CCol>
                         <CCol>
+                            <img v-if="url" :src="url" />
                             <label>Upload Signature</label>
                             <CInputFile
-                                @change="uploadDocs"
+                                @change="uploadDocs($event)"
                             />
                         </CCol>
                     </CRow>
                 </CCardBody>
                 <CCardFooter>
-                    <CButton color="primary">SAVE</CButton>
+                    <CButton id="btn-profile-save" @click="submit" color="primary">SAVE</CButton>
                 </CCardFooter>
             </CCard>
         </CCol>
@@ -110,15 +96,39 @@ export default {
     data(){
         return {
             form: {
+                id:'',
                 email: '',
                 name: '',
-            }
+                role_id: '',
+                username: '',
+                role_name: '',
+                signature: ''
+            },
+            url: ''
+        }
+    },
+    methods: {
+        uploadDocs(files){
+            console.log(files[0]);
+            this.url = URL.createObjectURL(files[0]);
+
+        },
+        submit(){
+            this.$root.btn_load(true, 'btn-profile-save', 'Save');
+            
+            this.$store.dispatch('users/updateUser', this.form).then(() => {
+                this.$root.btn_load(false, 'btn-profile-save', 'Save');
+                this.form = this.getEmptyForm();
+            });
         }
     },
     created(){
+        this.form.id = this.$store.getters['auth/user'].id;
         this.form.email = this.$store.getters['auth/user'].email;
         this.form.name = this.$store.getters['auth/user'].name;
-        console.log(this.$store.getters['auth/user']);
+        this.form.role_id = this.$store.getters['auth/user'].role_id;
+        this.form.role_name = this.$store.getters['auth/user'].role.role_name;
+        this.form.username = this.$store.getters['auth/user'].username;
     }
 }
 </script>

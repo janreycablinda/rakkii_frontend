@@ -12,7 +12,7 @@
             <template #list-header>
               <div style="display:flex;">
                 <li style="text-align: center; width:50%; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="openAddServices"><CIcon name="cil-plus"/> ADD</a></li>
-                <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#" @click="AddAgentData = new Date()"><CIcon name="cil-trash"/> DELETE</a></li>
+                <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#" @click="deleteServices"><CIcon name="cil-trash"/> DELETE</a></li>
               </div>
             </template>
           </v-select>
@@ -23,9 +23,12 @@
             <ul class="mt-1" style="width:125%;">
               <li v-for="(sub, index) in services.sub_services" :key="index">
                 <SubServices
+                :trigger_add_sub="trigger_add_sub"
+                :trigger_delete_sub="trigger_delete_sub"
                 :sub="sub"
                 v-on:child_data_sub="childRemoveSub"
                 v-on:child_data_add_sub="childAddSub"
+                v-on:child_data_delete="childDeleteSub"
                 />
               </li>
             </ul>
@@ -58,7 +61,7 @@ export default{
     vSelect,
     SubServices,
   },
-  props: ['services'],
+  props: ['services', 'trigger_add_sub', 'trigger_delete_sub'],
   watch:{
     services(newVal){
         // console.log(newVal)
@@ -104,6 +107,12 @@ export default{
   methods: {
     addServices(data){
       this.$emit('child_data', data, 'add');
+    },
+    childDeleteSub(data){
+      this.$emit('child_delete_services', data)
+    },
+    deleteServices(){
+      this.$emit('child_delete_services', {trigger:new Date(), delete_type: 'SERVICES', modal_size:'md'})
     },
     openAddServices(){
       this.$emit('child_services', 'add');

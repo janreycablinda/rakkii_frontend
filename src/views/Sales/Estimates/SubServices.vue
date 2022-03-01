@@ -11,7 +11,7 @@
         <template #list-header>
           <div style="display:flex;">
             <li style="text-align: center; width:50%; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="openAddSubServices(sub)"><CIcon name="cil-plus"/> ADD</a></li>
-            <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#" @click="AddAgentData = new Date()"><CIcon name="cil-trash"/> DELETE</a></li>
+            <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#" @click="showModalDataDelete"><CIcon name="cil-trash"/> DELETE</a></li>
           </div>
         </template>
       </v-select>
@@ -56,6 +56,9 @@ export default{
     deleteSubServices(data){
       
       this.$emit('child_data_sub', data);
+    },
+    showModalDataDelete(){
+      this.$emit('child_data_delete', {trigger:new Date(), delete_type: 'SUBSERVICES', services_id: this.sub.services_id, modal_size:'md'})
     }
   },
   multiselectOptions: [

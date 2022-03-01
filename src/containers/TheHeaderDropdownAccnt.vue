@@ -8,10 +8,11 @@
     <template #toggler>
       <CHeaderNavLink>
         <div class="c-avatar">
-          <img
+          {{name}}
+          <!-- <img
             src="/img/upload/blank.png"
             class="c-avatar-img "
-          />
+          /> -->
         </div>
       </CHeaderNavLink>
     </template>
@@ -38,14 +39,27 @@ export default {
   name: 'TheHeaderDropdownAccnt',
   data () {
     return { 
-      itemsCount: 42
+      itemsCount: 42,
+      initial_name: ''
     }
   },
   computed: {
     ...mapGetters({
         authenticated: "auth/authenticated",
         user: "auth/user"
-    })
+    }),
+    name(){
+      let name = this.$store.getters['auth/user'].name;
+      let rgx = new RegExp(/(\p{L}{1})\p{L}+/, 'gu');
+
+      let initials = [...name.matchAll(rgx)] || [];
+
+      initials = (
+        (initials.shift()?.[1] || '') + (initials.pop()?.[1] || '')
+      ).toUpperCase();
+
+      return initials;
+    }
   },
   methods: {
     ...mapActions({
@@ -59,11 +73,19 @@ export default {
       });
     }
   },
+  created(){
+    
+  }
 }
 </script>
 
 <style scoped>
   .c-icon {
     margin-right: 0.3rem;
+  }
+  .c-avatar{
+    background: #355288;
+    color: #fff;
+    font-weight: 500;
   }
 </style>

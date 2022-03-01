@@ -12,6 +12,8 @@
                 <CRow>
                     <CCol lg="6">
                       <div class="inline">
+                        <div class="form-group">
+                          <label>CUSTOMER *</label>
                           <v-select
                             :options="$store.state.customer.customer | customerFilter"
                             placeholder="Select Customer"
@@ -39,57 +41,63 @@
                           <template #list-header>
                             <div style="display:flex;">
                                 <li style="text-align: center; width:50%; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="showModalAddData = new Date()"><CIcon name="cil-plus"/> ADD</a></li>
-                                <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#" @click="AddAgentData = new Date()"><CIcon name="cil-trash"/> DELETE</a></li>
+                                <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#" @click="showModalDataDelete = {trigger:new Date(), delete_type: 'CUSTOMER', modal_size:'lg'}"><CIcon name="cil-trash"/> DELETE</a></li>
                             </div>
                           </template>
                           </v-select>
+                        </div>
                       </div>
-
                     </CCol>
                     <CCol lg="6">
-                        <CInput v-model="form.date" onblur="this.placeholder = 'Date'" onfocus="this.placeholder = ''" description="Date" placeholder="Date" type="date"/>
+                        <CInput v-model="form.date" onblur="this.placeholder = 'Date'" onfocus="this.placeholder = ''" description="Date" placeholder="Date" type="datetime-local"/>
                     </CCol>
                 </CRow>
                 <CRow>
                     <CCol lg="6">
-                        <v-select
-                          :options="$store.state.property.property | propertyFilter"
-                          placeholder="Select Vehicle"
-                          class="style-chooser"
-                          append-to-body
-                          :calculate-position="withPopper"
-                          style="width:100%;"
-                          v-model="form.vehicle_id"
-                          :reduce="label => label.value"
-                          label="label"
-                        >
-                        <template #list-header>
-                          <div style="display:flex;">
-                              <li style="text-align: center; width:50%; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="addCarProperty(form.customer_id)"><CIcon name="cil-plus"/> ADD</a></li>
-                              <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#" @click="AddAgentData = new Date()"><CIcon name="cil-trash"/> DELETE</a></li>
-                          </div>
-                        </template>
-                        </v-select>
+                      <div class="form-group">
+                          <label>VEHICLE *</label>
+                            <v-select
+                              :options="$store.state.property.property | propertyFilter"
+                              placeholder="Select Vehicle"
+                              class="style-chooser"
+                              append-to-body
+                              :calculate-position="withPopper"
+                              style="width:100%;"
+                              v-model="form.vehicle_id"
+                              :reduce="label => label.value"
+                              label="label"
+                            >
+                            <template #list-header>
+                              <div style="display:flex;">
+                                  <li style="text-align: center; width:50%; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="addCarProperty(form.customer_id)"><CIcon name="cil-plus"/> ADD</a></li>
+                                  <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#" @click="showModalDataDelete = {trigger:new Date(), delete_type: 'PROPERTY', customer_id: {value:form.customer_id}, modal_size:'md'}"><CIcon name="cil-trash"/> DELETE</a></li>
+                              </div>
+                            </template>
+                            </v-select>
+                        </div>
                     </CCol>
                     <CCol lg="6">
-                        <v-select
-                          :options="$store.state.insurance.insurance | insuranceFilter"
-                          placeholder="Select Insurance"
-                          class="style-chooser"
-                          append-to-body
-                          :calculate-position="withPopper"
-                          style="width:100%;"
-                          v-model="form.insurance"
-                          :reduce="label => label.value"
-                          label="label"
-                        >
-                        <template #list-header>
-                          <div style="display:flex;">
-                              <li style="text-align: center; width:50%; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="AddInsuranceData = new Date()"><CIcon name="cil-plus"/> ADD</a></li>
-                              <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#" @click="AddAgentData = new Date()"><CIcon name="cil-trash"/> DELETE</a></li>
-                          </div>
-                        </template>
-                        </v-select>
+                      <div class="form-group">
+                        <label>INSURANCE *</label>
+                          <v-select
+                            :options="$store.state.insurance.insurance | insuranceFilter"
+                            placeholder="Select Insurance"
+                            class="style-chooser"
+                            append-to-body
+                            :calculate-position="withPopper"
+                            style="width:100%;"
+                            v-model="form.insurance"
+                            :reduce="label => label.value"
+                            label="label"
+                          >
+                          <template #list-header>
+                            <div style="display:flex;">
+                                <li style="text-align: center; width:50%; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="AddInsuranceData = new Date()"><CIcon name="cil-plus"/> ADD</a></li>
+                                <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#" @click="showModalDataDelete = {trigger:new Date(), delete_type: 'INSURANCE', modal_size:'lg'}"><CIcon name="cil-trash"/> DELETE</a></li>
+                            </div>
+                          </template>
+                          </v-select>
+                      </div>
                     </CCol>
                 </CRow>
                 <CRow class="mt-3">
@@ -113,10 +121,13 @@
                               <li v-for="(serv, index) in form.services" :key="index">
                                 <Services
                                 v-on:child_data="child_action"
+                                :trigger_add_sub="trigger_add_sub"
+                                :trigger_delete_sub="trigger_delete_sub"
                                 :services="serv"
                                 v-on:child_services="openAddServices"
                                 v-on:child_add_sub_services="childAddSubServices"
                                 v-on:child_sub_services_changes="childSubChanges"
+                                v-on:child_delete_services="deleteModal"
                                 />
                               </li>
                             </ol>
@@ -172,8 +183,10 @@
         />
         <AddServicesModal
         :AddServicesData="AddServicesData"
+        v-on:delete_modal="deleteModalShow"
         />
         <AddSubServicesModal
+        v-on:child_add_subservices="addSubServices"
         :AddSubServicesData="AddSubServicesData"
         />
         <AddCarPropertyModal
@@ -184,6 +197,10 @@
         />
         <AddInsuranceModal
         :AddInsuranceData="AddInsuranceData"
+        />
+        <ModalDelete
+        :showModalDataDelete="showModalDataDelete"
+        v-on:update_sub_services="updateSubServices"
         />
     </div>
 </template>
@@ -197,6 +214,7 @@ import AddSubServicesModal from './AddSubServicesModal';
 import AddCarPropertyModal from './AddCarPropertyModal';
 import SubmitApprovalModal from './SubmitApprovalModal';
 import AddInsuranceModal from './AddInsuranceModal';
+import ModalDelete from '../../DeleteModal/View';
 
 export default {
     data(){
@@ -205,9 +223,12 @@ export default {
         AddServicesData: '',
         AddSubServicesData: '',
         AddSaveAndSendData: '',
+        showModalDataDelete: '',
         AddCarPropertyData: '',
+        trigger_delete_sub: '',
         AddInsuranceData: '',
         placement: 'bottom',
+        trigger_add_sub: '',
         media: true,
         form: {
           id: '',
@@ -237,6 +258,7 @@ export default {
         AddCarPropertyModal,
         SubmitApprovalModal,
         AddInsuranceModal,
+        ModalDelete
     },
     filters: {
       customerFilter(data){
@@ -312,21 +334,87 @@ export default {
       }
     },
     methods: {
+      deleteModal(data){
+          this.showModalDataDelete = data;
+      },
+      deleteModalShow(data){
+        this.showModalDataDelete = data;
+      },
       addCarProperty(data){
+        let name = '';
+        this.$store.state.property.property.forEach(item => {
+          if(data == item.customer_id){
+            name = item.customer.company_name;
+          }
+        });
+        const params = {
+          label: name,
+          value: data
+        }
         this.AddCarPropertyData = {
           trigger: new Date(),
-          data: data
+          data: params
         }
       },
+      updateSubServices(data){
+        this.trigger_delete_sub = {
+          trigger: new Date(),
+          data: data
+        };
+        // const services = [];
+        // this.form.services.forEach(item => {
+        //   if(item.services_id == data.services_id){
+        //     let sub = [];
+        //     item.sub_services.forEach(item2 => {
+        //       let items = item2.sub_services.filter(item => item.id != data.id);
+              
+        //       sub.push({
+        //         id: item2.id,
+        //         labor_fee: item2.labor_fee,
+        //         parts_fee: item2.parts_fee,
+        //         services_id: item2.services_id,
+        //         sub_services: items
+        //       });
+        //     })
+        //     services.push({
+        //       labor_fee: item.labor_fee,
+        //       parts_fee: item.parts_fee,
+        //       services_id: item.services_id,
+        //       sub_services: sub
+        //     });
+        //   }else{
+        //     services.push(item)
+        //   }
+        // })
+        // this.form.services = services;
+      },
       submit(){
-        
-        this.$store.dispatch('estimate/updateEstimate', this.form).then(() => {
+        const params = {
+          id: this.form.id,
+          date: this.$root.momentFormatDateTimeConvert(this.form.date),
+          insurance_id: this.form.insurance,
+          vehicle_id: this.form.vehicle_id,
+          services: this.form.services,
+          customer_id: this.form.customer_id
+        }
+        this.$store.dispatch('estimate/updateEstimate', params).then(() => {
             this.$router.replace({
               name: "Estimates"
             });
         });
       },
-     
+      childAddSubServices(data){
+        this.AddSubServicesData = {
+          trigger: new Date(),
+          data: data
+        }
+      },
+      addSubServices(data){
+        this.trigger_add_sub = {
+          trigger: new Date(),
+          data: data
+        };
+      },
       child_action(data, event){
         if(event == 'add'){
             this.form.services.push({
@@ -371,12 +459,13 @@ export default {
           })
         }
       },
-      childAddSubServices(data){
-        this.AddSubServicesData = {
-          trigger: new Date(),
-          data: data
-        }
-      },
+      // childAddSubServices(data){
+      //   console.log(data);
+      //   this.AddSubServicesData = {
+      //     trigger: new Date(),
+      //     data: data
+      //   }
+      // },
       openAddServices(){
         this.AddServicesData = new Date();
       },
@@ -471,11 +560,11 @@ export default {
       this.$store.dispatch('insurance/fetchInsurance');
       
       this.$store.dispatch('estimate/findEstimate', this.$route.params.id).then(response => {
-        
+            
             this.form = {
                 id: response.id,
                 customer_id: response.customer_id,
-                date: response.date,
+                date: this.$root.momentFormatDateTimeInput(response.date),
                 insurance: response.insurance_id,
                 vehicle_id: response.vehicle_id,
                 vehicle: response.vehicle_id,

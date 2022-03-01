@@ -11,7 +11,7 @@
         <template #list-header>
           <div style="display:flex;">
             <li style="text-align: center; width:50%; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="openAddSubServices(sub)"><CIcon name="cil-plus"/> ADD</a></li>
-            <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#" @click="AddAgentData = new Date()"><CIcon name="cil-trash"/> DELETE</a></li>
+            <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#" @click="showModalDataDelete"><CIcon name="cil-trash"/> DELETE</a></li>
           </div>
         </template>
       </v-select>
@@ -42,38 +42,52 @@ export default{
   components: {
     vSelect,
   },
-  props: ['sub'],
+  props: ['sub', 'trigger_add_sub', 'trigger_delete_sub'],
   watch: {
-      sub(){
-        //   console.log('test');
+    trigger_add_sub(data){
+      if(data.data.services_id == this.sub.sub_services.services_id){
+        this.$store.dispatch('sub_services/findSubServices', this.sub.sub_services.services_id).then(response => {
+          this.sub_services = response;
+        });
       }
+    },
+    trigger_delete_sub(data){
+      if(data.data.services_id == this.sub.sub_services.services_id){
+        this.$store.dispatch('sub_services/findSubServices', this.sub.sub_services.services_id).then(response => {
+          this.sub_services = response;
+        });
+      }
+    }
   },
   filters: {
     subServicesFilter(data){
       if(data){
-          const options = data.reduce((option, item) => {
-              option.push({label: item.services_name, value: item.id})
-              return option
-          }, [])
-          return options;
+        const options = data.reduce((option, item) => {
+            option.push({label: item.services_name, value: item.id})
+            return option
+        }, [])
+        return options;
       }
     }
   },
   methods: {
+    showModalDataDelete(){
+      console.log(this.sub);
+      this.$emit('child_data_delete', {trigger:new Date(), delete_type: 'SUBSERVICES', services_id: this.sub.sub_services.services_id, modal_size:'md'})
+    },
     openAddSubServices(data){
       this.$emit('child_data_add_sub', data);
     },
     deleteSubServices(data){
-      
       this.$emit('child_data_sub', data);
     }
   },
   created(){
-      if(this.sub){
-          this.$store.dispatch('sub_services/findSubServices', this.sub.sub_services.services_id).then(response => {
-              this.sub_services = response;
-          });
-      }
+    if(this.sub){
+      this.$store.dispatch('sub_services/findSubServices', this.sub.sub_services.services_id).then(response => {
+        this.sub_services = response;
+      });
+    }
   }
 }
 </script>

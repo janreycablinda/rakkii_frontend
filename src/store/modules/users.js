@@ -14,10 +14,13 @@ export default {
         state.users = users;
     },
     UPDATE_USER(state, data) {
+      if(state.users){
         const index = state.users.findIndex(item => item.id === data.id);
         if(index !== -1){
           state.users.splice(index, 1, data);
         }
+      }
+        
     },
     REMOVE_USER(state, id) {
         let items = state.users.filter(item => item.id != id);
@@ -27,72 +30,69 @@ export default {
   actions: {
     async fetchUsers({commit}) {
         const response = await axios.get(`resources/users`);
-
         commit('SET_USERS', response.data);
     },
 
     async addUser({commit, dispatch}, data) {
-        await axios.post("resources/add_user", {
-          name: data.name,
-          username: data.username,
-          email: data.email,
-          password: data.password,
-          role_id: data.role_id.value
-        }).then(response => {
-            dispatch('notification/addNotification', {
-                type: 'success',
-                message: 'Successfully Added!'
-            }, {root: true});
-            
-            commit('ADD_USER', response.data);
-        }, () => {
+      await axios.post("resources/add_user", {
+        name: data.name,
+        username: data.username,
+        email: data.email,
+        password: data.password,
+        role_id: data.role_id.value
+      }).then(response => {
           dispatch('notification/addNotification', {
-            type: 'danger',
-            message: 'Ops! Something went wrong!'
+              type: 'success',
+              message: 'Successfully Added!'
           }, {root: true});
           
-        });
+          commit('ADD_USER', response.data);
+      }, () => {
+        dispatch('notification/addNotification', {
+          type: 'danger',
+          message: 'Ops! Something went wrong!'
+        }, {root: true});
+      });
     },
 
     async updateUser({commit, dispatch}, data) {
-        await axios.put("resources/update_user", {
-          id: data.id,
-          name: data.name,
-          username: data.username,
-          email: data.email,
-          password: data.password,
-          role_id: data.role_id
-        }).then(response => {
-            dispatch('notification/addNotification', {
-                type: 'success',
-                message: 'Successfully Updated!'
-            }, {root: true});
-
-            commit('UPDATE_USER', response.data);
-        }, () => {
+      await axios.put("resources/update_user", {
+        id: data.id,
+        name: data.name,
+        username: data.username,
+        email: data.email,
+        password: data.password,
+        role_id: data.role_id
+      }).then(response => {
           dispatch('notification/addNotification', {
-            type: 'danger',
-            message: 'Ops! Something went wrong!'
+              type: 'success',
+              message: 'Successfully Updated!'
           }, {root: true});
-          
-        });
+
+          commit('UPDATE_USER', response.data);
+      }, () => {
+        dispatch('notification/addNotification', {
+          type: 'danger',
+          message: 'Ops! Something went wrong!'
+        }, {root: true});
+      });
     },
 
     async deleteUser({commit, dispatch}, id) {
       const response = await axios.delete(`resources/delete_user/${id}`);
       if(response.data == 200){
+      dispatch('notification/addNotification', {
+          type: 'success',
+          message: 'Successfully Deleted!'
+      }, {root: true});
+      
+      commit('REMOVE_USER', id);
+      }else{
           dispatch('notification/addNotification', {
-              type: 'success',
-              message: 'Successfully Deleted!'
+              type: 'danger',
+              message: 'Ops! Something went wrong!'
           }, {root: true});
-          
-          commit('REMOVE_USER', id);
-          }else{
-              dispatch('notification/addNotification', {
-                  type: 'danger',
-                  message: 'Ops! Something went wrong!'
-              }, {root: true});
-          }
+      }
     },
   }
 };

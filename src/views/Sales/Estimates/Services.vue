@@ -12,7 +12,7 @@
             <template #list-header>
               <div style="display:flex;">
                 <li style="text-align: center; width:50%; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="openAddServices"><CIcon name="cil-plus"/> ADD</a></li>
-                <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#" @click="AddAgentData = new Date()"><CIcon name="cil-trash"/> DELETE</a></li>
+                <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#" @click="deleteServices"><CIcon name="cil-trash"/> DELETE</a></li>
               </div>
             </template>
           </v-select>
@@ -26,6 +26,7 @@
                 :sub="sub"
                 v-on:child_data_sub="childRemoveSub"
                 v-on:child_data_add_sub="childAddSub"
+                v-on:child_data_delete="childDeleteSub"
                 />
               </li>
             </ul>
@@ -70,18 +71,18 @@ export default{
     id(){
       this.services.sub_services = [];
     },
-    services_changes(newVal, oldVal){
-      if(oldVal.length != 0){
-        newVal.forEach((item, index) => {
-          if(item.sub_services.length !== oldVal[index].sub_services.length){
-            const newItem = item.sub_services.at(-1);
-            if(newItem.services_id == this.services.services_id.value){
-              this.$emit('child_sub_services_changes', newItem);
-            }
-          }
-        })
-      }
-    },
+    // services_changes(newVal, oldVal){
+    //   if(oldVal.length != 0){
+    //     newVal.forEach((item, index) => {
+    //       if(item.sub_services.length !== oldVal[index].sub_services.length){
+    //         const newItem = item.sub_services.at(-1);
+    //         if(newItem.services_id == this.services.services_id.value){
+    //           this.$emit('child_sub_services_changes', newItem);
+    //         }
+    //       }
+    //     })
+    //   }
+    // },
     services_id(newVal){
       this.$store.dispatch('services/findServices', newVal).then(response => {
         // console.log(response);
@@ -116,6 +117,12 @@ export default{
     addServices(data){
       // console.log(data);
       this.$emit('child_data', data, 'add');
+    },
+    childDeleteSub(data){
+      this.$emit('child_delete_services', data)
+    },
+    deleteServices(){
+      this.$emit('child_delete_services', {trigger:new Date(), delete_type: 'SERVICES', modal_size:'md'})
     },
     openAddServices(){
       this.$emit('child_services', 'add');

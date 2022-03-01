@@ -13,6 +13,10 @@ export default {
         let items = state.property.concat(data);
         state.property = items;
     },
+    DELETE_PROPERTY(state, id) {
+        let items = state.property.filter(item => item.id != id);
+        state.property = items;
+    },
   },
   actions: {
     async findProperty({commit}, id) {
@@ -45,6 +49,22 @@ export default {
           }, {root: true});
           
         });
-    },
+      },
+      
+      async deleteProperty({commit, dispatch}, id) {
+          const response = await axios.delete(`resources/delete_property/${id}`);
+          if(response.data == 200){
+              dispatch('notification/addNotification', {
+                  type: 'success',
+                  message: 'Successfully Deleted!'
+              }, {root: true});
+              commit('DELETE_PROPERTY', id);
+          }else{
+              dispatch('notification/addNotification', {
+                  type: 'danger',
+                  message: 'Ops! Something went wrong!'
+              }, {root: true});
+          }
+      },
   }
 };

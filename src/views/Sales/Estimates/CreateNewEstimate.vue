@@ -34,10 +34,10 @@
                                 :value="attributes.value"
                               />
                             </template>
-                            <template #open-indicator="{ attributes }">
+                            <template>
                               &nbsp;
                             </template>
-                            <template #spinner="{ loading }">
+                            <template>
                               <div
                                 v-if="true"
                               >
@@ -49,8 +49,8 @@
                             </template>
                             <template #list-header>
                               <div style="display:flex;">
-                                <li style="text-align: center; width:50%; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="showModalAddData = new Date()"><CIcon name="cil-plus"/> ADD</a></li>
-                                <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#" @click="AddAgentData = new Date()"><CIcon name="cil-trash"/> DELETE</a></li>
+                                <li style="text-align: center; width:50%; background:#3C4B64;"><a style="color:#fff; text-decoration:none; cursor:pointer;" @click="showModalAddData = new Date()"><CIcon name="cil-plus"/> ADD</a></li>
+                                <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none; cursor:pointer;" @click="showModalDataDelete = {trigger:new Date(), delete_type: 'CUSTOMER', modal_size:'lg'}"><CIcon name="cil-trash"/> DELETE</a></li>
                               </div>
                             </template>
                             </v-select>
@@ -68,7 +68,7 @@
                         description="Date" 
                         placeholder="Date" 
                         label="Date *"
-                        type="date"
+                        type="datetime-local"
                         invalidFeedback="Date is required!"
                         :isValid="checkIfValid('date')"
                         :value.sync="$v.form.date.$model"
@@ -94,7 +94,7 @@
                           <template #list-header>
                               <div v-if="form.customer_id" style="display:flex;">
                                 <li style="text-align: center; width:50%; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="addCarProperty(form.customer_id)"><CIcon name="cil-plus"/> ADD</a></li>
-                                <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#" @click="AddAgentData = new Date()"><CIcon name="cil-trash"/> DELETE</a></li>
+                                <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#" @click="showModalDataDelete = {trigger:new Date(), delete_type: 'PROPERTY', customer_id:form.customer_id, modal_size:'md'}"><CIcon name="cil-trash"/> DELETE</a></li>
                               </div>
                           </template>
                         </v-select>
@@ -121,7 +121,7 @@
                         <template #list-header>
                             <div style="display:flex;">
                               <li style="text-align: center; width:50%; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="AddInsuranceData = new Date()"><CIcon name="cil-plus"/> ADD</a></li>
-                              <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#" @click="AddAgentData = new Date()"><CIcon name="cil-trash"/> DELETE</a></li>
+                              <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#" @click="showModalDataDelete = {trigger:new Date(), delete_type: 'INSURANCE', modal_size:'lg'}"><CIcon name="cil-trash"/> DELETE</a></li>
                             </div>
                         </template>
                         </v-select>
@@ -156,6 +156,7 @@
                                 v-on:child_services="openAddServices"
                                 v-on:child_add_sub_services="childAddSubServices"
                                 v-on:child_sub_services_changes="childSubChanges"
+                                v-on:child_delete_services="deleteModal"
                                 />
                               </li>
                             </ol>
@@ -221,9 +222,11 @@
         :showModalAddData="showModalAddData"
         />
         <AddServicesModal
+        v-on:delete_modal="deleteModalShow"
         :AddServicesData="AddServicesData"
         />
         <AddSubServicesModal
+        v-on:child_add_subservices="addSubServices"
         :AddSubServicesData="AddSubServicesData"
         />
         <AddCarPropertyModal
@@ -234,6 +237,10 @@
         />
         <AddInsuranceModal
         :AddInsuranceData="AddInsuranceData"
+        />
+        <ModalDelete
+        :showModalDataDelete="showModalDataDelete"
+        v-on:update_sub_services="updateSubServices"
         />
     </div>
 </template>
@@ -250,6 +257,7 @@ import AddInsuranceModal from './AddInsuranceModal';
 import Documents from './Documents';
 import { validationMixin } from "vuelidate"
 import { required } from "vuelidate/lib/validators"
+import ModalDelete from '../../DeleteModal/View';
 
 export default {
     data(){
@@ -260,6 +268,7 @@ export default {
         AddSaveAndSendData: '',
         AddCarPropertyData: '',
         AddInsuranceData: '',
+        showModalDataDelete: '',
         placement: 'bottom',
         form: {
           customer_id: '',
@@ -289,7 +298,8 @@ export default {
         AddCarPropertyModal,
         SubmitApprovalModal,
         AddInsuranceModal,
-        Documents
+        Documents,
+        ModalDelete
     },
     mixins: [validationMixin],
     validations() {
@@ -480,8 +490,7 @@ export default {
             },
           ]
         }
-        
-      }
+      },
     },
     computed:{
       formString () { return JSON.stringify(this.form, null, 4) },
@@ -524,12 +533,46 @@ export default {
       }
     },
     methods: {
+      updateSubServices(data){
+        const services = [];
+        this.form.services.forEach(item => {
+          if(item.services_id == data.services_id){
+            let sub = [];
+            item.sub_services.forEach(item2 => {
+              let items = item2.sub_services.filter(item => item.id != data.id);
+              
+              sub.push({
+                id: item2.id,
+                labor_fee: item2.labor_fee,
+                parts_fee: item2.parts_fee,
+                services_id: item2.services_id,
+                sub_services: items
+              });
+            })
+            services.push({
+              labor_fee: item.labor_fee,
+              parts_fee: item.parts_fee,
+              services_id: item.services_id,
+              sub_services: sub
+            });
+          }else{
+            services.push(item)
+          }
+        })
+        this.form.services = services;
+      },
       checkIfValid (fieldName) {
           const field = this.$v.form[fieldName]
           if (!field.$dirty) {
               return null
           } 
           return !(field.$invalid || field.$model === '')
+      },
+      deleteModalShow(data){
+        this.showModalDataDelete = data;
+      },
+      deleteModal(data){
+          this.showModalDataDelete = data;
       },
       validate () {
           this.$v.form.$touch()
@@ -546,7 +589,7 @@ export default {
           let formData = new FormData();
           formData.append('status', 'Draft');
           formData.append('customer_id', this.form.customer_id.value);
-          formData.append('date', this.form.date);
+          formData.append('date', this.$root.momentFormatDateTimeConvert(this.form.date));
           formData.append('insurance', this.form.insurance.value);
           formData.append('vehicle_id', this.form.vehicle_id.value);
           var services = JSON.stringify(this.form.services);
@@ -636,6 +679,34 @@ export default {
           trigger: new Date(),
           data: data
         }
+      },
+      addSubServices(data){
+        const services = [];
+        this.form.services.forEach(item => {
+          if(item.services_id == data.services_id){
+            let sub = [];
+            item.sub_services.forEach(item2 => {
+              let mrge = item2.sub_services.concat(data);
+              sub.push({
+                id: item2.id,
+                labor_fee: item2.labor_fee,
+                parts_fee: item2.parts_fee,
+                services_id: item2.services_id,
+                sub_services: mrge
+              });
+            })
+            services.push({
+              labor_fee: item.labor_fee,
+              parts_fee: item.parts_fee,
+              services_id: item.services_id,
+              sub_services: sub
+            });
+          }else{
+            services.push(item)
+          }
+        })
+        this.form.services = services;
+
       },
       openAddServices(){
         this.AddServicesData = new Date();

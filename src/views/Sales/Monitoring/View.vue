@@ -93,6 +93,7 @@
                 </CCardBody>
             </CCard>
         </CCol>
+        
         <CarInModal 
         :ModalCarInData="ModalCarInData"
         />
@@ -100,9 +101,12 @@
         :CompletedModalData="CompletedModalData"
         />
         <EditCompletedModal
+        v-on:child_delete="deleteModal"
+        v-on:add_personnel_data="AddPersonnelModalOpen"
         :EditCompletedModalData="EditCompletedModalData"
         />
         <StartModal
+        v-on:child_delete="deleteModal"
         :StartData="StartData"
         />
         <ListModal
@@ -110,6 +114,14 @@
         />
         <PaymentModal
         :ModalPaymentData="ModalPaymentData"
+        />
+        
+        <AddPersonnelModal
+        :addPersonnelData="addPersonnelData"
+        v-on:child_delete="showModalDataDeletePersonnel"
+        />
+        <ModalDelete
+        :showModalDataDelete="showModalDataDelete"
         />
     </CRow>
 </template>
@@ -121,6 +133,8 @@ import EditCompletedModal from './EditCompletedModal';
 import StartModal from './StartModal';
 import ListModal from './ListModal';
 import PaymentModal from './PaymentModal'
+import ModalDelete from '../../DeleteModal/View';
+import AddPersonnelModal from './AddPersonnelModal'
 
 export default {
     data(){
@@ -129,6 +143,8 @@ export default {
             CompletedModalData: '',
             EditCompletedModalData: '',
             ModalPaymentData: '',
+            showModalDataDelete: '',
+            addPersonnelData: '',
             StartData: '',
             ListModalData: '',
             print_data: this.getPrintData(),
@@ -190,7 +206,9 @@ export default {
         EditCompletedModal,
         StartModal,
         ListModal,
-        PaymentModal
+        PaymentModal,
+        ModalDelete,
+        AddPersonnelModal
     },
     watch:{
         '$route' () {
@@ -267,6 +285,16 @@ export default {
                 trigger: new Date(),
                 data: data
             };
+        },
+        showModalDataDeletePersonnel(data){
+            this.showModalDataDelete = data;
+        },
+        AddPersonnelModalOpen(data){
+            console.log(data);
+            this.addPersonnelData = data;
+        },
+        deleteModal(data){
+            this.showModalDataDelete = data;
         },
         getPrintData(){
             return {
