@@ -8,7 +8,7 @@
         :fixed="fixed"
         :items="items"
         :fields="fields"
-        :items-per-page="small ? 10 : 10"
+        :items-per-page="small ? 10 : 5"
         :tableFilter='{ placeholder: "Search", label: " "}'
         :dark="dark"
         :table-filter="true"
@@ -46,16 +46,17 @@
                 {{item.user.name}}
             </td>
         </template>
-        <template #date="{item}">
+        <template #date_paid="{item}">
             <td>
-                {{$root.momentFormatDateTime(item.date)}}
+                {{item.payment_date}}
             </td>
         </template>
         <template #action="{item}">
             <td>
                 <div style="display:flex;">
-                <CLink @mouseover="hoverValue(item)" @click="getValue(item)" color="info"><CIcon name="cil-print"/></CLink> &nbsp;
-                <CLink @click="getValueDel(item)" style="color:red;"><CIcon name="cil-trash"/></CLink>
+                <CButton size="sm" color="primary" @mouseover="hoverValue(item)" @click="getValue(item)"><CIcon name="cil-print"/></CButton> &nbsp;
+                <CButton size="sm" color="info" @click="getValueEdit(item)"><CIcon name="cil-pen"/></CButton>&nbsp;
+                <CButton size="sm" color="danger" @click="getValueDel(item)"><CIcon name="cil-trash"/></CButton>
                 </div>
             </td>
         </template>
@@ -71,7 +72,7 @@ export default {
     fields: {
       type: Array,
       default () {
-        return ['job_order_no', 'customer_name', 'rcpt_no', 'amount', 'encoded_by', 'date', 'action']
+        return ['rcpt_no', 'payment_type', 'amount', 'date_paid', 'encoded_by', 'action']
       }
     },
     caption: {
@@ -93,6 +94,9 @@ export default {
         : status === 'cancel' ? 'danger'
         : status === 'onhold' ? 'danger' : 'primary'
     },
+    getValueEdit(data){
+      this.$emit('edit_payment', data);
+    },
     getValue(data){
       this.$emit('event_child', data);
     },
@@ -100,9 +104,15 @@ export default {
       this.$emit('hover_value_print', data);
     },
     getValueDel(data){
-      
+      console.log(data);
+      const params = {
+        id: data.id,
+        billing_statement_id: data.billing_statement_id
+      }
       if (confirm('Are you sure you want to delete ' + data.receipt_no +'?')) {
-        this.$store.dispatch('payments/deletePayment', data.id);
+        this.$store.dispatch('payments/deletePayment', params).then(response => {
+          this.$emit('delete_payment', response);
+        });
       }
     },
   }

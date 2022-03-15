@@ -52,7 +52,12 @@ import {
   cilCart,
   cilSave,
   cilPrint,
-  cilFile
+  cilFile,
+  cilDescription,
+  cilArrowRight,
+  cilArrowThickToTop,
+  cilSearch,
+  cilFindInPage
 } from '@coreui/icons'
 import { logo } from './logo'
 
@@ -111,5 +116,10 @@ export const iconsSet = Object.assign({}, {
   cilCart,
   cilSave,
   cilPrint,
-  cilFile
+  cilFile,
+  cilDescription,
+  cilArrowRight,
+  cilArrowThickToTop,
+  cilSearch,
+  cilFindInPage
 })

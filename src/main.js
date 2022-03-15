@@ -100,6 +100,9 @@ store.dispatch("auth/attempt", localStorage.getItem("token")).then(() => {
       },
       momentFormatDateTimeConvert(data){
         return moment(data, "YYYY-MM-DDThh:mm").format('YYYY-MM-DD HH:mm:ss');
+      },
+      momentFormatDateTimeGet(){
+        return moment(new Date()).format('YYYY-MM-DDTHH:mm');
       }
     },
     icons,

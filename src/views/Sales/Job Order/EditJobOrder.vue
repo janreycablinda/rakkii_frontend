@@ -211,25 +211,25 @@
                     </CCol>
                 </CRow>
                 <CRow class="mt-3">
-                  <CCol lg="6">
+                  <CCol lg="7">
                     <CRow class="m-1 bordered">
                       <CCol lg="12" align="center">
                         <h5>PURCHASED ITEMS</h5>
                         <CButton @click="AddPurchaseData = {trigger: new Date(), data: form}" style="position:absolute; top: 3px; right:15px;" color="primary" size="sm"><CIcon name="cil-plus"/></CButton>
                       </CCol>
                       <CCol lg="12">
-                        <table class="custom-table mt-2 mb-2">
+                        <!-- <table class="custom-table mt-2 mb-2">
                           <tr>
-                            <th width="36%">
+                            <th width="32%">
                               Purchase Item
                             </th>
                             <th width="20%">
                               Supplier
                             </th>
-                            <th width="10%">
+                            <th width="12%">
                               Date
                             </th>
-                            <th width="6%">
+                            <th width="4%">
                               Qty
                             </th>
                             <th width="10%">
@@ -238,13 +238,13 @@
                             <th width="10%">
                               Total
                             </th>
-                            <th width="8%">
+                            <th width="10%">
                               
                             </th>
                           </tr>
-                          <tr v-for="purchase in purchase_items" :key="purchase.id">
+                          <tr v-for="purchase in purchase_items" :key="purchase.item_id">
                             <td>
-                              {{purchase.item.product_name}}
+                              {{purchase.item.product_name}} {{purchase.item.brand}}
                             </td>
                             <td>
                               {{purchase.supplier.supplier_name}}
@@ -261,9 +261,9 @@
                             <td>
                               ₱{{purchase.qty * purchase.price}}
                             </td>
-                            <td align="center">
-                              <CLink><CIcon name="cil-pen"/></CLink>
-                              <CLink style="color:red;"><CIcon name="cil-trash"/></CLink>
+                            <td align="right">
+                              <CLink @click="editItem(purchase.item_id)"><CIcon name="cil-pen"/></CLink>
+                              <CLink @click="deleteItem(purchase)" style="color:red;"><CIcon name="cil-trash"/></CLink>
                             </td>
                           </tr>
                           <tr>
@@ -277,12 +277,17 @@
                               ₱{{ totalPurchased }}
                             </td>
                           </tr>
-                        </table>
-                        
+                        </table> -->
+                        <PurchaseTable
+                        :items="purchase_items"
+                        v-on:purchase_added="purchaseAdded"
+                        v-on:edit_purchase="editPurchase"
+                        />
+                        <span><b>Total Purchase:</b> ₱{{totalPurchased}}</span>
                       </CCol>
                     </CRow>
                   </CCol>
-                  <CCol lg="6">
+                  <CCol lg="5">
                       <CRow class="m-1 bordered">
                         <CCol lg="12" align="center">
                           <h5>APPROVED BUDGET</h5>
@@ -339,6 +344,23 @@
                           </CInput>
                         </CCol>
                       </CRow>
+                      <CRow class="m-1 bordered">
+                        <CCol lg="12" align="center">
+                          <h5>OTHER PROJECT EXPENSES</h5>
+                          <CButton @click="AddOtherExpenses" style="position:absolute; top: 3px; right:11px;" color="primary" size="sm"><CIcon name="cil-plus"/></CButton>
+                        </CCol>
+                        <CCol lg="12" class="mt-2">
+                          <Expenses 
+                          v-for="(expenses, index) in other_expenses"
+                          v-on:delete_expenses="deleteExpenses"
+                          v-on:add_expenses_type="addExpenses"
+                          :key="index" 
+                          :expenses="expenses"
+                          v-on:delete_expenses_type="deleteExpensesType"
+                          />
+                          <span><b>Total Project Expenses:</b> ₱{{totalExpenses}}</span>
+                        </CCol>
+                      </CRow>
                   </CCol>
                 </CRow>
               <CRow class="mt-3">
@@ -379,6 +401,16 @@
         v-on:add_item="addItem"
         v-on:purchase_added="purchaseAdded"
         v-on:child_delete_modal="deleteModalShow"
+        v-on:add_unit="addUnit"
+        />
+        <EditPurchaseModal
+        :EditPurchaseData="EditPurchaseData"
+        v-on:add_supplier="addSupplier"
+        v-on:add_item="addItem"
+        v-on:purchase_added="purchaseAdded"
+        v-on:child_delete_modal="deleteModalShow"
+        v-on:add_unit="addUnit"
+        v-on:purchase_updated="purchaseUpdated"
         />
         <AddSupplierModal
         :AddSupplierData="AddSupplierData"
@@ -389,6 +421,13 @@
         <AddItemModal
         :AddItemData="AddItemData"
         />
+        <AddExpensesType
+        :AddExpensesTypeData="AddExpensesTypeData"
+        />
+        <AddUnitModal
+        :AddUnitData="AddUnitData"
+        />
+        
     </div>
 </template>
 <script>
@@ -406,21 +445,29 @@ import AddPurchaseModal from './AddPurchaseModal';
 import AddSupplierModal from '../../Supplier/AddSupplierModal';
 import ModalDelete from '../../DeleteModal/View';
 import AddItemModal from './AddItemModal';
+import PurchaseTable from './PurchaseTable';
+import Expenses from './Expenses';
+import AddExpensesType from './AddExpensesType';
+import AddUnitModal from './AddUnitModal';
+import EditPurchaseModal from './EditPurchaseModal';
 
 export default {
     data(){
       return {
         showModalAddData: '',
         AddServicesData: '',
+        EditPurchaseData: '',
         AddAgentData: '',
         AddSubServicesData: '',
         AddPurchaseData: '',
+        AddUnitData: '',
         AddSaveAndSendData: '',
         showModalDataDelete: '',
         AddCarPropertyData: '',
         AddInsuranceData: '',
         AddItemData: '',
         AddSupplierData: '',
+        AddExpensesTypeData: '',
         placement: 'bottom',
         trigger_add_sub: '',
         trigger_delete_sub: '',
@@ -450,7 +497,8 @@ export default {
           betterment: 0,
           discount: 0,
           net: 0
-        }
+        },
+        other_expenses: []
       }
     },
     components: {
@@ -466,7 +514,12 @@ export default {
         AddPurchaseModal,
         AddSupplierModal,
         ModalDelete,
-        AddItemModal
+        AddItemModal,
+        PurchaseTable,
+        Expenses,
+        AddExpensesType,
+        AddUnitModal,
+        EditPurchaseModal
     },
     filters: {
       customerFilter(data){
@@ -528,11 +581,21 @@ export default {
         })
         return service_labor + sub_service_parts;
       },
+      totalExpenses(){
+        console.log(this.other_expenses);
+        let sum = 0;
+        this.other_expenses.forEach(item => {
+          sum += parseInt(item.amount);
+        })
+        return sum;
+      },
       totalPurchased(){
         let sum = 0;
         this.purchase_items.forEach(item => {
-          let multi = item.qty * item.price;
-          sum += multi;
+          item.purchase_items.forEach(item2 => {
+            let multi = item2.qty * item2.price;
+            sum += multi;
+          })
         })
         return sum;
       },
@@ -581,11 +644,57 @@ export default {
           data: params
         }
       },
+      addUnit(data){
+        this.AddUnitData = data;
+      },
+      purchaseUpdated(data){
+        console.log(data);
+        console.log(this.purchase_items);
+        const index = this.purchase_items.findIndex(item => item.id === data.id);
+        console.log(index);
+        if(index !== -1){
+          this.purchase_items.splice(index, 1, data);
+        }
+      },
+      addExpenses(){
+        this.AddExpensesTypeData = new Date();
+      },
+      deleteExpensesType(data){
+        this.showModalDataDelete = data;
+      },
+      AddOtherExpenses(){
+        this.other_expenses.push({
+          expenses_type_id: '',
+          amount: 0
+        })
+      },
+      deleteExpenses(data){
+        this.other_expenses.splice(this.other_expenses.indexOf(data), 1);
+      },
+      editItem(id){
+        console.log(id);
+      },
+      deleteItem(data){
+        if (confirm('Are you sure you want to delete ' + data.item.product_name + ' ' + data.item.brand + '?')) {
+          this.$store.dispatch('purchase/deleteItem', data.item_id).then(response => {
+            if(response == 200){
+              let items = this.purchase_items.filter(item => item.item_id != data.item_id);
+              this.purchase_items = items;
+            }
+          });
+        }
+      },
       deleteModal(data){
           this.showModalDataDelete = data;
       },
       deleteModalShow(data){
         this.showModalDataDelete = data;
+      },
+      editPurchase(data){
+        this.EditPurchaseData = {
+          trigger: new Date(),
+          data:data
+        }
       },
       submit(){
 
@@ -601,7 +710,8 @@ export default {
           policy_deductible: this.payment_form.policy_deductible,
           betterment: this.payment_form.betterment,
           discount: this.payment_form.discount,
-          net: this.payment_form.net
+          net: this.payment_form.net,
+          other_expenses: this.other_expenses
         }
         
         this.$store.dispatch('job_orders/updateJobOrder', params).then(() => {
@@ -679,7 +789,26 @@ export default {
         this.AddSupplierData = new Date();
       },
       purchaseAdded(data){
-        // this.form = data;
+        this.purchase_items = data.purchases;
+        // let purchase = [];
+        // data.purchases.forEach(item => {
+        //   if(item.purchase_items){
+        //     item.purchase_items.forEach(item2 => {
+        //       purchase.push({
+        //         item_id: item2.id,
+        //         purchase_id: item2.purchase_id,
+        //         item: item2.item,
+        //         qty: item2.qty,
+        //         price: item2.price,
+        //         date: item.date,
+        //         supplier: item.supplier
+        //       })
+        //     })
+        //   }
+        // })
+        // if(purchase){
+        //   this.purchase_items = purchase;
+        // }
       },
       convertByProperty(originalObject, groupByProperty, secondProperty) {  
         var finalArray = [];  
@@ -772,9 +901,10 @@ export default {
       this.$store.dispatch('insurance/fetchInsurance');
       
       this.$store.dispatch('job_orders/findJobOrder', this.$route.params.id).then(response => {
-          
+          console.log(response);
           this.form = {
                 id: response.id,
+                job_order_no: response.job_order_no,
                 customer_id: response.customer_id,
                 date: this.$root.momentFormatDateTimeInput(response.date),
                 insurance: response.insurance_id,
@@ -791,43 +921,28 @@ export default {
                 betterment: response.payables.betterment,
                 discount: response.payables.discount,
                 net: response.payables.net
-            }
+          }
 
-            // this.form = {
-            //     id: response.id,
-            //     job_order_no: response.job_order_no,
-            //     agent_id: response.agent_id,
-            //     customer_id: response.customer_id,
-            //     date: response.date,
-            //     insurance: response.insurance_id,
-            //     vehicle_id: response.vehicle_id,
-            //     vehicle: response.vehicle_id,
-            //     services: response.scope
-            // }
-            // let purchases = [];
-            // response.purchases.forEach(item => {
-            //   item.purchase_items.forEach(purchase => {
-            //     purchases.push({
-            //       item_id: purchase.id,
-            //       item: purchase.item,
-            //       unit_id: purchase.unit_id,
-            //       qty: purchase.qty,
-            //       price: purchase.price,
-            //       date: item.date,
-            //       supplier: item.supplier
-            //     });
-            //   });
-            // })
-            // console.log(purchases);
-            // this.purchase_items = purchases;
-            
-            // this.payment_form = {
-            //     total_repair_cost: response.payables.total_repair_cost,
-            //     policy_deductible: response.payables.policy_deductible,
-            //     betterment: response.payables.betterment,
-            //     discount: response.payables.discount,
-            //     net: response.payables.net
-            // }
+          this.other_expenses = response.other_expenses;
+
+          // let purchase = [];
+          // response.purchases.forEach(item => {
+          //   if(item.purchase_items){
+          //     item.purchase_items.forEach(item2 => {
+          //       purchase.push({
+          //         item_id: item2.id,
+          //         purchase_id: item2.purchase_id,
+          //         item: item2.item,
+          //         qty: item2.qty,
+          //         price: item2.price,
+          //         date: item.date,
+          //         supplier: item.supplier
+          //       })
+          //     })
+          //   }
+          // })
+
+          this.purchase_items = response.purchases;
             
           setTimeout(() => this.media = false, 1000);
           

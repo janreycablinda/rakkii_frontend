@@ -25,7 +25,8 @@ const EditJobOrder = () => import('@/views/Sales/Job Order/EditJobOrder')
 
 const BillingStatement = () => import('@/views/Sales/Billing Statement/View')
 const Monitoring = () => import('@/views/Sales/Monitoring/View')
-// const CreateInvoice = () => import('@/views/Sales/Billing Statement/CreateInvoice')
+const CreateBilling = () => import('@/views/Sales/Billing Statement/CreateBilling')
+const EditBilling = () => import('@/views/Sales/Billing Statement/EditBillingStatement')
 const Estimates = () => import('@/views/Sales/Estimates/View')
 const CreateEstimates = () => import('@/views/Sales/Estimates/CreateNewEstimate')
 const EditEstimates = () => import('@/views/Sales/Estimates/EditEstimate')
@@ -251,8 +252,31 @@ const router = new Router({
             component: BillingStatement,
             meta: {
               breadcrumb: [
-                { text: 'Billing Statement', to: '/sales/invoices' },
+                { text: 'Billing Statement', to: '/sales/billing-statement' },
+              ],
+              requiresAuth: true
+            }
+        },
+        {
+            path: '/sales/billing-statement/create',
+            name: 'Create Billing Statement',
+            component: CreateBilling,
+            meta: {
+              breadcrumb: [
+                { text: 'Billing Statement', to: '/sales/billing-statement' },
                 { text: 'Create Billing Statement' }
+              ],
+              requiresAuth: true
+            }
+        },
+        {
+            path: '/sales/billing-statement/edit/:id',
+            name: 'Edit Billing Statement',
+            component: EditBilling,
+            meta: {
+              breadcrumb: [
+                { text: 'Billing Statement', to: '/sales/billing-statement' },
+                { text: 'Edit Billing Statement' }
               ],
               requiresAuth: true
             }

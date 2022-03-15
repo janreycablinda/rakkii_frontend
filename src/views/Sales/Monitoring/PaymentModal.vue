@@ -1,13 +1,18 @@
 <template>
     <CModal
-      title="PAYMENT"
+      title="BILLING STATEMENT"
       color="primary"
       :show.sync="showModalPayment"
       centered
       size="lg"
     >
-    <div class="custom_border_row">
-        <CRow>
+    <CButton :to="'/sales/billing-statement/create?jo=' + id" color="primary">CREATE BILLING STATEMENT</CButton>
+
+    <BillingTable
+    :items="billings"
+    />
+    <!-- <div class="custom_border_row"> -->
+        <!-- <CRow>
             <CCol lg="4" align="center" style="border-right:1px solid #768192;">
                 <p class="pb-2 bold border-bottom" style="color:#768192;">LOA APPROVED BUDGET</p>
                 <CInput
@@ -101,8 +106,8 @@
                     </CCol>
                 </CRow>
             </CCol>
-        </CRow>
-    </div>
+        </CRow> -->
+    <!-- </div> -->
         <template #footer>
             <!-- <CButton @click="submit" color="primary" class="branding-btn">SUBMIT</CButton> -->
             <CButton @click="showModalPayment = false" color="danger">Close</CButton>
@@ -110,31 +115,35 @@
     </CModal>
 </template>
 <script>
-import PaymentTable from './PaymentTable';
+import BillingTable from '../Job Order/BillingTable';
 export default {
     data(){
         return {
             showModalPayment: false,
             items: '',
             form: this.getEmptyForm(),
-            form_payment: this.getEmptyFormPayment()
+            form_payment: this.getEmptyFormPayment(),
+            id: '',
+            billings: []
         }
     },
     components: {
-        PaymentTable
+        BillingTable
     },
     props: ['ModalPaymentData'],
     watch: {
         ModalPaymentData(data){
             this.showModalPayment = true;
-            console.log(data.data.payments);
-            this.form.payments = this.getEmptyFormPayment();
-            this.form.payments = data.data.payments;
-            this.form.id = data.data.id;
-            this.form_payment.betterment = data.data.payables.betterment;
-            this.form_payment.less_deductible = data.data.payables.policy_deductible;
-            this.form_payment.total_repair_cost = data.data.payables.total_repair_cost;
-            this.form_payment.discount = data.data.payables.discount;
+            console.log(data.data);
+            this.id = data.data.id;
+            this.billings = data.data.billings;
+            // this.form.payments = this.getEmptyFormPayment();
+            // this.form.payments = data.data.payments;
+            // this.form.id = data.data.id;
+            // this.form_payment.betterment = data.data.payables.betterment;
+            // this.form_payment.less_deductible = data.data.payables.policy_deductible;
+            // this.form_payment.total_repair_cost = data.data.payables.total_repair_cost;
+            // this.form_payment.discount = data.data.payables.discount;
             // this.items = data.data;
             // this.form.id = data.data.id;
         }

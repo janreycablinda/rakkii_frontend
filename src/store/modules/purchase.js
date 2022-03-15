@@ -46,6 +46,27 @@ export default {
       })
     },
 
+    async editPurchases({commit, dispatch}, data) {
+      return new Promise((resolve, reject) => {
+        axios.post("resources/edit_purchases", data.formData, data.config).then(response => {
+            dispatch('notification/addNotification', {
+                type: 'success',
+                message: 'Successfully Updated!'
+            }, {root: true});
+            // commit('job_orders/UPDATE_JOB_ORDER', response.data, {root: true});
+            
+            resolve(response.data);
+          }, error => {
+            dispatch('notification/addNotification', {
+                type: 'danger',
+                message: 'Ops! Something went wrong!'
+            }, {root: true});
+          
+            reject(error);
+          });
+      })
+    },
+
     async deletePurchase({commit, dispatch}, data) {
       return new Promise((resolve, reject) => {
         axios.delete(`resources/delete_purchase/${data.id}/${data.job_order_id}`).then(response => {
@@ -55,6 +76,26 @@ export default {
             }, {root: true});
 
             commit('REMOVE_PURCHASE', data.id);
+            resolve(response.data);
+          }, error => {
+            dispatch('notification/addNotification', {
+                type: 'danger',
+                message: 'Ops! Something went wrong!'
+            }, {root: true});
+
+            reject(error);
+          });
+      })
+    },
+
+    async deleteItem({commit, dispatch}, id) {
+      return new Promise((resolve, reject) => {
+        axios.delete(`resources/delete_purchase_item/${id}`).then(response => {
+            dispatch('notification/addNotification', {
+                type: 'success',
+                message: 'Successfully Deleted!'
+            }, {root: true});
+
             resolve(response.data);
           }, error => {
             dispatch('notification/addNotification', {

@@ -179,10 +179,10 @@
                                     v-on:document_added="documentAdded"
                                 />
                             </CTab>
-                            <CTab title="Payment">
-                                <CButton @click="ModalPaymentData = {trigger: new Date(), data: info}" class="mt-2" color="primary" size="sm">ADD PAYMENT</CButton>
-                                <PaymentTable
-                                :items="info.payments"
+                            <CTab title="Billing">
+                                <!-- <CButton @click="ModalPaymentData = {trigger: new Date(), data: info}" class="mt-2" color="primary" size="sm">ADD PAYMENT</CButton> -->
+                                <BillingTable
+                                :items="info.billings"
                                 />
                             </CTab>
                             <CTab>
@@ -596,7 +596,7 @@ import PurchaseTable from './PurchaseTable';
 import AddDocumentModal from './AddDocumentModal';
 import AddLoaDocumentModal from './AddLoaDocumentModal';
 import AddItemModal from './AddItemModal';
-import PaymentTable from '../Monitoring/PaymentTable';
+import BillingTable from './BillingTable';
 import PaymentModal from '../Monitoring/PaymentModal';
 
 export default {
@@ -633,7 +633,7 @@ export default {
         AddDocumentModal,
         AddLoaDocumentModal,
         AddItemModal,
-        PaymentTable,
+        BillingTable,
         PaymentModal
     },
     computed: {

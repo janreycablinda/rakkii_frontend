@@ -26,6 +26,14 @@
             :items="$store.state.services_type.services_type"
             v-if="services_type_table"
         />
+        <ExpensesTypeTable
+            v-if="expenses_type_table"
+            :items="$store.state.expenses_type.expenses_type"
+        />
+        <UnitTable
+            v-if="unit_table"
+            :items="$store.state.unit.unit"
+        />
         <template #footer>
             &nbsp;
         </template>
@@ -112,6 +120,8 @@ import SupplierTable from './SupplierTable';
 import ItemTable from './ItemTable';
 import PersonnelTable from './PersonnelTable';
 import PersonnelTypeTable from './PersonnelTypeTable';
+import ExpensesTypeTable from './ExpensesTypeTable';
+import UnitTable from './UnitTable';
 
 export default {
     data(){
@@ -134,6 +144,8 @@ export default {
             personnel_table: false,
             personnel_type_table: false,
             services_type_table: false,
+            expenses_type_table: false,
+            unit_table: false,
             sub_services: []
         }
     },
@@ -149,7 +161,9 @@ export default {
         ItemTable,
         PersonnelTable,
         PersonnelTypeTable,
-        ServicesTypeTable
+        ServicesTypeTable,
+        ExpensesTypeTable,
+        UnitTable
     },
     props: ['showModalDataDelete'],
     watch: {
@@ -165,6 +179,8 @@ export default {
             this.personnel_table = false;
             this.personnel_type_table = false;
             this.services_type_table = false;
+            this.expenses_type_table = false;
+            this.unit_table = false;
             if(data.modal_size == 'sm'){
                 this.smModal = true;
             }else if(data.modal_size == 'md'){
@@ -213,6 +229,12 @@ export default {
             }else if(data.delete_type == 'PERSONNEL TYPE'){
                 this.personnel_type_table = true;
                 this.$store.dispatch('personnel_type/fetchPersonnelType');
+            }else if(data.delete_type == 'EXPENSES TYPE'){
+                this.expenses_type_table = true;
+                this.$store.dispatch('expenses_type/fetchExpensesType');
+            }else if(data.delete_type == 'UNIT'){
+                this.unit_table = true;
+                this.$store.dispatch('unit/fetchUnit');
             }
 
         }

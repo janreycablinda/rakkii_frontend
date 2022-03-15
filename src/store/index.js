@@ -33,6 +33,9 @@ import gatepass from './modules/gatepass';
 import payments from './modules/payment';
 import chart from './modules/chart';
 import todo from './modules/todo';
+import report from './modules/report';
+import billing from './modules/billing';
+import expenses_type from './modules/expenses_type';
 
 Vue.use(Vuex)
 
@@ -97,6 +100,9 @@ export default new Vuex.Store({
     gatepass,
     payments,
     chart,
-    todo
+    todo,
+    report,
+    billing,
+    expenses_type
   }
 });

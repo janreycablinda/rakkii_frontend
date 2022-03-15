@@ -25,7 +25,7 @@ export default {
             var getIndex = new Date(item.month + ' ' + item.day + ', ' + item.year);
             
             var item_date = new Date(item.month + ' ' + item.day + ', ' + item.year).toLocaleDateString();
-            
+            console.log(middle);
             if(item_date > middle){
               last_week.splice(getIndex.getDay(), 1 ,item.data);
             }else{

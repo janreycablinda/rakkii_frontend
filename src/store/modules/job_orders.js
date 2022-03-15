@@ -75,7 +75,7 @@ export default {
         }).then(response => {
             dispatch('notification/addNotification', {
                 type: 'success',
-                message: 'Successfully Added!'
+                message: 'Successfully Updated!'
             }, {root: true});
           commit('UPDATE_JOB_ORDER', response.data);
         }, () => {
@@ -191,6 +191,7 @@ export default {
           betterment: data.betterment,
           discount: data.discount,
           net: data.net,
+          other_expenses: data.other_expenses
         }).then(response => {
             dispatch('notification/addNotification', {
                 type: 'success',

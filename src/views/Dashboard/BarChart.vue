@@ -26,8 +26,7 @@ export default {
         var data_collectables = [0,0,0,0,0,0,0,0,0,0,0,0];
         for (let i = 0; i < 12; i++) {
           if(this.cash_collectables[i]){
-            let sub = parseInt(this.cash_collectables[i].total_payables) - parseInt(this.cash_collectables[i].discount);
-            console.log(sub);
+            let sub = parseInt(this.cash_collectables[i].total_payables);
             data_collectables.splice(this.cash_collectables[i].month-1, 1 ,sub);
           }
         }

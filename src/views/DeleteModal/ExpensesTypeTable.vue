@@ -19,8 +19,8 @@
         <template #action="{item}">
             <td>
                 <div>
-                <CButton @click="getValue(item)" color="info"><CIcon name="cil-pencil"/></CButton> &nbsp;
-                <CButton @click="getValueDel(item)" color="danger"><CIcon name="cil-trash"/></CButton>
+                <!-- <CButton @click="getValue(item)" color="info"><CIcon name="cil-pencil"/></CButton> &nbsp; -->
+                <CButton size="sm" @click="getValueDel(item)" color="danger"><CIcon name="cil-trash"/></CButton>
                 </div>
             </td>
         </template>
@@ -36,7 +36,7 @@ export default {
     fields: {
       type: Array,
       default () {
-        return ['invoice_#', 'amount', 'total_tax', 'date', 'customer', 'due_date', 'status']
+        return ['expenses_name', 'action']
       }
     },
     caption: {
@@ -61,7 +61,9 @@ export default {
       this.$emit('event_child', data, 'edit');
     },
     getValueDel(data){
-      this.$emit('event_child', data, 'delete');
+      if (confirm('Are you sure you want to delete ' + data.expenses_name +'?')) {
+        this.$store.dispatch('expenses_type/deleteExpensesType', data.id);
+      }
     },
   }
 }

@@ -57,7 +57,6 @@
     "vue-moment": "^4.1.0",
     "vue-router": "~3.3.4",
     "vue-select": "^3.12.2",
-    "vue-signature": "^2.5.4",
     "vue-simple-calendar": "^4.4.0",
     "vue-simple-timeline": "^0.1.2",
     "vue2-editor": "^2.10.3",

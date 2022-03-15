@@ -24,7 +24,7 @@
         </CHeaderNavLink> -->
       </CHeaderNavItem>
     </CHeaderNav>
-    <CHeaderNav>
+    <CHeaderNav class="px-2">
       <!-- <CHeaderNavItem>
         <button
           @click="() => $store.commit('toggle', 'darkMode')"
@@ -36,12 +36,12 @@
       </CHeaderNavItem> -->
       <TheHeaderDropdownNotif/>
       <TheHeaderDropdownAccnt/>
-      <!-- <CHeaderNavItem class="px-3">
+      <!-- <CHeaderNavItem >
         <button
           class="c-header-nav-btn"
           @click="$store.commit('toggle', 'asideShow')"
         >
-          <CIcon size="lg" name="cil-applications-settings" class="mr-2"/>
+          <CIcon size="lg" name="cil-settings" class="mr-2"/>
         </button>
       </CHeaderNavItem> -->
     </CHeaderNav>

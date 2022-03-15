@@ -13,6 +13,7 @@
         :dark="dark"
         :table-filter="true"
         pagination
+        :size="size"
         items-per-page-select
       >
         <template #supplier="{item}">
@@ -30,7 +31,7 @@
         </template>
         <template #date="{item}">
           <td>
-              {{$root.momentFormatDateTime(item.created_at)}}
+              {{item.date}}
           </td>
         </template>
         <template #receipt="{item}">
@@ -46,8 +47,8 @@
         <template #action="{item}">
             <td>
                 <div>
-                <!-- <CButton @click="getValue(item)" color="info"><CIcon name="cil-pencil"/></CButton> &nbsp;
-                <CButton @click="getValue(item)" color="warning"><CIcon name="cil-check-alt"/></CButton> &nbsp; -->
+                <CButton size="sm" @click="getValue(item)" color="info"><CIcon name="cil-pencil"/></CButton>&nbsp;
+                <!-- <CButton @click="getValue(item)" color="warning"><CIcon name="cil-check-alt"/></CButton> &nbsp; -->
                 <CButton size="sm" @click="getValueDel(item)" color="danger"><CIcon name="cil-trash"/></CButton>
                 </div>
             </td>
@@ -57,7 +58,6 @@
 </template>
 <script>
 
-import axios from 'axios';
 export default {
   name: 'Table',
   props: {
@@ -77,7 +77,8 @@ export default {
     border: Boolean,
     small: Boolean,
     fixed: Boolean,
-    dark: Boolean
+    dark: Boolean,
+    size: String
   },
   methods: {
     getBadge (status) {
@@ -91,14 +92,14 @@ export default {
       let sum = 0;
       if(data){
         data.forEach(item => {
-          sum += item.price;
+          const times = item.qty * item.price;
+          sum += times;
         })
       }
       return sum;
     },
     getValue(data){
-      console.log(data);
-      this.$emit('event_child', data);
+      this.$emit('edit_purchase', data);
     },
     getValueDel(data){
       console.log(data);

@@ -45,14 +45,14 @@
         <CCol col="12" sm="6" lg="3">
             <CWidgetIcon
             :header="'₱'+ cash_collected"
-            text="Cash Collected"
+            text="Cash Collected (Today)"
             color="gradient-primary"
             :icon-padding="false"
             >
             <img src="/img/icons/cash.svg" name="cil-settings" width="24"/>
             <template #footer>
                 <div class="wedgit-footer">
-                    <CLink to="/sales/payments">View</CLink>
+                    <!-- <CLink to="/sales/payments">View</CLink> -->
                 </div>
             </template>
             </CWidgetIcon>
@@ -60,14 +60,14 @@
         <CCol col="12" sm="6" lg="3">
             <CWidgetIcon
             header="₱0"
-            text="Cash Collectables"
+            text="Cash Collectables (overall)"
             color="gradient-primary"
             :icon-padding="false"
             >
             <img src="/img/icons/expenses.svg" name="cil-settings" width="24"/>
             <template #footer>
                 <div class="wedgit-footer">
-                    <a href="#">View</a>
+                    <!-- <a href="#">View</a> -->
                 </div>
             </template>
             </CWidgetIcon>
@@ -324,6 +324,7 @@ import draggable from 'vuedraggable'
             this.$store.dispatch('job_orders/fetchJobOrder');
             this.$store.dispatch('estimate/fetchEstimate');
             this.$store.dispatch('payments/fetchPayment');
+
             this.$store.dispatch('chart/fetchCashCollected');
             this.$store.dispatch('chart/fetchCashCollectables');
             this.$store.dispatch('payments/fetchWeeklyPayment');

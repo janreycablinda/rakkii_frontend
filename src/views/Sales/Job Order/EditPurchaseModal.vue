@@ -1,8 +1,8 @@
 <template>
     <CModal
-      title="ADD PURCHASE"
+      title="EDIT PURCHASE"
       color="primary"
-      :show.sync="showModalAddPurchase"
+      :show.sync="showModalEditPurchase"
       centered
       :closeOnBackdrop="false"
       size="lg"
@@ -15,6 +15,7 @@
                     placeholder="Select Supplier"
                     class="style-chooser"
                     v-model="form.supplier_id"
+                    :reduce="label => label.value"
                     >
                     <template #list-header>
                         <div style="display:flex;">
@@ -83,7 +84,6 @@
                         description="Qty" 
                         placeholder="Qty"
                         v-model="add_item_form.qty"
-                        type="number"
                     />
                 </CCol>
                 <CCol lg="2">
@@ -93,7 +93,6 @@
                         description="Price" 
                         placeholder="Price"
                         v-model="add_item_form.price"
-                        type="number"
                     />
                 </CCol>
                 <CCol lg="1">
@@ -104,26 +103,51 @@
                 <CCol lg="12">
                     <table class="customize-table">
                         <tr>
-                            <th width="50%">Item</th>
-                            <th>Unit</th>
-                            <th>Qty</th>
+                            <th width="40%">Item</th>
+                            <th width="20%">Unit</th>
+                            <th width="12%">Qty</th>
                             <th>Price</th>
                             <th>Total</th>
                         </tr>
                         <tr v-for="(item, index) in form.items" :key="index">
                             <td>{{item.item}}</td>
-                            <td>{{item.unit}}</td>
-                            <td>{{item.qty}}</td>
-                            <td>₱{{item.price}}</td>
-                            <td style="display:flex; justify-content: space-between;">₱{{item.total}} <CLink @click="delItem(item)"><CIcon style="color:red;" name="cil-trash"/></CLink></td>
+                            <td>
+                                <v-select
+                                    :options="$store.state.unit.unit | unitFilter"
+                                    placeholder="Select Unit"
+                                    class="style-chooser"
+                                    v-model="item.unit_id"
+                                    :reduce="label => label.value"
+                                    >
+                                    <template #list-header>
+                                        <div style="display:flex;">
+                                            <li style="text-align: center; width:50%; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="$emit('add_unit', new Date())"><CIcon name="cil-plus"/> ADD</a></li>
+                                            <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#"  @click="showModalDataDelete({trigger:new Date(), delete_type: 'UNIT', modal_size:'sm'})"><CIcon name="cil-trash"/> DELETE</a></li>
+                                        </div>
+                                    </template>
+                                </v-select>
+                            </td>
+                            <td>
+                                <CInput
+                                    v-model="item.qty"
+                                    type="number"
+                                />
+                            </td>
+                            <td>
+                                <CInput
+                                    v-model="item.price"
+                                    type="number"
+                                />
+                            </td>
+                            <td style="display:flex; justify-content: space-between;">₱{{item.qty * item.price}} <CLink @click="delItem(item)"><CIcon style="color:red;" name="cil-trash"/></CLink></td>
                         </tr>
                     </table>
                 </CCol>
             </CRow>
         </CForm>
         <template #footer>
-            <CButton @click="submit" id="add-purchases-btn" color="primary" class="branding-btn">ADD</CButton>
-            <CButton @click="showModalAddPurchase = false" color="danger">Cancel</CButton>
+            <CButton @click="submit" id="edit-purchases-btn" color="primary" class="branding-btn">UPDATE</CButton>
+            <CButton @click="showModalEditPurchase = false" color="danger">Cancel</CButton>
         </template>
     </CModal>
 </template>
@@ -135,7 +159,7 @@ export default {
         return {
             placement: 'bottom',
             placeholder: 'Upload Receipt Files',
-            showModalAddPurchase: false,
+            showModalEditPurchase: false,
             form: this.getFormData(),
             add_item_form: this.getAddItemFormData()
         }
@@ -172,11 +196,46 @@ export default {
             }
         },
     },
-    props: ['AddPurchaseData'],
+    props: ['EditPurchaseData'],
     watch: {
-        AddPurchaseData(data){
+        EditPurchaseData(data){
+            console.log(data);
+            this.$store.dispatch('unit/fetchUnit');
+            this.$store.dispatch('supplier/fetchSupplier');
+            this.$store.dispatch('item/fetchItem');
             this.form.id = data.data.id;
-            this.showModalAddPurchase = true;
+            this.form.supplier_id = data.data.supplier_id;
+            this.form.date = data.data.date;
+            this.showModalEditPurchase = true;
+
+            if(data.data.purchase_items){
+                let purchase = [];
+                data.data.purchase_items.forEach(item => {
+                    console.log(item);
+                    const calc = item.qty * item.price;
+                    purchase.push({
+                        item: item.item.product_name + ' ' + item.item.brand,
+                        item_id: item.item_id,
+                        unit: item.unit.name,
+                        unit_id: item.unit_id,
+                        qty: item.qty,
+                        price: item.price,
+                        total: calc
+                    });
+                });
+            this.form.items = purchase;
+            }
+            // const calc = this.add_item_form.qty * this.add_item_form.price;
+            // this.form.items.push({
+            //     item: this.add_item_form.item_id.label,
+            //     item_id: this.add_item_form.item_id.value,
+            //     unit: this.add_item_form.unit_id.label,
+            //     unit_id: this.add_item_form.unit_id.value,
+            //     qty: this.add_item_form.qty,
+            //     price: this.add_item_form.price,
+            //     total: calc
+            // });
+            // this.add_item_form = this.getAddItemFormData();
         },
         supplier_id(data){
             if(data){
@@ -201,14 +260,17 @@ export default {
 
             let formData = new FormData();
             formData.append('id', this.form.id);
-            formData.append('supplier_id', this.form.supplier_id.value);
+            formData.append('supplier_id', this.form.supplier_id);
             formData.append('date', this.form.date);
             var items = JSON.stringify(this.form.items);
             formData.append('items', items);
             
-            this.form.files.forEach(item => {
-                formData.append('files[]', item);
-            })
+            if(this.form.files){
+                this.form.files.forEach(item => {
+                    formData.append('files[]', item);
+                })
+            }
+            
 
             const config = {
                 headers: { 'content-type': 'multipart/form-data' }
@@ -218,13 +280,13 @@ export default {
                 config: config,
             }
 
-            this.$root.btn_load(true, 'add-purchases-btn', 'ADD');
-            this.$store.dispatch('purchase/addPurchases', params).then(response => {
-                this.$root.btn_load(false, 'add-purchases-btn', 'ADD');
-                this.$emit('purchase_added', response);
+            this.$root.btn_load(true, 'edit-purchases-btn', 'UPDATE');
+            this.$store.dispatch('purchase/editPurchases', params).then(response => {
+                this.$root.btn_load(false, 'edit-purchases-btn', 'UPDATE');
+                this.$emit('purchase_updated', response);
                 this.form = this.getFormData();
                 this.add_item_form = this.getAddItemFormData();
-                this.showModalAddPurchase = false;
+                this.showModalEditPurchase = false;
             });
             // this.$root.btn_load(true, 'add-services-type-btn-modal', 'ADD');
             // this.$store.dispatch('services_type/addServicesType', this.form).then(() => {
@@ -277,12 +339,6 @@ export default {
                 price: 0
             }
         },
-    },
-    created(){
-        this.$store.dispatch('unit/fetchUnit');
-        this.$store.dispatch('supplier/fetchSupplier');
-        this.$store.dispatch('item/fetchItem');
-        
     }
 }
 </script>

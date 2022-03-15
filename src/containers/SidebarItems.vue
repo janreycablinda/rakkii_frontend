@@ -53,11 +53,11 @@ export default {
                 to: '/sales/monitoring',
                 gate: 'monitoring_access',
               },
-              // {
-              //   name: 'Payments',
-              //   to: '/sales/billing-statement',
-              //   gate: 'payments_access',
-              // },
+              {
+                name: 'Billing Statement',
+                to: '/sales/billing-statement',
+                gate: 'payments_access',
+              },
               {
                 name: 'Job Order',
                 to: '/sales/job-order',
@@ -68,11 +68,11 @@ export default {
                 to: '/sales/estimates',
                 gate: 'estimate_access',
               },
-              {
-                name: 'Payments',
-                to: '/sales/payments',
-                gate: 'payment_access',
-              },
+              // {
+              //   name: 'Payments',
+              //   to: '/sales/payments',
+              //   gate: 'payment_access',
+              // },
             ]
           },
           // {
@@ -95,28 +95,12 @@ export default {
           //   icon: 'cil-wallet',
           // },
           {
-            _name: 'CSidebarNavDropdown',
+            _name: 'CSidebarNavItem',
+            to: '/report/sales',
             name: 'Reports',
-            route: '/dropdown',
             icon: 'cil-chart-line',
             gate: 'report_access',
-            items: [
-              {
-                name: 'Sales Report',
-                to: '/report/sales',
-                gate: 'sales_report_access',
-              },
-              // {
-              //   name: 'Expenses',
-              //   to: '/report/expenses',
-              // },
-              // {
-              //   name: 'Expenses vs Income',
-              //   to: '/report/expensesvsincome',
-              // },
-            ]
           },
-
         ]
       }]
     }
