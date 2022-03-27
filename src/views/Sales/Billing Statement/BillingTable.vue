@@ -29,18 +29,18 @@
         
         <template #billed_to="{item}">
             <td>
-                <span v-if="item.payment_for == 'customer'">BIL-000{{item.customer.company_name}}</span>
+                <span v-if="item.payment_for == 'customer'">{{item.customer.company_name}}</span>
                 <span v-else><CLink :to="'/insurance/insurance-profile/' + item.insurance_id + '/profile'">{{item.insurance.insurance_name}}</CLink></span>
             </td>
         </template>
         <template #total_amount_due="{item}">
             <td>
-                <span>₱{{item.amount}}</span>
+                <span>₱{{item.amount | numFormat('1,000')}}</span>
             </td>
         </template>
         <template #outstanding_balance="{item}">
             <td>
-                <span>₱{{calculateAmount(item)}}</span>
+                <span>₱{{calculateAmount(item) | numFormat('1,000')}}</span>
             </td>
         </template>
         <template #status="{item}">

@@ -44,7 +44,7 @@
         </CCol> -->
         <CCol col="12" sm="6" lg="3">
             <CWidgetIcon
-            :header="'₱'+ cash_collected"
+            :header="'₱' + cash_collected | numFormat('1,000')"
             text="Cash Collected (Today)"
             color="gradient-primary"
             :icon-padding="false"
@@ -59,7 +59,7 @@
         </CCol>
         <CCol col="12" sm="6" lg="3">
             <CWidgetIcon
-            header="₱0"
+            header="0"
             text="Cash Collectables (overall)"
             color="gradient-primary"
             :icon-padding="false"
@@ -266,8 +266,8 @@ import draggable from 'vuedraggable'
             },
             cash_collected(){
                 let sum = 0;
-                this.$store.state.payments.payment.forEach(item => {
-                    sum += item.amount;
+                this.$store.state.chart.cash_collected.forEach(item => {
+                    sum += parseInt(item.amount);
                 });
                 return sum;
             },

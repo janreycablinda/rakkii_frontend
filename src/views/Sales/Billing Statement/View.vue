@@ -87,18 +87,18 @@
                                                     <span v-if="details.type == 'sub_services'">{{details.sub_services.services_name}}</span>
                                                     <span v-if="details.type == 'custom'">{{details.description}}</span>
                                                 </td>
-                                                <td>₱{{details.unit_cost}}</td>
+                                                <td>₱{{details.unit_cost | numFormat('1,000')}}</td>
                                                 <td>{{details.qty}}</td>
-                                                <td>₱{{details.labor}}</td>
-                                                <td>{{details.unit_cost * details.qty}}</td>
+                                                <td>₱{{details.labor | numFormat('1,000')}}</td>
+                                                <td>{{details.unit_cost * details.qty | numFormat('1,000')}}</td>
                                             </tr>
                                             <tr>
                                                 <td colspan="3" align="right"><b class="mr-1">VAT</b></td>
-                                                <td colspan="3"><b>₱{{total_vat}}</b></td>
+                                                <td colspan="3"><b>₱{{total_vat | numFormat('1,000')}}</b></td>
                                             </tr>
                                             <tr>
                                                 <td colspan="3" align="right"><b class="mr-1">TOTAL AMOUNT DUE</b></td>
-                                                <td colspan="3"><b>₱{{total_amount_due}}</b></td>
+                                                <td colspan="3"><b>₱{{total_amount_due | numFormat('1,000')}}</b></td>
                                             </tr>
                                         </table>
                                     </CCol>

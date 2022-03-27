@@ -62,6 +62,11 @@ Vue.use(require('vue-moment'), {
     moment
 });
 
+import numeral from 'numeral';
+import numFormat from 'vue-filter-number-format';
+
+Vue.filter('numFormat', numFormat(numeral));
+
 require("@/store/subscriber");
 
 Vue.use(CoreuiVuePro)
