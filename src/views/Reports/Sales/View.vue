@@ -9,12 +9,9 @@
                         <CRow>
                             <CCol lg="4">
                                 <CListGroup accent>
-                                    <!-- <CListGroupItem href="#" color="dark" accent="dark">Invoices Report</CListGroupItem>
-                                    <CListGroupItem href="#" color="dark" accent="dark">Items Report</CListGroupItem> -->
                                     <CListGroupItem href="/report/collected" color="primary" accent="dark">Projects Report</CListGroupItem>
                                     <CListGroupItem href="/report/collected" color="dark" accent="dark">Cash Collected Report</CListGroupItem>
                                     <CListGroupItem to="/report/collectables" color="dark" accent="dark">Cash Collectables Report</CListGroupItem>
-                                    <!-- <CListGroupItem href="#" color="dark" accent="dark">Estimates Report</CListGroupItem> -->
                                 </CListGroup>
                             </CCol>
                             <CCol lg="4">
@@ -52,12 +49,11 @@
             </CCol>
         </CRow>
     </CMedia>
-    <CElementCover 
-        
+    <!-- <CElementCover 
         :opacity="0.8"
     >
         <h1 class="d-inline">Updating... </h1><CSpinner size="5xl" color="success"/>
-    </CElementCover>
+    </CElementCover> -->
     </div>
 </template>
 <script>

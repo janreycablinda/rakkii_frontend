@@ -18,7 +18,11 @@ export default {
     },
     SET_JOB_ORDER_STATUS(state, data){
       state.job_orders_status = data;
-    }
+    },
+    DELETE_JOB_ORDER(state, id) {
+      let items = state.job_orders.filter(item => item.id != id);
+      state.job_orders = items;
+    },
   },
   actions: {
     async fetchJobOrder({commit}) {
@@ -260,6 +264,22 @@ export default {
           reject(error);
         });
       });
+    },
+
+    async deleteJobOrder({commit, dispatch}, id) {
+        const response = await axios.delete(`resources/delete_job_order/${id}`);
+        if(response.data == 200){
+            dispatch('notification/addNotification', {
+                type: 'success',
+                message: 'Successfully Deleted!'
+            }, {root: true});
+            commit('DELETE_JOB_ORDER', id);
+        }else{
+            dispatch('notification/addNotification', {
+                type: 'danger',
+                message: 'Ops! Something went wrong!'
+            }, {root: true});
+        }
     },
 
     async deletePayment({commit, dispatch}, data) {

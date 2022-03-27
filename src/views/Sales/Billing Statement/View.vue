@@ -216,7 +216,11 @@ export default {
             this.col_size = 6;
         },
         deleteBilling(data){
-
+            if (confirm('Are you sure you want to delete Billing-000' + data.billing_statement_no +'?')) {
+                this.$store.dispatch('billing/deleteBilling', data.id);
+                this.info = '';
+                this.col_size = 12;
+            }
         },
         showMail(){
 

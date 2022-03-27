@@ -24,7 +24,7 @@
                         </CButton>&nbsp;
                         <CBadge :color="getBadge(info.status)" class="my-0 p-2 capetalize">{{info.status}}</CBadge>
                         <div class="card-header-actions">
-                            <CButton @click="deleteEstimate(info)" size="sm" color="danger" style="position:absolute; top:10px; right:212px;">
+                            <CButton @click="deleteJobOrder(info)" size="sm" color="danger" style="position:absolute; top:10px; right:212px;">
                                 <CIcon name="cil-trash" />
                             </CButton>
                             <CButton :to="'/sales/job-order/edit-job-order/' + info.id" size="sm" color="secondary" style="position:absolute; top:10px; right:172px;">
@@ -771,9 +771,9 @@ export default {
                 this.colSize = 12;
             });
         },
-        deleteEstimate(data){
-            if (confirm('Are you sure you want to delete EST-000' + data.estimate_no +'?')) {
-                this.$store.dispatch('estimate/deleteEstimate', data.id);
+        deleteJobOrder(data){
+            if (confirm('Are you sure you want to delete JO-000' + data.job_order_no +'?')) {
+                this.$store.dispatch('job_orders/deleteJobOrder', data.id);
                 this.info = '';
                 this.colSize = 12;
             }

@@ -50,7 +50,6 @@ export default {
                 child.push(item2);
               }
             })
-            
             parent.push({
               gate: item.gate,
               icon: item.icon,

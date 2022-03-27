@@ -1,6 +1,6 @@
 <template>
     <CModal
-      title="CAR IN"
+      title="START PROJECT"
       color="primary"
       :show.sync="showModalCarIn"
       centered
