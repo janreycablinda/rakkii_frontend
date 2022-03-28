@@ -96,7 +96,7 @@ export default {
           // },
           {
             _name: 'CSidebarNavItem',
-            to: '/report/sales',
+            to: '/reports',
             name: 'Reports',
             icon: 'cil-chart-line',
             gate: 'report_access',

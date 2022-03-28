@@ -35,10 +35,24 @@ export default {
     },
   },
   actions: {
-    async generateCashCollectedReport({commit}, data) {
-        const response = await axios.get(`resources/cash_collected_report/${data}`);
-        console.log(response.data);
-        // commit('SET_ROLES', response.data);
+    async generateReport({commit}, data) {
+      return new Promise((resolve, reject) => {
+        axios.post("resources/generate_report", {
+          report: data.report,
+          status: data.status,
+          period: data.period,
+        }).then(response => {
+            
+            resolve(response.data);
+          }, error => {
+            dispatch('notification/addNotification', {
+                type: 'danger',
+                message: 'Ops! Something went wrong!'
+            }, {root: true});
+          
+            reject(error);
+          });
+      })
     },
 
     async fetchOptionRoles({commit}) {

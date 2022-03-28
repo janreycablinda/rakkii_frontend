@@ -44,7 +44,7 @@ const Profile = () => import('@/views/Profile/View')
 // const Stockin = () => import('@/views/Inventory/StockIn/View')
 // const Stockout = () => import('@/views/Inventory/StockOut/View')
 // const Inventory = () => import('@/views/Inventory/Inventory/View')
-const SalesReport = () => import('@/views/Reports/Sales/View')
+const Report = () => import('@/views/Reports/View')
 const Contracts = () => import('@/views/Contracts/View')
 const AddContract = () => import('@/views/Contracts/AddContract')
 const Tasks = () => import('@/views/Tasks/View')
@@ -454,41 +454,19 @@ const router = new Router({
       ]
     },
     {
-      path: '/report',
+      path: '/reports',
       component: TheContainer,
       children: [
         {
-            path: '/report/sales',
-            name: 'Sales Report',
-            component: SalesReport,
+            path: '',
+            name: 'Reports',
+            component: Report,
             meta: {
               breadcrumb: [
                 { text: 'Sales Report' }
               ],
               requiresAuth: true
             }
-        },
-        {
-          path: '/report/expenses',
-          name: 'Expenses Report',
-          component: ExpensesReport,
-          meta: {
-            breadcrumb: [
-              { text: 'Expenses Report' }
-            ],
-            requiresAuth: true
-          }
-        },
-        {
-          path: '/report/expensesvsincome',
-          name: 'Expenses vs Income',
-          component: ExpensesVsIncome,
-          meta: {
-            breadcrumb: [
-              { text: 'Expenses vs Income' }
-            ],
-            requiresAuth: true
-          }
         },
       ]
     },
