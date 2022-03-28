@@ -41,15 +41,15 @@ export default {
           report: data.report,
           status: data.status,
           period: data.period,
+          from: data.dates.from,
+          to: data.dates.to,
         }).then(response => {
-            
             resolve(response.data);
           }, error => {
             dispatch('notification/addNotification', {
                 type: 'danger',
                 message: 'Ops! Something went wrong!'
             }, {root: true});
-          
             reject(error);
           });
       })
