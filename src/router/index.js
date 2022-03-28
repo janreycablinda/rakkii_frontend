@@ -48,8 +48,8 @@ const Report = () => import('@/views/Reports/View')
 const Contracts = () => import('@/views/Contracts/View')
 const AddContract = () => import('@/views/Contracts/AddContract')
 const Tasks = () => import('@/views/Tasks/View')
-const ExpensesReport = () => import('@/views/Reports/Expenses/View')
-const ExpensesVsIncome = () => import('@/views/Reports/Expenses vs Income/View')
+// const ExpensesReport = () => import('@/views/Reports/Expenses/View')
+// const ExpensesVsIncome = () => import('@/views/Reports/Expenses vs Income/View')
 const Insurance = () => import('@/views/Insurance/View')
 const Supplier = () => import('@/views/Supplier/View')
 
@@ -463,7 +463,7 @@ const router = new Router({
             component: Report,
             meta: {
               breadcrumb: [
-                { text: 'Sales Report' }
+                { text: 'Reports' }
               ],
               requiresAuth: true
             }
