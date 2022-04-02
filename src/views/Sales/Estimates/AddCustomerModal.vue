@@ -17,26 +17,9 @@
                         description="Company Name / Name *" 
                         placeholder="Company Name / Name *"
                         v-model="form.company_name"
-                    />
-                </CCol>
-                <CCol lg="6">
-                    <CTextarea
-                        onblur="this.placeholder = 'Address *'" 
-                        onfocus="this.placeholder = ''" 
-                        description="Address *" 
-                        placeholder="Address *"
-                        v-model="form.address"
-                    />
-                </CCol>
-            </CRow>
-            <CRow>
-                <CCol lg="6">
-                    <CInput
-                        onblur="this.placeholder = 'Phone *'" 
-                        onfocus="this.placeholder = ''" 
-                        description="Phone *" 
-                        placeholder="Phone *"
-                        v-model="form.phone"
+                        invalidFeedback="Company name is required!"
+                        :value.sync="$v.form.company_name.$model"
+                        :isValid="checkIfValid('company_name')"
                     />
                 </CCol>
                 <CCol lg="6">
@@ -46,6 +29,29 @@
                         description="Email" 
                         placeholder="Email"
                         v-model="form.email"
+                        invalidFeedback="This field must be an email!"
+                        :value.sync="$v.form.email.$model"
+                        :isValid="checkIfValid('email')"
+                    />
+                </CCol>
+            </CRow>
+            <CRow>
+                <CCol lg="6">
+                    <CInput
+                        onblur="this.placeholder = 'Phone'" 
+                        onfocus="this.placeholder = ''" 
+                        description="Phone" 
+                        placeholder="Phone"
+                        v-model="form.phone"
+                    />
+                </CCol>
+                <CCol lg="6">
+                     <CTextarea
+                        onblur="this.placeholder = 'Address'" 
+                        onfocus="this.placeholder = ''" 
+                        description="Address" 
+                        placeholder="Address"
+                        v-model="form.address"
                     />
                 </CCol>
             </CRow>
@@ -57,6 +63,8 @@
     </CModal>
 </template>
 <script>
+// import { validationMixin } from 'vuelidate'
+import { required, email } from 'vuelidate/lib/validators'
 import vSelect from 'vue-select'
 import { createPopper } from '@popperjs/core'
 
@@ -68,6 +76,12 @@ export default {
             form: this.getFormData(),
             form_billing: this.getFormDataBilling(),
             form_shipping: this.getFormDataShipping(),
+        }
+    },
+    validations: {
+        form: {
+            company_name: { required },
+            email: { email }
         }
     },
     components: {
@@ -93,20 +107,26 @@ export default {
         }
     },
     methods: {
-        submit(){
-            const params = {
-                form: this.form
+        checkIfValid(fieldName) {
+            let field = this.$v.form[fieldName];
+            if (!field.$dirty) return null
+            return !(field.$invalid || field.$model === '')
+        },
+        submit() {
+            this.$v.form.$touch()
+            if (!this.$v.form.$invalid) {
+                const params = {
+                    form: this.form
+                }
+                this.$root.btn_load(true, 'add-customer-btn-modal', 'ADD');
+                this.$store.dispatch('customer/addCustomer', params).then(() => {
+                    this.$root.btn_load(false, 'add-customer-btn-modal', 'ADD');
+                    this.showModalAddCustomer = false;
+                    this.form = this.getFormData();
+                    this.form_billing = this.getFormDataBilling();
+                    this.form_shipping = this.getFormDataShipping();
+                });
             }
-            this.$root.btn_load(true, 'add-customer-btn-modal', 'ADD');
-            this.$store.dispatch('customer/addCustomer', params).then(() => {
-                this.$root.btn_load(false, 'add-customer-btn-modal', 'ADD');
-                this.showModalAddCustomer = false;
-                this.form = this.getFormData();
-                this.form_billing = this.getFormDataBilling();
-                this.form_shipping = this.getFormDataShipping();
-            });
-            
-
         },
         withPopper(dropdownList, component, { width }) {
 

@@ -15,6 +15,9 @@
                             description="Services Type Name" 
                             placeholder="Services Type Name"
                             v-model="form.name"
+                            invalidFeedback="Services type name is required!"
+                            :value.sync="$v.form.name.$model"
+                            :isValid="checkIfValid('name')"
                         />
                     </CCol>
                 </CRow>
@@ -26,6 +29,7 @@
     </CModal>
 </template>
 <script>
+import { required } from 'vuelidate/lib/validators'
 
 export default {
     data(){
@@ -33,6 +37,11 @@ export default {
             placement: 'bottom',
             showModalAddServicesType: false,
             form: this.getFormData(),
+        }
+    },
+    validations: {
+        form: {
+            name: { required }
         }
     },
     filters: {
@@ -53,13 +62,22 @@ export default {
         }
     },
     methods: {
-        submit(){
-            this.$root.btn_load(true, 'add-services-type-btn-modal', 'ADD');
-            this.$store.dispatch('services_type/addServicesType', this.form).then(() => {
-                this.$root.btn_load(false, 'add-services-type-btn-modal', 'ADD');
-                this.showModalAddServicesType = false;
-                this.form = this.getFormData();
-            });
+        checkIfValid(fieldName) {
+            let field = this.$v.form[fieldName];
+            if (!field.$dirty) return null
+            return !(field.$invalid || field.$model === '')
+        },
+        submit() {
+            this.$v.form.$touch()
+            if (!this.$v.form.$invalid) {
+                this.$root.btn_load(true, 'add-services-type-btn-modal', 'ADD');
+                this.$store.dispatch('services_type/addServicesType', this.form)
+                .then(() => {
+                    this.$root.btn_load(false, 'add-services-type-btn-modal', 'ADD');
+                    this.showModalAddServicesType = false;
+                    this.form = this.getFormData();
+                });
+            }
         },
         getFormData(){
             return {

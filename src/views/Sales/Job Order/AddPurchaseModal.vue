@@ -10,19 +10,33 @@
         <CForm >
             <CRow class="mt-3">
                 <CCol lg="5">
-                    <v-select
-                    :options="$store.state.supplier.supplier  | supplierFilter"
-                    placeholder="Select Supplier"
-                    class="style-chooser"
-                    v-model="form.supplier_id"
-                    >
-                    <template #list-header>
-                        <div style="display:flex;">
-                            <li style="text-align: center; width:50%; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="$emit('add_supplier', new Date())"><CIcon name="cil-plus"/> ADD</a></li>
-                            <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#"  @click="showModalDataDelete({trigger:new Date(), delete_type: 'SUPPLIER', modal_size:'lg'})"><CIcon name="cil-trash"/> DELETE</a></li>
+                    <div class="form-group">
+                        <label>Item *</label>
+                        <v-select
+                            :options="$store.state.supplier.supplier  | supplierFilter"
+                            placeholder="Select Supplier"
+                            class="style-chooser"
+                            v-model="form.supplier_id"
+                            :isValid="checkIfValid('supplier_id', 'one')"
+                            :value.sync="$v.form.supplier_id.$model"
+                            :class="{ 
+                                'border-red': $v.form.supplier_id.$anyError, 
+                                'border-green': $v.form.supplier_id.required
+                                }"
+                        >
+                        <template #list-header>
+                            <div style="display:flex;">
+                                <li style="text-align: center; width:50%; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="$emit('add_supplier', new Date())"><CIcon name="cil-plus"/> ADD</a></li>
+                                <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#"  @click="showModalDataDelete({trigger:new Date(), delete_type: 'SUPPLIER', modal_size:'lg'})"><CIcon name="cil-trash"/> DELETE</a></li>
+                            </div>
+                        </template>
+                        </v-select>
+                        <div v-if="$v.form.supplier_id.$anyError == true" 
+                            class="invalid-feedback" 
+                            style="display:block;">
+                            Supplier is required!
                         </div>
-                    </template>
-                    </v-select>
+                    </div>
                 </CCol>
                 <CCol lg="3">
                     <CInput
@@ -32,6 +46,9 @@
                         placeholder="Date"
                         type="date"
                         v-model="form.date"
+                        invalidFeedback="Date name is required!"
+                        :value.sync="$v.form.date.$model"
+                        :isValid="checkIfValid('date', 'one')"
                     />
                 </CCol>
                 <CCol lg="4">
@@ -47,34 +64,72 @@
             </CRow>
             <CRow class="mt-3">
                 <CCol lg="5">
-                    <v-select
-                    :options="$store.state.item.item | itemFilter"
-                    placeholder="Select Item"
-                    class="style-chooser"
-                    v-model="add_item_form.item_id"
-                    >
-                    <template #list-header>
-                        <div style="display:flex;">
-                            <li style="text-align: center; width:50%; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="$emit('add_item', new Date())"><CIcon name="cil-plus"/> ADD</a></li>
-                            <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#"  @click="showModalDataDelete({trigger:new Date(), delete_type: 'ITEM', modal_size:'md'})"><CIcon name="cil-trash"/> DELETE</a></li>
+                    <div class="form-group">
+                        <label>Item *</label>
+                        <v-select
+                            :options="$store.state.item.item | itemFilter"
+                            placeholder="Select Item"
+                            class="style-chooser"
+                            v-model="add_item_form.item_id"
+                            :isValid="checkIfValid('item_id', 'two')"
+                            :value.sync="$v.add_item_form.item_id.$model"
+                            :class="{ 
+                                'border-red': $v.add_item_form.item_id.$anyError, 
+                                'border-green': $v.add_item_form.item_id.required
+                                }"
+                        >
+                        <template #list-header>
+                            <div style="display:flex;">
+                                <li style="text-align: center; width:50%; background:#3C4B64;">
+                                    <a style="color:#fff; text-decoration:none;" href="#" @click="$emit('add_item', new Date())"><CIcon name="cil-plus"/> ADD</a></li>
+                                <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#"  @click="showModalDataDelete({trigger:new Date(), delete_type: 'ITEM', modal_size:'md'})"><CIcon name="cil-trash"/> DELETE</a></li>
+                            </div>
+                        </template>
+                        </v-select>
+                        <div v-if="$v.add_item_form.item_id.$anyError == true" 
+                            class="invalid-feedback" 
+                            style="display:block;">
+                            Item is required!
                         </div>
-                    </template>
-                    </v-select>
+                    </div>
                 </CCol>
                 <CCol lg="2">
-                    <v-select
-                    :options="$store.state.unit.unit | unitFilter"
-                    placeholder="Select Unit"
-                    class="style-chooser"
-                    v-model="add_item_form.unit_id"
-                    >
-                    <template #list-header>
-                        <div style="display:flex;">
-                            <li style="text-align: center; width:50%; background:#3C4B64;"><a style="color:#fff; text-decoration:none;" href="#" @click="$emit('add_unit', new Date())"><CIcon name="cil-plus"/> ADD</a></li>
-                            <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#"  @click="showModalDataDelete({trigger:new Date(), delete_type: 'UNIT', modal_size:'sm'})"><CIcon name="cil-trash"/> DELETE</a></li>
+                    <div class="form-group">
+                        <label>Unit *</label>
+                        <v-select
+                            :options="$store.state.unit.unit | unitFilter"
+                            placeholder="Select Unit"
+                            class="style-chooser"
+                            v-model="add_item_form.unit_id"
+                            :isValid="checkIfValid('unit_id', 'two')"
+                            :value.sync="$v.add_item_form.unit_id.$model"
+                            :class="{ 
+                                'border-red': $v.add_item_form.unit_id.$anyError, 
+                                'border-green': $v.add_item_form.unit_id.required
+                                }"
+                        >
+                        <template #list-header>
+                            <div style="display:flex;">
+                                <li style="text-align: center; width:50%; background:#3C4B64;">
+                                    <a 
+                                        style="color:#fff; text-decoration:none;" 
+                                        href="#" 
+                                        @click="$emit('add_unit', new Date())"
+                                    >
+                                        <CIcon name="cil-plus"/> 
+                                        ADD
+                                    </a>
+                                </li>
+                                <li style="text-align: center; width:50%; background:#E55353;"><a style="color:#fff; text-decoration:none;" href="#"  @click="showModalDataDelete({trigger:new Date(), delete_type: 'UNIT', modal_size:'sm'})"><CIcon name="cil-trash"/> DELETE</a></li>
+                            </div>
+                        </template>
+                        </v-select>
+                        <div v-if="$v.add_item_form.unit_id.$anyError == true" 
+                            class="invalid-feedback" 
+                            style="display:block;">
+                            Unit is required!
                         </div>
-                    </template>
-                    </v-select>
+                    </div>
                 </CCol>
                 <CCol lg="2">
                     <CInput
@@ -97,7 +152,9 @@
                     />
                 </CCol>
                 <CCol lg="1">
-                    <CButton @click="addItem" block color="primary"><CIcon size="sm" name="cil-plus" /></CButton>
+                    <CButton @click="addItem" block color="primary">
+                        <CIcon size="sm" name="cil-plus" />
+                    </CButton>
                 </CCol>
             </CRow>
             <CRow>
@@ -129,6 +186,7 @@
 </template>
 <script>
 import vSelect from 'vue-select'
+import { required } from 'vuelidate/lib/validators'
 
 export default {
     data(){
@@ -138,6 +196,16 @@ export default {
             showModalAddPurchase: false,
             form: this.getFormData(),
             add_item_form: this.getAddItemFormData()
+        }
+    },
+    validations: {
+        add_item_form: {
+            item_id: { required },
+            unit_id: { required }
+        },
+        form: {
+            supplier_id: { required },
+            date: { required }
         }
     },
     components: {
@@ -192,40 +260,55 @@ export default {
         }
     },
     methods: {
-        submit(){
+        checkIfValid(fieldName, type) {
+            if (type === 'one') {
+                let field = this.$v.form[fieldName];
+                if (!field.$dirty) return null
+                return !(field.$invalid || field.$model === '')
+            } else {
+                let field = this.$v.add_item_form[fieldName];
+                if (!field.$dirty) return null
+                return !(field.$invalid || field.$model === '')
+            }
+        },
+        submit() {
             // const params = {
             //     email: this.form_modal.email,
             //     message: this.form_modal.message,
             //     id: this.form.id
             // }
+            this.$v.form.$touch()
+            if (!this.$v.form.$invalid) {
+                let formData = new FormData();
+                formData.append('id', this.form.id);
+                formData.append('supplier_id', this.form.supplier_id.value);
+                formData.append('date', this.form.date);
+                var items = JSON.stringify(this.form.items);
+                formData.append('items', items);
+                
+                if (this.form.files) {
+                    this.form.files.forEach(item => {
+                        formData.append('files[]', item);
+                    })
+                }
 
-            let formData = new FormData();
-            formData.append('id', this.form.id);
-            formData.append('supplier_id', this.form.supplier_id.value);
-            formData.append('date', this.form.date);
-            var items = JSON.stringify(this.form.items);
-            formData.append('items', items);
-            
-            this.form.files.forEach(item => {
-                formData.append('files[]', item);
-            })
+                const config = {
+                    headers: { 'content-type': 'multipart/form-data' }
+                }
+                const params = {
+                    formData: formData,
+                    config: config,
+                }
 
-            const config = {
-                headers: { 'content-type': 'multipart/form-data' }
+                this.$root.btn_load(true, 'add-purchases-btn', 'ADD');
+                this.$store.dispatch('purchase/addPurchases', params).then(response => {
+                    this.$root.btn_load(false, 'add-purchases-btn', 'ADD');
+                    this.$emit('purchase_added', response);
+                    this.form = this.getFormData();
+                    this.add_item_form = this.getAddItemFormData();
+                    this.showModalAddPurchase = false;
+                });
             }
-            const params = {
-                formData: formData,
-                config: config,
-            }
-
-            this.$root.btn_load(true, 'add-purchases-btn', 'ADD');
-            this.$store.dispatch('purchase/addPurchases', params).then(response => {
-                this.$root.btn_load(false, 'add-purchases-btn', 'ADD');
-                this.$emit('purchase_added', response);
-                this.form = this.getFormData();
-                this.add_item_form = this.getAddItemFormData();
-                this.showModalAddPurchase = false;
-            });
             // this.$root.btn_load(true, 'add-services-type-btn-modal', 'ADD');
             // this.$store.dispatch('services_type/addServicesType', this.form).then(() => {
             //     this.$root.btn_load(false, 'add-services-type-btn-modal', 'ADD');
@@ -244,18 +327,23 @@ export default {
                 this.placeholder = 'Upload Receipt Files';
             }
         },
-        addItem(){
-            const calc = this.add_item_form.qty * this.add_item_form.price;
-            this.form.items.push({
-                item: this.add_item_form.item_id.label,
-                item_id: this.add_item_form.item_id.value,
-                unit: this.add_item_form.unit_id.label,
-                unit_id: this.add_item_form.unit_id.value,
-                qty: this.add_item_form.qty,
-                price: this.add_item_form.price,
-                total: calc
-            });
-            this.add_item_form = this.getAddItemFormData();
+        addItem() {
+            this.$v.add_item_form.$touch()
+            if (!this.$v.add_item_form.$invalid) {
+
+                const calc = this.add_item_form.qty * this.add_item_form.price;
+                this.form.items.push({
+                    item: this.add_item_form.item_id.label,
+                    item_id: this.add_item_form.item_id.value,
+                    unit: this.add_item_form.unit_id.label,
+                    unit_id: this.add_item_form.unit_id.value,
+                    qty: this.add_item_form.qty,
+                    price: this.add_item_form.price,
+                    total: calc
+                });
+                this.add_item_form = this.getAddItemFormData();
+                this.$v.add_item_form.$reset()
+            }
         },
         delItem(data){
             this.form.items.splice(this.form.items.indexOf(data), 1);

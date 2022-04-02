@@ -11,11 +11,14 @@
                 <CRow class="mt-3">
                     <CCol lg="6">
                         <CInput
-                            onblur="this.placeholder = 'Supplier'" 
+                            onblur="this.placeholder = 'Supplier *'" 
                             onfocus="this.placeholder = ''"
-                            description="Supplier"
-                            placeholder="Supplier"
+                            description="Supplier *"
+                            placeholder="Supplier *"
                             v-model="form.supplier_name"
+                            invalidFeedback="Supplier is required!"
+                            :value.sync="$v.form.supplier_name.$model"
+                            :isValid="checkIfValid('supplier_name')"
                         />
                     </CCol>
                     <CCol lg="6">
@@ -29,20 +32,26 @@
                     </CCol>
                     <CCol lg="6">
                         <CInput
-                            onblur="this.placeholder = 'Contact Person'" 
+                            onblur="this.placeholder = 'Contact Person *'" 
                             onfocus="this.placeholder = ''"
-                            description="Contact Person"
-                            placeholder="Contact Person"
+                            description="Contact Person *"
+                            placeholder="Contact Person *"
                             v-model="form.contact_person"
+                            invalidFeedback="Contact person is required!"
+                            :value.sync="$v.form.contact_person.$model"
+                            :isValid="checkIfValid('contact_person')"
                         />
                     </CCol>
                     <CCol lg="6">
                         <CInput
-                            onblur="this.placeholder = 'Contact No.'" 
+                            onblur="this.placeholder = 'Contact No. *'" 
                             onfocus="this.placeholder = ''"
-                            description="Contact No."
-                            placeholder="Contact No."
+                            description="Contact No. *"
+                            placeholder="Contact No. *"
                             v-model="form.phone"
+                            invalidFeedback="Contact no. is required!"
+                            :value.sync="$v.form.phone.$model"
+                            :isValid="checkIfValid('phone')"
                         />
                     </CCol>
                     <CCol lg="6">
@@ -61,6 +70,9 @@
                             description="Tin No.:"
                             placeholder="Tin No.:"
                             v-model="form.tin"
+                            invalidFeedback="TIN is required!"
+                            :value.sync="$v.form.tin.$model"
+                            :isValid="checkIfValid('tin')"
                         />
                     </CCol>
                     <CCol lg="6">
@@ -74,26 +86,32 @@
                     </CCol>
                     <CCol lg="6">
                         <CSelect
-                            :value.sync="form.payment_mode"
                             placeholder="Nothing Selected"
+                            :value.sync="form.payment_mode"
                             :options="['Cash', 'Check']"
-                            onblur="this.placeholder = 'Mode of Payment'" onfocus="this.placeholder = ''" description="Mode of Payment"
+                            onblur="this.placeholder = 'Mode of Payment'" 
+                            onfocus="this.placeholder = ''" 
+                            description="Mode of Payment"
                         />
                     </CCol>
                     <CCol v-if="form.payment_mode == 'Check'" lg="6">
                         <CSelect
                             :value.sync="form.check_dated"
-                            placeholder="Nothing Selected"
                             :options="['PDC30', 'PDC60', 'PDC90', 'PDC120']"
-                            onblur="this.placeholder = 'Dated'" onfocus="this.placeholder = ''" description="Dated"
+                            placeholder="Nothing Selected"
+                            onblur="this.placeholder = 'Dated'" 
+                            onfocus="this.placeholder = ''" 
+                            description="Dated"
                         />
                     </CCol>
                     <CCol lg="6">
                         <CSelect
                             :value.sync="form.shipping_mode"
-                            placeholder="Nothing Selected"
                             :options="['Deliver', 'Pickup']"
-                            onblur="this.placeholder = 'Shipping Mode'" onfocus="this.placeholder = ''" description="Shipping Mode"
+                            placeholder="Nothing Selected"
+                            onblur="this.placeholder = 'Shipping Mode'" 
+                            onfocus="this.placeholder = ''" 
+                            description="Shipping Mode"
                         />
                     </CCol>
                     <CCol v-if="form.shipping_mode == 'Deliver'" lg="6">
@@ -101,7 +119,9 @@
                             :value.sync="form.deliver_type"
                             placeholder="Nothing Selected"
                             :options="['Free', 'Delivery Fee']"
-                            onblur="this.placeholder = 'Deliver'" onfocus="this.placeholder = ''" description="Deliver"
+                            onblur="this.placeholder = 'Deliver'" 
+                            onfocus="this.placeholder = ''" 
+                            description="Deliver"
                         />
                     </CCol>
                     <CCol v-if="form.deliver_type == 'Delivery Fee'" lg="6">
@@ -122,12 +142,24 @@
     </CModal>
 </template>
 <script>
+import { required } from 'vuelidate/lib/validators'
+
 export default {
-    data(){
+    data() {
         return {
             placement: 'bottom',
             showModalAddSupplier: false,
             form: this.getFormData(),
+        }
+    },
+    validations: {
+        form: {
+            supplier_name: { required },
+            tin: { required },
+            contact_person: { required },
+            phone: { required },
+            payment_mode: { required },
+            shipping_mode: { required },
         }
     },
     filters: {
@@ -148,13 +180,22 @@ export default {
         }
     },
     methods: {
-        submit(){
-            this.$root.btn_load(true, 'add-services-sub-btn-modal', 'ADD');
-            this.$store.dispatch('supplier/addSupplier', this.form).then(() => {
-                this.$root.btn_load(false, 'add-services-sub-btn-modal', 'ADD');
-                this.showModalAddSupplier = false;
-                this.form = this.getFormData();
-            });
+        checkIfValid(fieldName) {
+            let field = this.$v.form[fieldName];
+            if (!field.$dirty) return null
+            return !(field.$invalid || field.$model === '')
+        },
+        submit() {
+            this.$v.form.$touch()
+            if (!this.$v.form.$invalid) {
+                this.$root.btn_load(true, 'add-services-sub-btn-modal', 'ADD');
+                this.$store.dispatch('supplier/addSupplier', this.form)
+                .then(() => {
+                    this.$root.btn_load(false, 'add-services-sub-btn-modal', 'ADD');
+                    this.showModalAddSupplier = false;
+                    this.form = this.getFormData();
+                });
+            }
         },
         openAddVehicle(){
 

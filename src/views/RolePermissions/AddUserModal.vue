@@ -9,22 +9,34 @@
             label="Name"
             autocomplete="name"
             v-model="form.name"
+            invalidFeedback="Name is required!"
+            :value.sync="$v.form.name.$model"
+            :isValid="checkIfValid('name')"
         />
         <CInput
             label="Username"
             autocomplete="name"
             v-model="form.username"
+            invalidFeedback="Username is required!"
+            :value.sync="$v.form.username.$model"
+            :isValid="checkIfValid('username')"
         />
         <CInput
             label="Email"
             autocomplete="name"
             v-model="form.email"
+            invalidFeedback="Email is required!"
+            :value.sync="$v.form.email.$model"
+            :isValid="checkIfValid('email')"
         />
         <CInput
             type="password"
             label="Password"
             autocomplete="name"
             v-model="form.password"
+            invalidFeedback="Password is required!"
+            :value.sync="$v.form.password.$model"
+            :isValid="checkIfValid('password')"
         />
         <div class="form-group">
         <label>Role</label>
@@ -42,12 +54,21 @@
 </template>
 <script>
 import vSelect from 'vue-select'
+import { required } from 'vuelidate/lib/validators'
 
 export default {
     data(){
         return {
             showModalAddUser: false,
             form: this.getEmptyForm(),
+        }
+    },
+    validations: {
+        form: {
+            name: { required },
+            username: { required },
+            email: { required },
+            password: { required },
         }
     },
     components: {
@@ -80,13 +101,22 @@ export default {
                 role_id: ''
             }
         },
-        submit(){
-            this.$root.btn_load(true, 'btn-add-user', 'ADD');
-            this.$store.dispatch('users/addUser', this.form).then(() => {
-                this.$root.btn_load(false, 'btn-add-user', 'ADD');
-                this.showModalAddUser = false;
-                this.form = this.getEmptyForm();
-            });
+        checkIfValid(fieldName) {
+            let field = this.$v.form[fieldName];
+            if (!field.$dirty) return null
+            return !(field.$invalid || field.$model === '')
+        },
+        submit() {
+            this.$v.form.$touch()
+            if (!this.$v.form.$invalid) {
+                this.$root.btn_load(true, 'btn-add-user', 'ADD');
+                this.$store.dispatch('users/addUser', this.form)
+                .then(() => {
+                    this.$root.btn_load(false, 'btn-add-user', 'ADD');
+                    this.showModalAddUser = false;
+                    this.form = this.getEmptyForm();
+                });
+            }
         }
     },
     created(){

@@ -15,6 +15,9 @@
                             description="Vehicle"
                             placeholder="Vehicle"
                             v-model="form.vehicle_name"
+                            invalidFeedback="Vehicle name is required!"
+                            :value.sync="$v.form.vehicle_name.$model"
+                            :isValid="checkIfValid('vehicle_name')"
                         />
                     </CCol>
                 </CRow>
@@ -27,6 +30,7 @@
 </template>
 <script>
 import vSelect from 'vue-select'
+import { required } from 'vuelidate/lib/validators'
 
 export default {
     data(){
@@ -34,6 +38,11 @@ export default {
             placement: 'bottom',
             showModalAddVehicle: false,
             form: this.getFormData(),
+        }
+    },
+    validations: {
+        form: {
+            vehicle_name: { required },
         }
     },
     components: {
@@ -57,13 +66,21 @@ export default {
         }
     },
     methods: {
+        checkIfValid(fieldName) {
+            let field = this.$v.form[fieldName];
+            if (!field.$dirty) return null
+            return !(field.$invalid || field.$model === '')
+        },
         submit(){
-            this.$root.btn_load(true, 'add-services-sub-btn-modal', 'ADD');
-            this.$store.dispatch('vehicle/addVehicle', this.form).then(() => {
-                this.$root.btn_load(false, 'add-services-sub-btn-modal', 'ADD');
-                this.showModalAddVehicle = false;
-                this.form = this.getFormData();
-            });
+            this.$v.form.$touch()
+            if (!this.$v.form.$invalid) {
+                this.$root.btn_load(true, 'add-services-sub-btn-modal', 'ADD');
+                this.$store.dispatch('vehicle/addVehicle', this.form).then(() => {
+                    this.$root.btn_load(false, 'add-services-sub-btn-modal', 'ADD');
+                    this.showModalAddVehicle = false;
+                    this.form = this.getFormData();
+                });
+            }
         },
         openAddVehicle(){
 

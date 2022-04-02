@@ -9,6 +9,9 @@
             label="Role Name"
             autocomplete="name"
             v-model="form.role_name"
+            invalidFeedback="Role name is required!"
+            :value.sync="$v.form.role_name.$model"
+            :isValid="checkIfValid('role_name')"
         />
         <div class="form-group">
         <label>Permissions</label>
@@ -27,12 +30,18 @@
 </template>
 <script>
 import vSelect from 'vue-select'
+import { required } from 'vuelidate/lib/validators'
 
 export default {
     data(){
         return {
             showModalAddRole: false,
             form: this.getEmptyForm(),
+        }
+    },
+    validations: {
+        form: {
+            role_name: { required }
         }
     },
     components: {
@@ -62,13 +71,21 @@ export default {
                 permission: []
             }
         },
-        submit(){
-            this.$root.btn_load(true, 'btn-add-role', 'ADD');
-            this.$store.dispatch('roles/addRole', this.form).then(() => {
-                this.$root.btn_load(false, 'btn-add-role', 'ADD');
-                this.showModalAddRole = false;
-                this.form = this.getEmptyForm();
-            });
+        checkIfValid(fieldName) {
+            let field = this.$v.form[fieldName];
+            if (!field.$dirty) return null
+            return !(field.$invalid || field.$model === '')
+        },
+        submit() {
+            this.$v.form.$touch()
+            if (!this.$v.form.$invalid) {
+                this.$root.btn_load(true, 'btn-add-role', 'ADD');
+                this.$store.dispatch('roles/addRole', this.form).then(() => {
+                    this.$root.btn_load(false, 'btn-add-role', 'ADD');
+                    this.showModalAddRole = false;
+                    this.form = this.getEmptyForm();
+                });
+            }
         }
     },
     created(){

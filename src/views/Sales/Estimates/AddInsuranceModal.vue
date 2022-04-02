@@ -16,23 +16,9 @@
                             description="Insurance *"
                             placeholder="Insurance *"
                             v-model="form.insurance_name"
-                        />
-                    </CCol>
-                    <CCol lg="6">
-                        <CTextarea
-                            onblur="this.placeholder = 'Address *'" 
-                            onfocus="this.placeholder = ''"
-                            description="Address *"
-                            placeholder="Address *"
-                            v-model="form.address"
-                        />
-                    </CCol>
-                    <CCol lg="6">
-                        <CSelect
-                            :value.sync="form.insurance_type"
-                            placeholder="Nothing Selected"
-                            :options="['Private Insurance', 'Third Party Claim', 'GSIS', 'Bidding']"
-                            onblur="this.placeholder = 'Insurance Type *'" onfocus="this.placeholder = ''" description="Insurance Type *"
+                            invalidFeedback="Insurance type is required!"
+                            :value.sync="$v.form.insurance_name.$model"
+                            :isValid="checkIfValid('insurance_name')"
                         />
                     </CCol>
                     <CCol lg="6">
@@ -42,6 +28,30 @@
                             description="Contact Person *"
                             placeholder="Contact Person *"
                             v-model="form.contact_person"
+                            invalidFeedback="Contact person is required!"
+                            :value.sync="$v.form.contact_person.$model"
+                            :isValid="checkIfValid('contact_person')"
+                        />
+                    </CCol>
+                    <CCol lg="6">
+                        <CSelect
+                            placeholder="Nothing Selected"
+                            :options="['Private Insurance', 'Third Party Claim', 'GSIS', 'Bidding']"
+                            onblur="this.placeholder = 'Insurance Type *'" 
+                            onfocus="this.placeholder = ''" 
+                            description="Insurance Type *"
+                            invalidFeedback="Insurance type is required!"
+                            :value.sync="$v.form.insurance_type.$model"
+                            :isValid="checkIfValid('insurance_type')"
+                        />
+                    </CCol>
+                    <CCol lg="6">
+                        <CTextarea
+                            onblur="this.placeholder = 'Address'" 
+                            onfocus="this.placeholder = ''"
+                            description="Address"
+                            placeholder="Address"
+                            v-model="form.address"
                         />
                     </CCol>
                     <CCol lg="6">
@@ -51,6 +61,9 @@
                             description="Contact No. *"
                             placeholder="Contact No. *"
                             v-model="form.phone"
+                            invalidFeedback="Phone number is required!"
+                            :value.sync="$v.form.phone.$model"
+                            :isValid="checkIfValid('phone')"
                         />
                     </CCol>
                     <CCol lg="6">
@@ -64,11 +77,14 @@
                     </CCol>
                     <CCol lg="6">
                         <CInput
-                            onblur="this.placeholder = 'Tin No.:'" 
+                            onblur="this.placeholder = 'Tin No. *:'" 
                             onfocus="this.placeholder = ''"
-                            description="Tin No.:"
-                            placeholder="Tin No.:"
+                            description="Tin No. *"
+                            placeholder="Tin No. *"
                             v-model="form.tin"
+                            invalidFeedback="TIN is required!"
+                            :value.sync="$v.form.tin.$model"
+                            :isValid="checkIfValid('tin')"
                         />
                     </CCol>
                 </CRow>
@@ -80,12 +96,23 @@
     </CModal>
 </template>
 <script>
+import { required } from 'vuelidate/lib/validators'
+
 export default {
     data(){
         return {
             placement: 'bottom',
             showModalAddInsurance: false,
             form: this.getFormData(),
+        }
+    },
+    validations: {
+        form: {
+            insurance_name: { required },
+            insurance_type: { required },
+            phone: { required },
+            contact_person: { required },
+            tin: { required },
         }
     },
     filters: {
@@ -106,13 +133,22 @@ export default {
         }
     },
     methods: {
-        submit(){
-            this.$root.btn_load(true, 'add-services-sub-btn-modal', 'ADD');
-            this.$store.dispatch('insurance/addInsurance', this.form).then(() => {
-                this.$root.btn_load(false, 'add-services-sub-btn-modal', 'ADD');
-                this.showModalAddInsurance = false;
-                this.form = this.getFormData();
-            });
+        checkIfValid(fieldName) {
+            let field = this.$v.form[fieldName];
+            if (!field.$dirty) return null
+            return !(field.$invalid || field.$model === '')
+        },
+        submit() {
+            this.$v.form.$touch()
+            if (!this.$v.form.$invalid) {
+                this.$root.btn_load(true, 'add-services-sub-btn-modal', 'ADD');
+                this.$store.dispatch('insurance/addInsurance', this.form)
+                .then(() => {
+                    this.$root.btn_load(false, 'add-services-sub-btn-modal', 'ADD');
+                    this.showModalAddInsurance = false;
+                    this.form = this.getFormData();
+                });
+            }
         },
         openAddVehicle(){
 

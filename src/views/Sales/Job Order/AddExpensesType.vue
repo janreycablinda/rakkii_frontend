@@ -16,6 +16,9 @@
                         description="Expenses Type Name" 
                         placeholder="Expenses Type Name"
                         v-model="form.expenses_name"
+                        invalidFeedback="Expenses type name is required!"
+                        :value.sync="$v.form.expenses_name.$model"
+                        :isValid="checkIfValid('expenses_name')"
                     />
                 </CCol>
             </CRow>
@@ -27,12 +30,19 @@
     </CModal>
 </template>
 <script>
+import { required } from 'vuelidate/lib/validators'
+
 export default {
     data(){
         return {
             placement: 'bottom',
             showModalAddExpensesType: false,
             form: this.getFormData(),
+        }
+    },
+    validations: {
+        form: {
+            expenses_name: { required }
         }
     },
     props: ['AddExpensesTypeData'],
@@ -42,14 +52,21 @@ export default {
         },
     },
     methods: {
-        submit(){
-
-            this.$root.btn_load(true, 'add-expenses-type-btn', 'ADD');
-            this.$store.dispatch('expenses_type/createExpensesType', this.form).then(() => {
-                this.$root.btn_load(false, 'add-expenses-type-btn', 'ADD');
-                this.form = this.getFormData();
-                this.showModalAddExpensesType = false;
-            });
+        checkIfValid(fieldName) {
+            let field = this.$v.form[fieldName];
+            if (!field.$dirty) return null
+            return !(field.$invalid || field.$model === '')
+        },
+        submit() {
+            this.$v.form.$touch()
+            if (!this.$v.form.$invalid) {
+                this.$root.btn_load(true, 'add-expenses-type-btn', 'ADD');
+                this.$store.dispatch('expenses_type/createExpensesType', this.form).then(() => {
+                    this.$root.btn_load(false, 'add-expenses-type-btn', 'ADD');
+                    this.form = this.getFormData();
+                    this.showModalAddExpensesType = false;
+                });
+            }
             // this.$root.btn_load(true, 'add-services-type-btn-modal', 'ADD');
             // this.$store.dispatch('services_type/addServicesType', this.form).then(() => {
             //     this.$root.btn_load(false, 'add-services-type-btn-modal', 'ADD');
