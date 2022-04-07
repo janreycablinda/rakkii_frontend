@@ -212,7 +212,7 @@
               <CRow>
                 <CCol lg="12">
                   <CButton @click="submit_draft" color="success">SAVE AS DRAFT</CButton>
-                  <CButton @click="submit_approval" class="ml-2" color="success">SAVE & SEND</CButton>
+                  <!-- <CButton @click="submit_approval" class="ml-2" color="success">SAVE & SEND</CButton> -->
                  
                 </CCol>
               </CRow>
@@ -493,9 +493,7 @@ export default {
       },
     },
     computed:{
-      formString () { return JSON.stringify(this.form, null, 4) },
       isValid () { return !this.$v.form.$invalid },
-      isDirty () { return this.$v.form.$anyDirty },
       sub_total_labor(){
         let service_labor = 0;
         let sub_service_parts = 0
@@ -565,7 +563,7 @@ export default {
           const field = this.$v.form[fieldName]
           if (!field.$dirty) {
               return null
-          } 
+          }
           return !(field.$invalid || field.$model === '')
       },
       deleteModalShow(data){

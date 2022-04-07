@@ -10,7 +10,7 @@
                                 <CListGroup accent>
                                     <CListGroupItem href="#" @click="option.report = 'project'" :color="getColor('project')" accent="dark">Projects Report</CListGroupItem>
                                     <CListGroupItem href="#" @click="option.report = 'collected'" :color="getColor('collected')" accent="dark">Cash Collected Report</CListGroupItem>
-                                    <CListGroupItem href="#" @click="option.report = 'collectables'" :color="getColor('collectables')" accent="dark">Cash Collectables Report</CListGroupItem>
+                                    <!-- <CListGroupItem href="#" @click="option.report = 'collectables'" :color="getColor('collectables')" accent="dark">Cash Collectables Report</CListGroupItem> -->
                                 </CListGroup>
                             </CCol>
                             <CCol lg="4">
@@ -68,6 +68,17 @@
                         </div>
                     </CCardBody>
                     <CCardFooter style="min-height:70px; position:relative;">
+                        <div v-if="print_data != '' || print_data_cash_collected != ''" style="display:flex; justify-content:space-between;">
+                            <div>
+                                <h1 v-if="option.report == 'project'">PROJECTS REPORT</h1>
+                                <h1 v-if="option.report == 'collected'">CASH COLLECTED REPORT</h1>
+                            </div>
+                            <div>
+                                <span><b>Period:</b> {{option.period}}</span><br>
+                                <span v-if="option.period == 'Period'"><b>From:</b> {{option.dates.from}} <b>To:</b> {{this.option.dates.to}} <br></span>
+                                <span v-if="option.report == 'project'"><b>Status:</b> {{option.status}}</span>
+                            </div>
+                        </div>
                         <div align="center">
                             <table v-if="print_data != ''" class="custom-table">
                                 <tr>
@@ -99,6 +110,32 @@
                                     <td>₱{{calculateNetProfit(data) | numFormat('0,000')}}</td>
                                 </tr>
                             </table>
+
+                            <table v-if="print_data_cash_collected != ''" class="custom-table">
+                                <tr>
+                                    <th>BILL NO.</th>
+                                    <th>JOB ORDER NO.</th>
+                                    <th>RECEIPT NO.</th>
+                                    <th>CUSTOMER</th>
+                                    <th>AMOUNT</th>
+                                    <th>DATE</th>
+                                    <th>ENCODED BY</th>
+                                </tr>
+                                <tr v-for="data in print_data_cash_collected" :key="data.id">
+                                    <td>BILL-000{{data.billing_statement.billing_statement_no}}</td>
+                                    <td>JO-000{{data.billing_statement.job_order.job_order_no}}</td>
+                                    <td>RCPT-000{{data.receipt_no}}</td>
+                                    <td>
+                                        <span v-if="data.billing_statement.payment_for == 'customer'">{{data.billing_statement.customer.company_name}}</span>
+                                        <span v-else>{{data.billing_statement.insurance.insurance_name}}</span>
+                                    </td>
+                                    <td>₱{{data.amount | numFormat('0,000')}}</td>
+                                    <td>{{data.payment_date}}</td>
+                                    <td>{{data.user.name}}</td>
+                                </tr>
+                            </table>
+
+                            <h3>{{result_status}}</h3>
                             <CElementCover v-show="loading" style="position: absolute;" :opacity="0.8"/>
                         </div>
                     </CCardFooter>
@@ -121,7 +158,9 @@ export default {
                 }
             },
             loading: false,
-            print_data: []
+            print_data: [],
+            print_data_cash_collected: [],
+            result_status: ''
         }
     },
     computed: {
@@ -136,6 +175,8 @@ export default {
             this.option.dates.from = '';
             this.option.dates.to = '';
             this.print_data = [];
+            this.print_data_cash_collected = [];
+            this.result_status = '';
         }
     },
     methods: {
@@ -186,21 +227,40 @@ export default {
             return data.payables.total_repair_cost - sum;
         },
         periodChange(){
-            if(this.option.period != '' && this.option.status != ''){
-                if(this.option.period == 'Period'){
-                    if(this.option.dates.from != '' && this.option.dates.to != ''){
+            if(this.option.report == 'project'){
+                if(this.option.period != '' && this.option.status != ''){
+                    if(this.option.period == 'Period'){
+                        if(this.option.dates.from != '' && this.option.dates.to != ''){
+                            this.loading = true;
+                            this.$store.dispatch('report/generateReport', this.option).then(response => {
+                                console.log(response);
+                                this.print_data = response;
+                                this.loading = false;
+                            });
+                        }
+                    }else{
                         this.loading = true;
                         this.$store.dispatch('report/generateReport', this.option).then(response => {
                             console.log(response);
+                            if(response == ''){
+                                this.result_status = 'No Data Found!'
+                            }else{
+                                this.result_status = ''
+                            }
                             this.print_data = response;
                             this.loading = false;
                         });
                     }
-                }else{
-                    this.loading = true;
+                }
+            }else if(this.option.report == 'collected'){
+                if(this.option.period != ''){
                     this.$store.dispatch('report/generateReport', this.option).then(response => {
-                        console.log(response);
-                        this.print_data = response;
+                        if(response == ''){
+                            this.result_status = 'No Data Found!'
+                        }else{
+                            this.result_status = ''
+                        }
+                        this.print_data_cash_collected = response;
                         this.loading = false;
                     });
                 }
