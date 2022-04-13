@@ -46,7 +46,7 @@
                         placeholder="Date"
                         type="date"
                         v-model="form.date"
-                        invalidFeedback="Date name is required!"
+                        invalidFeedback="Date is required!"
                         :value.sync="$v.form.date.$model"
                         :isValid="checkIfValid('date', 'one')"
                     />
@@ -59,7 +59,7 @@
                         
                     /> -->
                     <label class="custom-label" for="upload-photo">{{placeholder}}</label>
-                    <input @change="uploadDocs" type="file" name="photo" id="upload-photo" />
+                    <input multiple @change="uploadDocs" type="file" name="photo" id="upload-photo" />
                 </CCol>
             </CRow>
             <CRow class="mt-3">
@@ -279,6 +279,7 @@ export default {
             // }
             this.$v.form.$touch()
             if (!this.$v.form.$invalid) {
+
                 let formData = new FormData();
                 formData.append('id', this.form.id);
                 formData.append('supplier_id', this.form.supplier_id.value);
@@ -321,6 +322,7 @@ export default {
         },
         uploadDocs(data){
             if(data.target.files.length > 0){
+                console.log(data.target.files.length);
                 this.placeholder = data.target.files.length + ' files has selected';
                 this.form.files = data.target.files;
             }else{
@@ -330,7 +332,6 @@ export default {
         addItem() {
             this.$v.add_item_form.$touch()
             if (!this.$v.add_item_form.$invalid) {
-
                 const calc = this.add_item_form.qty * this.add_item_form.price;
                 this.form.items.push({
                     item: this.add_item_form.item_id.label,

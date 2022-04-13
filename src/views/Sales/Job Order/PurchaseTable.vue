@@ -26,7 +26,7 @@
         </template>
         <template #total_purchase="{item}">
           <td>
-              ₱{{sumAmount(item.purchase_items)}}
+              ₱{{sumAmount(item.purchase_items) | numFormat('1,000')}}
           </td>
         </template>
         <template #date="{item}">

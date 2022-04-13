@@ -582,6 +582,11 @@
     <PaymentModal
     :ModalPaymentData="ModalPaymentData"
     />
+    <label for="file-upload" class="custom-file-upload">
+    Open PDF
+    </label>
+    <input id="file-upload" type="file" @change="openDocument" class="btn" />
+    <PSPDFKitContainer :pdfFile="pdfFile" @loaded="handleLoaded" />
     </div>
 </template>
 <script>
@@ -598,11 +603,13 @@ import AddLoaDocumentModal from './AddLoaDocumentModal';
 import AddItemModal from './AddItemModal';
 import BillingTable from './BillingTable';
 import PaymentModal from '../Monitoring/PaymentModal';
+import PSPDFKitContainer from "./PSPDFKitContainer";
 
 export default {
     data(){
       return {
         colSize: '12',
+        pdfFile: "https://rakkiiautoservice.com/img/upload/ALG-1639203598.pdf",
         info: '',
         SendMailData: '',
         ModalPaymentData: '',
@@ -622,6 +629,7 @@ export default {
       }
     },
     components: {
+        PSPDFKitContainer,
         JobOrderTable,
         DocumentsTable,
         VueHtml2pdf,
@@ -696,6 +704,16 @@ export default {
         }
     },
     methods: {
+        handleLoaded(instance) {
+        console.log("PSPDFKit has loaded: ", instance);
+        // Do something.
+        },
+        openDocument(event){
+            if (this.pdfFile && this.pdfFile.startsWith('blob:')) {
+                window.URL.revokeObjectURL(this.pdfFile);
+            }
+            this.pdfFile = window.URL.createObjectURL(event.target.files[0]);
+        },
         eventChild(data){
             this.info = data;
             this.colSize = 6;

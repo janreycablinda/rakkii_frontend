@@ -49,6 +49,7 @@
     "laravel-echo": "^1.11.3",
     "moment": "^2.29.1",
     "numeral": "^2.0.6",
+    "pspdfkit": "^2022.2.1",
     "pusher-js": "^7.0.6",
     "v-calendar": "^2.3.2",
     "vue": "^2.6.12",
